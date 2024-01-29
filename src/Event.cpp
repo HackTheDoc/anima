@@ -11,10 +11,8 @@
 
 #include <iostream>
 
-std::string to_string(Event::ID eid)
-{
-    switch (KeyMap::GetKeyCode(eid))
-    {
+std::string to_string(Event::ID eid) {
+    switch (KeyMap::GetKeyCode(eid)) {
     case SDLK_a:
         return "A";
         break;
@@ -176,15 +174,12 @@ Event::Event() {}
 
 Event::~Event() {}
 
-void Event::linkTo(Window *w)
-{
+void Event::linkTo(Window *w) {
     window = w;
 }
 
-void Event::handleButtonClick(UIButton::ID id)
-{
-    switch (id)
-    {
+void Event::handleButtonClick(UIButton::ID id) {
+    switch (id) {
     /* ----- MAIN MENU BUTTONS ----- */
     case UIButton::ID::QUIT:
         Window::isRunning = false;
@@ -213,8 +208,7 @@ void Event::handleButtonClick(UIButton::ID id)
         PlayMenu::Selection = 4;
         break;
     case UIButton::ID::LOAD_SAVE:
-        if (PlayMenu::IsSelectionActived())
-        {
+        if (PlayMenu::IsSelectionActived()) {
             if (!Save::Exist(PlayMenu::Selection) && Game::WorldName == "World 0")
                 PlayMenu::OpenWorldNameInput();
             else
@@ -269,10 +263,8 @@ void Event::handleButtonClick(UIButton::ID id)
     }
 }
 
-void Event::handleSelection(UIChoice::ID id)
-{
-    switch (id)
-    {
+void Event::handleSelection(UIChoice::ID id) {
+    switch (id) {
     case UIChoice::LG_ENGLISH:
         Window::SetLanguage(Text::Language::ENGLISH);
         break;
@@ -284,10 +276,8 @@ void Event::handleSelection(UIChoice::ID id)
     }
 }
 
-void Event::handleKeyboardInputs()
-{
-    switch (Window::manager->getCurrentStateID())
-    {
+void Event::handleKeyboardInputs() {
+    switch (Window::manager->getCurrentStateID()) {
     case WindowState::Type::MAIN:
         handleMainMenuEvents();
         break;
@@ -315,22 +305,25 @@ void Event::handleKeyboardInputs()
     }
 }
 
-bool Event::mouseClickLeft()
-{
+bool Event::mouseClickLeft() {
     return e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT;
 }
 
-bool Event::mouseClickRight()
-{
+bool Event::mouseClickRight() {
     return e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_RIGHT;
 }
 
-void Event::handleMainMenuEvents()
-{
+bool Event::raised(Event::ID id) {
+    if (e.type != SDL_KEYUP) return false;
+
+    SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
+    return KeyMap::Key[k] == id;
+}
+
+void Event::handleMainMenuEvents() {
     if (e.type != SDL_KEYUP || !(SDL_GetModState() & KMOD_CTRL))
         return;
-    switch (e.key.keysym.sym)
-    {
+    switch (e.key.keysym.sym) {
     case SDLK_q:
         Window::isRunning = false;
         break;
@@ -362,13 +355,11 @@ void Event::handleMainMenuEvents()
     }
 }
 
-void Event::handleOptionsMenuEvents()
-{
+void Event::handleOptionsMenuEvents() {
     if (e.type != SDL_KEYUP || !(SDL_GetModState() & KMOD_CTRL))
         return;
 
-    switch (e.key.keysym.sym)
-    {
+    switch (e.key.keysym.sym) {
     case SDLK_q:
         window->openMainMenu();
         break;
@@ -389,13 +380,11 @@ void Event::handleOptionsMenuEvents()
     }
 }
 
-void Event::handleCreditsEvents()
-{
+void Event::handleCreditsEvents() {
     if (e.type != SDL_KEYUP || !(SDL_GetModState() & KMOD_CTRL))
         return;
 
-    switch (e.key.keysym.sym)
-    {
+    switch (e.key.keysym.sym) {
     case SDLK_q:
         window->openMainMenu();
         break;
@@ -413,10 +402,8 @@ void Event::handleCreditsEvents()
     }
 }
 
-void Event::handleGameEvents()
-{
-    switch (Game::player->state)
-    {
+void Event::handleGameEvents() {
+    switch (Game::player->state) {
     case Player::State::FREE:
         handleFreeState();
         break;
@@ -428,20 +415,17 @@ void Event::handleGameEvents()
     }
 }
 
-void Event::handlePauseMenuEvents()
-{
+void Event::handlePauseMenuEvents() {
     if (e.type != SDL_KEYUP)
         return;
 
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
-    if (KeyMap::Key[k] == Event::ID::PAUSE)
-    {
+    if (KeyMap::Key[k] == Event::ID::PAUSE) {
         window->resumeGame();
         return;
     }
 
-    switch (e.key.keysym.sym)
-    {
+    switch (e.key.keysym.sym) {
     case SDLK_q:
         if (SDL_GetModState() & KMOD_CTRL)
             window->quitGame();
@@ -458,40 +442,33 @@ void Event::handlePauseMenuEvents()
     }
 }
 
-void Event::handlePowerMenuEvents()
-{
+void Event::handlePowerMenuEvents() {
     if (e.type != SDL_KEYUP)
         return;
 
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
-    if (KeyMap::Key[k] == Event::ID::OPEN_POWER_MENU)
-    {
+    if (KeyMap::Key[k] == Event::ID::OPEN_POWER_MENU) {
         window->resumeGame();
         return;
     }
 }
 
-void Event::handleInventoryMenuEvents()
-{
+void Event::handleInventoryMenuEvents() {
     if (e.type != SDL_KEYUP)
         return;
 
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
-    if (KeyMap::Key[k] == Event::ID::OPEN_INVENTORY)
-    {
+    if (KeyMap::Key[k] == Event::ID::OPEN_INVENTORY) {
         window->resumeGame();
         return;
     }
 }
 
-void Event::handleFreeState()
-{
+void Event::handleFreeState() {
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
 
-    if (e.type == SDL_KEYDOWN)
-    {
-        switch (KeyMap::Key[k])
-        {
+    if (e.type == SDL_KEYDOWN) {
+        switch (KeyMap::Key[k]) {
         case Event::ID::MOVE_UP:
             Game::player->playAnimation("Walk");
             Game::player->vSpeed = -1;
@@ -529,10 +506,8 @@ void Event::handleFreeState()
         }
     }
 
-    if (e.type == SDL_KEYUP)
-    {
-        switch (KeyMap::Key[k])
-        {
+    if (e.type == SDL_KEYUP) {
+        switch (KeyMap::Key[k]) {
         case Event::ID::PAUSE:
             window->pauseGame();
             break;
@@ -564,15 +539,13 @@ void Event::handleFreeState()
     }
 }
 
-void Event::handleDialogState()
-{
+void Event::handleDialogState() {
     if (e.type != SDL_KEYUP)
         return;
 
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
 
-    switch (KeyMap::Key[k])
-    {
+    switch (KeyMap::Key[k]) {
     case Event::ID::PAUSE:
         window->pauseGame();
         break;

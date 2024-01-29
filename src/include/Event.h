@@ -65,6 +65,11 @@ public:
     /// @return true when mouse click right else false
     bool mouseClickRight();
 
+    /// @brief check wether a specific event been raised or not
+    /// @param id
+    /// @return
+    bool raised(Event::ID id);
+
 private:
     /// TODO: decide wether i will keep those shortcuts or not...
 

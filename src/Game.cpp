@@ -34,8 +34,15 @@ void Game::init() {
 }
 
 void Game::update() {
-    #pragma region CAMERA
+    ui->useHint("NONE");
+
+    player->update();
     
+    island->update();
+
+    ui->update();
+
+    // camerapp
     int mapWidth, mapHeight;
     island->getSize(&mapWidth, &mapHeight);
     int maxCameraX = mapWidth - camera.w;
@@ -48,16 +55,6 @@ void Game::update() {
     if (camera.y < 0) camera.y = 0;
     if (camera.x > maxCameraX) camera.x = maxCameraX;
     if (camera.y > maxCameraY) camera.y = maxCameraY;
-
-    #pragma endregion
-
-    ui->useHint("NONE");
-
-    player->update();
-    
-    island->update();
-
-    ui->update();
 }
 
 void Game::render() {

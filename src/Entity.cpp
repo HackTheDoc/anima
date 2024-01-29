@@ -93,7 +93,6 @@ void Entity::setFlip(SDL_RendererFlip flipMod) {
 
 void Entity::resetMovement() {
     hSpeed = vSpeed = 0;
-    playAnimation("Idle");
 }
 
 void Entity::reverseMovement() {

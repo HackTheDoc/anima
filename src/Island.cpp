@@ -264,7 +264,7 @@ void Island::updateFreeState()
         if (Collision::AABB(Game::player->detector, i->collider)) {
             Game::ui->useHint(" - Pick up", i->collider);
 
-            if (Game::player->interaction == Interaction::USE) {
+            if (Window::event.raised(Event::ID::INTERACT)) {
                 Entity* e = Game::player->parseControlledEntity();
 
                 if (e == nullptr)
