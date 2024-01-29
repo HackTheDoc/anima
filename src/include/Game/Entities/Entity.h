@@ -8,13 +8,11 @@
 
 struct EntityStructure;
 
-class Entity
-{
+class Entity {
 public:
     static const int MAX_HP;
 
-    enum Type
-    {
+    enum Type {
         PLAYER,
         NON_PLAYER_CHARACTER,
         DOLL,
@@ -24,8 +22,7 @@ public:
     };
     Entity::Type type;
 
-    enum Species
-    {
+    enum Species {
         HUMAN,
         GOBLIN
     };
@@ -67,6 +64,7 @@ public:
     void setFlip(SDL_RendererFlip flipMod);
 
     void resetMovement();
+    void reverseMovement();
 
     void startInteraction();
     void closeIntereaction();

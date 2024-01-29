@@ -19,15 +19,3 @@ bool Collision::AABB(Collider* colA, Collider* colB) {
     if (colA == nullptr || colB == nullptr) return false;
     return AABB(colA->rect, colB->rect);
 }
-
-bool Collision::WithTile(int x, int y) {
-    if (x <= 0 || x >= Game::island->map->getWidth() ||
-        y <= 0 || y >= Game::island->map->getHeight()
-    ) {
-        return true;
-    }
-    if (Game::island->map->getTile(x, y)->collider) {
-        return Collision::AABB(Game::island->map->getTile(x,y)->collider, Game::player->collider);
-    }
-    return false;
-}

@@ -494,20 +494,20 @@ void Event::handleFreeState()
         {
         case Event::ID::MOVE_UP:
             Game::player->playAnimation("Walk");
-            Game::player->vSpeed = -Game::player->walkSpeed;
+            Game::player->vSpeed = -1;
             break;
         case Event::ID::MOVE_DOWN:
             Game::player->playAnimation("Walk");
-            Game::player->vSpeed = Game::player->walkSpeed;
+            Game::player->vSpeed = 1;
             break;
         case Event::ID::MOVE_LEFT:
             Game::player->playAnimation("Walk");
-            Game::player->hSpeed = -Game::player->walkSpeed;
+            Game::player->hSpeed = -1;
             Game::player->setFlip(SDL_FLIP_HORIZONTAL);
             break;
         case Event::ID::MOVE_RIGHT:
             Game::player->playAnimation("Walk");
-            Game::player->hSpeed = Game::player->walkSpeed;
+            Game::player->hSpeed = 1;
             Game::player->setFlip(SDL_FLIP_NONE);
             break;
         case Event::ID::INTERACT:
@@ -543,17 +543,11 @@ void Event::handleFreeState()
             window->openInventory(Game::player->parseInventory());
             break;
         case Event::ID::MOVE_UP:
-            Game::player->playAnimation("Idle");
-            Game::player->vSpeed = 0;
-            break;
         case Event::ID::MOVE_DOWN:
             Game::player->playAnimation("Idle");
             Game::player->vSpeed = 0;
             break;
         case Event::ID::MOVE_LEFT:
-            Game::player->playAnimation("Idle");
-            Game::player->hSpeed = 0;
-            break;
         case Event::ID::MOVE_RIGHT:
             Game::player->playAnimation("Idle");
             Game::player->hSpeed = 0;

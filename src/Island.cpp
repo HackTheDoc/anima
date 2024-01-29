@@ -27,12 +27,8 @@ void Island::init()
     map->init(data["width"], data["height"]);
     const auto &tile = data["tiles"];
     for (int y = 0; y < map->getHeight(); y++)
-    {
         for (int x = 0; x < map->getWidth(); x++)
-        {
             map->setTile(x, y, tile[y][x]);
-        }
-    }
 
     // LOADING PORTALS
     for (const auto &portal : data["portals"])

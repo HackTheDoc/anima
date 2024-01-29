@@ -6,8 +6,7 @@
 
 #include "include/Save.h"
 
-int sign(int n)
-{
+int sign(int n) {
     if (n > 0)
         return 1;
     if (n < 0)
@@ -17,16 +16,14 @@ int sign(int n)
 
 Sprite *Player::DEFAULT_SPRITE = nullptr;
 
-Player::Player()
-{
+Player::Player() {
     type = Type::PLAYER;
     inventory.capacity = 0;
 }
 
 Player::~Player() {}
 
-void Player::init()
-{
+void Player::init() {
     PlayerStructure data = Save::LoadPlayer(Game::WorldID);
 
     Entity::init();
@@ -55,8 +52,7 @@ void Player::init()
     interaction = Interaction::NONE;
     interactingWith = nullptr;
 
-    if (data.controlled_entity.type == Entity::Type::NON_PLAYER_CHARACTER)
-    {
+    if (data.controlled_entity.type == Entity::Type::NON_PLAYER_CHARACTER) {
         NPC *npc = new NPC(data.controlled_entity.name, data.controlled_entity.species);
         npc->init();
         npc->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
@@ -73,8 +69,7 @@ void Player::init()
         this->walkSpeed = npc->walkSpeed;
     }
 
-    if (data.controlled_entity.type == Entity::Type::DOLL)
-    {
+    if (data.controlled_entity.type == Entity::Type::DOLL) {
         Doll *doll = new Doll();
         doll->init();
         doll->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
@@ -92,36 +87,20 @@ void Player::init()
     state = data.state;
 }
 
-void Player::update()
-{
-    int x = round(collider->position.x / Tile::SIZE);
-    int y = round(collider->position.y / Tile::SIZE);
-    // std::cout << x << " " << y <<  std::endl;
-
-    // horizontal collision check
-    if (Collision::WithTile(x + sign(hSpeed), y))
-        hSpeed = 0;
-    // Vertical collision check
-    if (Collision::WithTile(x, y + sign(vSpeed)))
-        vSpeed = 0;
-
+void Player::update() {
     Entity::update();
 }
 
-void Player::draw()
-{
+void Player::draw() {
     Entity::draw();
 }
 
-void Player::kill()
-{
+void Player::kill() {
     Entity::kill();
 }
 
-void Player::interactWith(Entity *e)
-{
-    switch (e->type)
-    {
+void Player::interactWith(Entity *e) {
+    switch (e->type) {
     case Entity::Type::NON_PLAYER_CHARACTER:
         if (NPC *npc = dynamic_cast<NPC *>(e))
             if (npc->haveDialog)
@@ -134,8 +113,7 @@ void Player::interactWith(Entity *e)
         break;
     }
 
-    switch (interaction)
-    {
+    switch (interaction) {
     case Interaction::USE:
         if (NPC *npc = dynamic_cast<NPC *>(e))
             interactWithNPC(npc);
@@ -154,8 +132,7 @@ void Player::interactWith(Entity *e)
     interaction = Interaction::NONE;
 }
 
-void Player::interactWithNPC(NPC *npc)
-{
+void Player::interactWithNPC(NPC *npc) {
     Game::ui->useHint("NONE");
 
     if (this->position.x < npc->position.x)
@@ -167,13 +144,11 @@ void Player::interactWithNPC(NPC *npc)
         npc->startDialog();
 }
 
-void Player::takeControlOf(Entity *e)
-{
+void Player::takeControlOf(Entity *e) {
     if (e->type == Entity::Type::DEAD_BODY) return;
     
     // check if the player have enough mental power
-    if (e->numenLevel > this->numenLevel)
-    {
+    if (e->numenLevel > this->numenLevel) {
         Game::ui->usePopUp("YOU LACK MENTAL POWER");
         return;
     }
@@ -192,8 +167,7 @@ void Player::takeControlOf(Entity *e)
     this->walkSpeed = e->walkSpeed;
 }
 
-void Player::releaseControledEntity()
-{
+void Player::releaseControledEntity() {
     controlledEntity->sprite = this->sprite;
     controlledEntity->sprite->linkTo(controlledEntity);
 
@@ -211,10 +185,8 @@ void Player::releaseControledEntity()
     walkSpeed = 4;
 }
 
-void Player::resurrectEntity(DeadBody *body)
-{
-    if (body->numenLevel > this->numenLevel)
-    {
+void Player::resurrectEntity(DeadBody *body) {
+    if (body->numenLevel > this->numenLevel) {
         Game::ui->usePopUp("YOU LACK MENTAL POWER");
         return;
     }
@@ -223,8 +195,7 @@ void Player::resurrectEntity(DeadBody *body)
 
     Game::island->removeEntity(body);
 
-    switch (body->ownerType)
-    {
+    switch (body->ownerType) {
     case Entity::Type::NON_PLAYER_CHARACTER:
         Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog);
         break;
@@ -235,19 +206,16 @@ void Player::resurrectEntity(DeadBody *body)
     modifyNumenLevelBy(-3);
 }
 
-void Player::modifyNumenLevelBy(int ammount)
-{
+void Player::modifyNumenLevelBy(int ammount) {
     numenLevel = std::max(0, numenLevel + ammount);
 }
 
-void Player::unlockPower(Power pid)
-{
+void Player::unlockPower(Power pid) {
     hasUnlockedPower[pid] = true;
     modifyNumenLevelBy(-5);
 }
 
-bool Player::haveUnlockedPower(Power pid)
-{
+bool Player::haveUnlockedPower(Power pid) {
     return hasUnlockedPower[pid];
 }
 
@@ -263,8 +231,7 @@ Entity* Player::parseControlledEntity() {
     return controlledEntity;
 }
 
-PlayerStructure Player::getStructure()
-{
+PlayerStructure Player::getStructure() {
     /*
     struct PlayerStructure {
         std::string name;
@@ -308,8 +275,7 @@ PlayerStructure Player::getStructure()
     if (state == State::IN_DIALOG)
         structure.state = State::FREE;
 
-    if (controlledEntity != nullptr)
-    {
+    if (controlledEntity != nullptr) {
         switch (controlledEntity->type)
         {
         case Entity::Type::NON_PLAYER_CHARACTER:

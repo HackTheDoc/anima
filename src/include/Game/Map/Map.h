@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "Tiles.h"
+#include "Tile.h"
 
 class Map {
 private:
