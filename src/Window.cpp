@@ -15,7 +15,7 @@ using json = nlohmann::json;
 
 SDL_Window* Window::window = nullptr;
 
-const std::string Window::title = "Application";
+const std::string Window::title = "Anima";
 bool Window::isRunning = false;
 
 bool Window::fullscreen = false;
