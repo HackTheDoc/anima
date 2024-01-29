@@ -5,7 +5,7 @@
 const int UIPopUp::DELAY = 90;
 
 UIPopUp::UIPopUp()
-    : timeLeft(0)
+    : timeLeft(DELAY)
     , haveBlur(false)
     , lbl(nullptr)
     {}
@@ -52,5 +52,5 @@ void UIPopUp::destroy() {
 }
 
 bool UIPopUp::operator<(const UIPopUp* o) const {
-    return timeLeft > o->timeLeft;
+    return timeLeft < o->timeLeft;
 }

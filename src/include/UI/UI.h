@@ -15,8 +15,7 @@ class Collider;
 
 class UI {
 private:
-    std::map<std::string, UIPopUp*> popups;
-    std::priority_queue<UIPopUp*> popups_queue;
+    static std::priority_queue<UIPopUp*> popups_queue;
 
     std::map<std::string, UIElement*> elements;
     std::map<std::string, UIHint*> hints;
@@ -28,7 +27,6 @@ public:
 
     void add(std::string tag, UIElement* element);
     void add(std::string tag, UIHint* element);
-    void add(std::string tag, UIPopUp* element);    
     void remove(std::string tag);
 
     void init();
@@ -42,5 +40,5 @@ public:
     void useHint(std::string hint, Collider* c);
     void hideHint(std::string hint);
 
-    void usePopUp(const std::string& text);
+    static void AddPopUp(const std::string& text);
 };

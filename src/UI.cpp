@@ -6,6 +6,8 @@
 
 #include "include/KeyMap.h"
 
+std::priority_queue<UIPopUp*> UI::popups_queue{};
+
 UI::UI() {}
 
 UI::~UI() {
@@ -18,11 +20,6 @@ void UI::add(std::string tag, UIElement* element) {
 
 void UI::add(std::string tag, UIHint* element) {
     hints.emplace(tag, element);
-}
-
-void UI::add(std::string tag, UIPopUp* element) {
-    popups.emplace(tag, element);
-    popups_queue.push(element);
 }
 
 void UI::remove(std::string tag) {
@@ -51,23 +48,6 @@ void UI::init() {
 
     UIHint* pickUp = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Pick up"), "default");
     add(" - Pick up", pickUp);
-
-    /* ----- POPUPS ----- */
-    UIPopUp *nw = new UIPopUp();
-    nw->addLabel("YOU LACK NUMEN TOKENS");
-    add("YOU LACK NUMEN TOKENS", nw);
-
-    UIPopUp *iw = new UIPopUp();
-    iw->addLabel("YOU CANNOT OPEN YOUR INVENTORY");
-    add("YOU CANNOT OPEN YOUR INVENTORY", iw);
-
-    UIPopUp *piw = new UIPopUp();
-    piw->addLabel("YOU CANNOT PICK UP ITEMS IN YOUR CURRENT STATE");
-    add("YOU CANNOT PICK UP ITEMS IN YOUR CURRENT STATE", piw);
-
-    UIPopUp *ifw = new UIPopUp();
-    ifw->addLabel("INVENTORY FULL");
-    add("INVENTORY FULL", ifw);
 }
 
 void UI::update() {
@@ -88,6 +68,7 @@ void UI::display() {
             p->draw(offset);
             offset += p->height() + UIElement::MARGIN*(1+Window::fullscreen);
         }
+        else p->destroy();
         temp.push(p);
     }
     while (!temp.empty()) {
@@ -108,11 +89,10 @@ void UI::destroy() {
         s.second->destroy();
     hints.clear();
 
-    while (!popups_queue.empty())
+    while (!popups_queue.empty()) {
+        popups_queue.top()->destroy();
         popups_queue.pop();
-    for (auto p : popups)
-        p.second->destroy();
-    popups.clear();
+    }
 }
 
 void UI::useHint(std::string hint) {
@@ -143,6 +123,8 @@ void UI::hideHint(std::string hint) {
     currentHint = "NONE";
 }
 
-void UI::usePopUp(const std::string& text) {
-    popups[text]->timeLeft = UIPopUp::DELAY;
+void UI::AddPopUp(const std::string& text) {
+    UIPopUp* p = new UIPopUp();
+    p->addLabel(text);
+    popups_queue.push(p);
 }

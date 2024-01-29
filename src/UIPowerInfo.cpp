@@ -62,7 +62,7 @@ UIPowerInfo::UIPowerInfo(Power pid, int w, int h, std::string font) {
 
     description = new UITextBox(d, "default", hue::white, rect.w * 2);
 
-    place(0,0);
+    place(0, 0);
 }
 
 UIPowerInfo::~UIPowerInfo() {}
@@ -83,14 +83,14 @@ void UIPowerInfo::draw() {
 
 void UIPowerInfo::update() {
     if (Game::player->haveUnlockedPower(pid)) return;
-    
+
     SDL_Point m;
     SDL_GetMouseState(&m.x, &m.y);
 
     if (!SDL_PointInRect(&m, &rect) || !Window::event.mouseClickLeft()) return;
 
     if (Game::player->numenLevel < 5) {
-        Game::ui->usePopUp("YOU LACK NUMEN TOKENS");
+        UI::AddPopUp("YOU LACK NUMEN TOKENS");
         return;
     }
 
@@ -98,20 +98,20 @@ void UIPowerInfo::update() {
 
     switch (pid) {
     case Power::BODY_CONTROL:
-            title->setText("IMPERIUM", font, hue::white, rect.w);
-            description->setText(Text::Get("Allow one to take control of another's body."), font, hue::white, rect.w*2);
+        title->setText("IMPERIUM", font, hue::white, rect.w);
+        description->setText(Text::Get("Allow one to take control of another's body."), font, hue::white, rect.w * 2);
         break;
     case Power::BODY_RESURRECTION:
-            title->setText("RESURECTIO", font, hue::white, rect.w);
-            description->setText(Text::Get("Consume 3 Numen tokens to resurrect a corpse."), font, hue::white, rect.w*2);
+        title->setText("RESURECTIO", font, hue::white, rect.w);
+        description->setText(Text::Get("Consume 3 Numen tokens to resurrect a corpse."), font, hue::white, rect.w * 2);
         break;
     case Power::BODY_EXPLOSION:
-            title->setText("CREPITUS", font, hue::white, rect.w);
-            description->setText(Text::Get("Make the body you are controlling go KABOOM for 2 Numen tokens only!"), font, hue::white, rect.w*2);
+        title->setText("CREPITUS", font, hue::white, rect.w);
+        description->setText(Text::Get("Make the body you are controlling go KABOOM for 2 Numen tokens only!"), font, hue::white, rect.w * 2);
         break;
     case Power::SHIELD:
-            title->setText("SCUTUM", font, hue::white, rect.w);
-            description->setText(Text::Get("Create a shield arround yourself by consuming 5 Numen tokens."), font, hue::white, rect.w*2);
+        title->setText("SCUTUM", font, hue::white, rect.w);
+        description->setText(Text::Get("Create a shield arround yourself by consuming 5 Numen tokens."), font, hue::white, rect.w * 2);
         break;
     default:
         break;
@@ -131,6 +131,6 @@ void UIPowerInfo::place(int x, int y) {
 
     title->place(
         x + (rect.w - title->width()) / 2,
-        y + (rect.h - title->height()) / 2 + 4*(Window::fullscreen+1)
+        y + (rect.h - title->height()) / 2 + 4 * (Window::fullscreen + 1)
     );
 }

@@ -25,13 +25,13 @@ void Island::init()
 
     // LOADING MAP
     map->init(data["width"], data["height"]);
-    const auto &tile = data["tiles"];
+    const auto& tile = data["tiles"];
     for (int y = 0; y < map->getHeight(); y++)
         for (int x = 0; x < map->getWidth(); x++)
             map->setTile(x, y, tile[y][x]);
 
     // LOADING PORTALS
-    for (const auto &portal : data["portals"])
+    for (const auto& portal : data["portals"])
     {
         addPortal(
             portal["x"],
@@ -43,7 +43,7 @@ void Island::init()
     }
 
     // LOADING ITEMS
-    for (const auto &item : data["items"])
+    for (const auto& item : data["items"])
     {
         addItem(
             item["x"],
@@ -52,7 +52,7 @@ void Island::init()
     }
 
     // LOADING ENTITIES
-    for (const auto &entity : data["entities"])
+    for (const auto& entity : data["entities"])
     {
         Entity::Type t = entity["type"];
         switch (t)
@@ -92,17 +92,17 @@ void Island::render()
 {
     map->render();
 
-    for (const auto &p : portals)
+    for (const auto& p : portals)
     {
         p->draw();
     }
 
-    for (const auto &i : items) {
+    for (const auto& i : items) {
         i->drawIconAt(i->collider->rect);
         i->collider->draw();
     }
 
-    for (const auto &e : entities)
+    for (const auto& e : entities)
     {
         if (!e->controlled)
             e->draw();
@@ -111,13 +111,13 @@ void Island::render()
 
 void Island::destroy()
 {
-    for (const auto &p : portals)
+    for (const auto& p : portals)
     {
         p->destroy();
     }
     portals.clear();
 
-    for (const auto &e : entities)
+    for (const auto& e : entities)
     {
         e->kill();
     }
@@ -128,7 +128,7 @@ void Island::destroy()
     map = nullptr;
 }
 
-void Island::getSize(int *w, int *h)
+void Island::getSize(int* w, int* h)
 {
     *w = map->getWidth() * Tile::SIZE;
     *h = map->getHeight() * Tile::SIZE;
@@ -141,7 +141,7 @@ std::string Island::getName()
 
 void Island::addPortal(int x, int y, std::string dest, int destX, int destY, bool opened)
 {
-    Portal *p = new Portal();
+    Portal* p = new Portal();
     p->init(
         x,
         y,
@@ -154,7 +154,7 @@ void Island::addPortal(int x, int y, std::string dest, int destX, int destY, boo
 
 void Island::addItem(int x, int y, Item::ID id)
 {
-    Item *i = Item::Create(id);
+    Item* i = Item::Create(id);
 
     if (i == nullptr)
         return;
@@ -171,7 +171,7 @@ void Island::addItem(Vector2D pos, Item* i) {
 
 void Island::addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool hasDialog)
 {
-    NPC *npc = new NPC(name, species);
+    NPC* npc = new NPC(name, species);
     npc->init();
     npc->setPosition(x, y);
     npc->haveDialog = hasDialog;
@@ -181,7 +181,7 @@ void Island::addNPC(Entity::Species species, std::string name, int hp, int x, in
 
 void Island::addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool hasDialog, Inventory inv)
 {
-    NPC *npc = new NPC(name, species, inv);
+    NPC* npc = new NPC(name, species, inv);
     npc->init();
     npc->setPosition(x, y);
     npc->haveDialog = hasDialog;
@@ -191,7 +191,7 @@ void Island::addNPC(Entity::Species species, std::string name, int hp, int x, in
 
 void Island::addDoll(int x, int y, Inventory inv)
 {
-    Doll *doll = new Doll(inv);
+    Doll* doll = new Doll(inv);
     doll->init();
     doll->setPosition(x, y);
     addEntity(doll);
@@ -199,7 +199,7 @@ void Island::addDoll(int x, int y, Inventory inv)
 
 void Island::addDeadBody(Entity::Species species, Entity::Type type, std::string name, int x, int y, bool haveDialog)
 {
-    DeadBody *b = new DeadBody(species);
+    DeadBody* b = new DeadBody(species);
     b->init();
     b->ownerType = type;
     b->name = name;
@@ -224,7 +224,7 @@ void Island::updateFreeState()
 {
     map->update();
 
-    for (const auto &e : entities)
+    for (const auto& e : entities)
     {
         if (e->controlled)
             continue;
@@ -236,7 +236,7 @@ void Island::updateFreeState()
         e->update();
     }
 
-    for (const auto &p : portals)
+    for (const auto& p : portals)
     {
         p->update();
 
@@ -268,14 +268,14 @@ void Island::updateFreeState()
                 Entity* e = Game::player->parseControlledEntity();
 
                 if (e == nullptr)
-                    Game::ui->usePopUp("YOU CANNOT PICK UP ITEMS IN YOUR CURRENT STATE");
+                    UI::AddPopUp("YOU CANNOT PICK UP ITEMS IN YOUR CURRENT STATE");
                 else if (e->addItemToInventory(i)) {
                     items.erase(std::remove(items.begin(), items.end(), i), items.end());
                     Game::ui->hideHint("- Pick up");
                     Game::player->interaction = Interaction::NONE;
                 }
                 else {
-                    Game::ui->usePopUp("INVENTORY FULL");
+                    UI::AddPopUp("INVENTORY FULL");
                 }
             }
         }
@@ -284,18 +284,18 @@ void Island::updateFreeState()
 
 void Island::updateInDollState()
 {
-    for (const auto &e : entities)
+    for (const auto& e : entities)
     {
         e->update();
     }
 }
 
-void Island::addEntity(Entity *e)
+void Island::addEntity(Entity* e)
 {
     entities.push_back(e);
 }
 
-void Island::removeEntity(Entity *e)
+void Island::removeEntity(Entity* e)
 {
     entities.erase(std::remove(entities.begin(), entities.end(), e), entities.end());
 }
@@ -317,13 +317,13 @@ std::vector<EntityStructure> Island::getEntities()
         switch (e->type)
         {
         case Entity::Type::NON_PLAYER_CHARACTER:
-            estructures.push_back(static_cast<NPC *>(e)->getStructure());
+            estructures.push_back(static_cast<NPC*>(e)->getStructure());
             break;
         case Entity::Type::DOLL:
-            estructures.push_back(static_cast<Doll *>(e)->getStructure());
+            estructures.push_back(static_cast<Doll*>(e)->getStructure());
             break;
         case Entity::Type::DEAD_BODY:
-            estructures.push_back(static_cast<DeadBody *>(e)->getStructure());
+            estructures.push_back(static_cast<DeadBody*>(e)->getStructure());
         case Entity::Type::PLAYER:
         case Entity::Type::UNKNOWN:
         default:

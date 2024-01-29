@@ -14,7 +14,7 @@ int sign(int n) {
     return 0;
 }
 
-Sprite *Player::DEFAULT_SPRITE = nullptr;
+Sprite* Player::DEFAULT_SPRITE = nullptr;
 
 Player::Player() {
     type = Type::PLAYER;
@@ -53,7 +53,7 @@ void Player::init() {
     interactingWith = nullptr;
 
     if (data.controlled_entity.type == Entity::Type::NON_PLAYER_CHARACTER) {
-        NPC *npc = new NPC(data.controlled_entity.name, data.controlled_entity.species);
+        NPC* npc = new NPC(data.controlled_entity.name, data.controlled_entity.species);
         npc->init();
         npc->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
         npc->haveDialog = data.controlled_entity.npc_hasdialog;
@@ -70,7 +70,7 @@ void Player::init() {
     }
 
     if (data.controlled_entity.type == Entity::Type::DOLL) {
-        Doll *doll = new Doll();
+        Doll* doll = new Doll();
         doll->init();
         doll->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
 
@@ -99,10 +99,10 @@ void Player::kill() {
     Entity::kill();
 }
 
-void Player::interactWith(Entity *e) {
+void Player::interactWith(Entity* e) {
     switch (e->type) {
     case Entity::Type::NON_PLAYER_CHARACTER:
-        if (NPC *npc = dynamic_cast<NPC *>(e))
+        if (NPC* npc = dynamic_cast<NPC*>(e))
             if (npc->haveDialog)
                 Game::ui->useHint(" - Talk", e);
         break;
@@ -115,14 +115,14 @@ void Player::interactWith(Entity *e) {
 
     switch (interaction) {
     case Interaction::USE:
-        if (NPC *npc = dynamic_cast<NPC *>(e))
+        if (NPC* npc = dynamic_cast<NPC*>(e))
             interactWithNPC(npc);
         break;
     case Interaction::TAKE_CONTROL:
         takeControlOf(e);
         break;
     case Interaction::RESURRECT:
-        if (DeadBody *body = dynamic_cast<DeadBody *>(e))
+        if (DeadBody* body = dynamic_cast<DeadBody*>(e))
             resurrectEntity(body);
         break;
     default:
@@ -132,7 +132,7 @@ void Player::interactWith(Entity *e) {
     interaction = Interaction::NONE;
 }
 
-void Player::interactWithNPC(NPC *npc) {
+void Player::interactWithNPC(NPC* npc) {
     Game::ui->useHint("NONE");
 
     if (this->position.x < npc->position.x)
@@ -144,12 +144,12 @@ void Player::interactWithNPC(NPC *npc) {
         npc->startDialog();
 }
 
-void Player::takeControlOf(Entity *e) {
+void Player::takeControlOf(Entity* e) {
     if (e->type == Entity::Type::DEAD_BODY) return;
-    
+
     // check if the player have enough mental power
     if (e->numenLevel > this->numenLevel) {
-        Game::ui->usePopUp("YOU LACK MENTAL POWER");
+        UI::AddPopUp("YOU LACK MENTAL POWER");
         return;
     }
 
@@ -185,9 +185,9 @@ void Player::releaseControledEntity() {
     walkSpeed = 4;
 }
 
-void Player::resurrectEntity(DeadBody *body) {
+void Player::resurrectEntity(DeadBody* body) {
     if (body->numenLevel > this->numenLevel) {
-        Game::ui->usePopUp("YOU LACK MENTAL POWER");
+        UI::AddPopUp("YOU LACK MENTAL POWER");
         return;
     }
 
@@ -221,9 +221,9 @@ bool Player::haveUnlockedPower(Power pid) {
 
 Inventory* Player::parseInventory() {
     if (controlledEntity == nullptr) {
-        Game::ui->usePopUp("YOU CANNOT OPEN YOUR INVENTORY");
+        UI::AddPopUp("YOU CANNOT OPEN YOUR INVENTORY");
         return nullptr;
-    } 
+    }
     else return &controlledEntity->inventory;
 }
 
@@ -279,10 +279,10 @@ PlayerStructure Player::getStructure() {
         switch (controlledEntity->type)
         {
         case Entity::Type::NON_PLAYER_CHARACTER:
-            structure.controlled_entity = static_cast<NPC *>(controlledEntity)->getStructure();
+            structure.controlled_entity = static_cast<NPC*>(controlledEntity)->getStructure();
             break;
         case Entity::Type::DOLL:
-            structure.controlled_entity = static_cast<Doll *>(controlledEntity)->getStructure();
+            structure.controlled_entity = static_cast<Doll*>(controlledEntity)->getStructure();
             break;
         case Entity::Type::PLAYER:
         case Entity::Type::UNKNOWN:
