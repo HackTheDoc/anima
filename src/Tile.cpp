@@ -98,7 +98,7 @@ Tile::Tile(Type t) {
         walkable = true;
         break;
     case Tile::Type::MOUNTAIN_TOP_RIGHT_INNER:
-        srcRect = { 112, 16, 16 };
+        srcRect = { 112, 16, 16, 16 };
         walkable = true;
         break;
     case Tile::Type::MOUNTAIN_BOTTOM_LEFT_INNER:

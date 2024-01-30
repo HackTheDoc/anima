@@ -165,6 +165,7 @@ void Window::openGame(int wid) {
         Save::Create(wid);
 
     Game::WorldID = wid;
+    srand(time(nullptr));
 
     manager->removeWindowState(WindowState::Type::MAIN);
     manager->addWindowState(WindowState::Type::GAME, new Game());

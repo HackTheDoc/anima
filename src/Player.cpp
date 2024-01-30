@@ -47,13 +47,13 @@ void Player::init() {
 
     position = data.pos;
 
-    walkSpeed = 4;
+    walkSpeed = 6;
 
     interaction = Interaction::NONE;
     interactingWith = nullptr;
 
     if (data.controlled_entity.type == Entity::Type::NON_PLAYER_CHARACTER) {
-        NPC* npc = new NPC(data.controlled_entity.name, data.controlled_entity.species);
+        NPC* npc = new NPC(data.controlled_entity.name, data.controlled_entity.species, data.controlled_entity.behavior);
         npc->init();
         npc->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
         npc->haveDialog = data.controlled_entity.npc_hasdialog;
@@ -165,6 +165,7 @@ void Player::takeControlOf(Entity* e) {
     this->controlled = true;
 
     this->walkSpeed = e->walkSpeed;
+    playAnimation("Idle");
 }
 
 void Player::releaseControledEntity() {
@@ -182,7 +183,7 @@ void Player::releaseControledEntity() {
     this->controlledEntity = nullptr;
     this->controlled = false;
 
-    walkSpeed = 4;
+    walkSpeed = 6;
 }
 
 void Player::resurrectEntity(DeadBody* body) {
@@ -197,7 +198,7 @@ void Player::resurrectEntity(DeadBody* body) {
 
     switch (body->ownerType) {
     case Entity::Type::NON_PLAYER_CHARACTER:
-        Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog);
+        Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog, body->behavior);
         break;
     default:
         break;
@@ -232,30 +233,6 @@ Entity* Player::parseControlledEntity() {
 }
 
 PlayerStructure Player::getStructure() {
-    /*
-    struct PlayerStructure {
-        std::string name;
-        int hp;
-
-        Player::State state;
-
-        std::string island;
-        Vector2D pos;
-
-        EntityStructure controlled_entity;
-    };
-
-    struct EntityStructure {
-        Entity::Type type;
-
-        std::string name;
-        int hp;
-
-        Vector2D pos;
-
-        bool npc_hasdialog;
-    };
-    */
     EntityStructure e;
     e.type = Entity::Type::UNKNOWN;
     e.name = "noone";
@@ -276,8 +253,7 @@ PlayerStructure Player::getStructure() {
         structure.state = State::FREE;
 
     if (controlledEntity != nullptr) {
-        switch (controlledEntity->type)
-        {
+        switch (controlledEntity->type) {
         case Entity::Type::NON_PLAYER_CHARACTER:
             structure.controlled_entity = static_cast<NPC*>(controlledEntity)->getStructure();
             break;

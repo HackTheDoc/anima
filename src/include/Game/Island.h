@@ -26,10 +26,10 @@ public:
     void addPortal(int x, int y, std::string dest, int destX, int destY, bool opened);
     void addItem(int x, int y, Item::ID id);
     void addItem(Vector2D pos, Item* i);
-    void addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool haveDialog);
-    void addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool haveDialog, Inventory inv);
+    void addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool haveDialog, NPC::Behavior behavior);
+    void addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool haveDialog, NPC::Behavior behavior, Inventory inv);
     void addDoll(int x, int y, Inventory inv);
-    void addDeadBody(Entity::Species species, Entity::Type type, std::string name, int x, int y, bool haveDialog);
+    void addDeadBody(Entity::Species species, Entity::Type type, std::string name, int x, int y, bool haveDialog, NPC::Behavior behavior);
     
     void removeEntity(Entity* e);
     void addEntity(Entity* e);

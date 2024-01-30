@@ -3,9 +3,10 @@
 #include <SDL2/SDL.h>
 
 class Collider;
+class Tile;
 
-class Collision {
-public:
-    static bool AABB(const SDL_Rect& rectA, const SDL_Rect& rectB);
-    static bool AABB(Collider* colA, Collider* colB);
+namespace Collision {
+    bool AABB(const SDL_Rect& rectA, const SDL_Rect& rectB);
+    bool AABB(const Collider* colA, const Collider* colB);
+    bool AABB(const Collider* col, const Tile* t);
 };

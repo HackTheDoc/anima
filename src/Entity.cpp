@@ -8,9 +8,10 @@ const int Entity::MAX_HP = 3;
 Entity::Entity() {
     name = "unknown";
     type = Type::UNKNOWN;
-    species = Entity::Species::HUMAN;
-    inventory.capacity = 0;
+    species = Species::HUMAN;
+    behavior = Behavior::STATIC;
     numenLevel = INT8_MAX;
+    inventory.capacity = 0;
 }
 
 Entity::~Entity() {}
@@ -25,12 +26,10 @@ void Entity::init() {
     hp = 1;
 
     position.Zero();
+    velocity.Zero();
 
     width = 128;
     height = 128;
-
-    hSpeed = 0;
-    vSpeed = 0;
 
     walkSpeed = 2;
 
@@ -45,8 +44,8 @@ void Entity::update() {
     if (detector)
         detector->update();
 
-    position.x += hSpeed*walkSpeed;
-    position.y += vSpeed*walkSpeed;
+    position.x += velocity.x*walkSpeed;
+    position.y += velocity.y*walkSpeed;
 }
 
 void Entity::draw() {
@@ -92,12 +91,12 @@ void Entity::setFlip(SDL_RendererFlip flipMod) {
 }
 
 void Entity::resetMovement() {
-    hSpeed = vSpeed = 0;
+    velocity.Zero();
 }
 
 void Entity::reverseMovement() {
-    position.x -= 2*hSpeed*walkSpeed;
-    position.y -= 2*vSpeed*walkSpeed;
+    position.x -= 2*velocity.x*walkSpeed;
+    position.y -= 2*velocity.y*walkSpeed;
 }
 
 void Entity::startInteraction() {

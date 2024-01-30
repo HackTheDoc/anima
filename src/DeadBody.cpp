@@ -11,7 +11,7 @@ DeadBody::~DeadBody() {}
 
 void DeadBody::init() {
     Entity::init();
-    
+
     sprite = new Sprite(this);
     sprite->init(species);
     sprite->useFrame(9, 3);
@@ -22,5 +22,13 @@ void DeadBody::init() {
 }
 
 EntityStructure DeadBody::getStructure() {
-    return {type, ownerType, species, name, 0, position, ownerHasDialog};
+    return {
+        .type = type,
+        .type2 = ownerType,
+        .species = species,
+        .name = name,
+        .pos = position,
+        .npc_hasdialog = ownerHasDialog,
+        .behavior = behavior
+    };
 }

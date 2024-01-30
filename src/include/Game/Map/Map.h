@@ -23,5 +23,6 @@ public:
     int getWidth();
 
     Tile* getTile(int x, int y);
+    Tile* getTileAt(Vector2D p);
     void setTile(int x, int y, Tile::Type type);
 };

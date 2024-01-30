@@ -20,24 +20,29 @@ public:
 
         UNKNOWN // literrally unknown
     };
-    Entity::Type type;
+    Type type;
 
     enum Species {
         HUMAN,
         GOBLIN
     };
-    Entity::Species species;
+    Species species;
 
-    Sprite *sprite;
+    enum Behavior {
+        STATIC,
+        RANDOM_MOVEMENT
+    };
+    Behavior behavior;
 
-    EntityCollider *collider;
-    EntityDetector *detector;
+    Sprite* sprite;
+
+    EntityCollider* collider;
+    EntityDetector* detector;
 
     int hp;
     int height, width;
 
-    Vector2D position;
-    int hSpeed, vSpeed;
+    Vector2D position, velocity;
     int walkSpeed;
 
     Inventory inventory;
@@ -77,19 +82,19 @@ public:
     static int GetMentalPower(Entity::Species species);
 };
 
-struct EntityStructure
-{
-    Entity::Type type;
-    Entity::Type type2;
+struct EntityStructure {
+    Entity::Type type{Entity::Type::UNKNOWN};
+    Entity::Type type2{Entity::Type::UNKNOWN};
 
-    Entity::Species species;
+    Entity::Species species{Entity::Species::HUMAN};
 
-    std::string name;
-    int hp;
+    std::string name{"unknown"};
+    int hp{0};
 
-    Vector2D pos;
+    Vector2D pos{0,0};
 
-    Inventory inv;
+    Inventory inv{0,{}};
 
-    bool npc_hasdialog;
+    bool npc_hasdialog{ false };
+    Entity::Behavior behavior{ Entity::Behavior::STATIC };
 };

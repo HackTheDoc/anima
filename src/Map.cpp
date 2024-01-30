@@ -64,6 +64,10 @@ Tile* Map::getTile(int x, int y) {
     return tiles[y][x];
 }
 
+Tile* Map::getTileAt(Vector2D p) {
+    return getTile(round(p.x / Tile::SIZE), round(p.y / Tile::SIZE));
+}
+
 void Map::setTile(int x, int y, Tile::Type type) {
     Tile* t = new Tile(type);
     

@@ -5,6 +5,6 @@
 #include "../Items/Items.h"
 
 struct Inventory {
-    unsigned int capacity;
-    std::vector<Item*> item;
+    unsigned int capacity{0};
+    std::vector<Item*> item{};
 };

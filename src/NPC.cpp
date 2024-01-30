@@ -1,18 +1,21 @@
 #include "include/Game/Entities/NPC.h"
 
 #include "include/Game/Game.h"
+#include "include/Game/Components/Collision.h"
 
-NPC::NPC(std::string name, Entity::Species species) {
+NPC::NPC(std::string name, Species s, Behavior b) {
     type = Type::NON_PLAYER_CHARACTER;
-    this->species = species;
+    species = s;
+    behavior = b;
     inventory.capacity = 4;
     this->name = name;
     dialog = nullptr;
 }
 
-NPC::NPC(std::string name, Entity::Species species, Inventory inv) {
+NPC::NPC(std::string name, Species s, Behavior b, Inventory inv) {
     type = Type::NON_PLAYER_CHARACTER;
-    this->species = species;
+    species = s;
+    behavior = b;
     inventory = inv;
     this->name = name;
     dialog = nullptr;
@@ -30,7 +33,7 @@ void NPC::init() {
 
     detector = new EntityDetector(this);
 
-    hp = 100;
+    hp = MAX_HP;
 
     position.Zero();
 
@@ -40,6 +43,9 @@ void NPC::init() {
 }
 
 void NPC::update() {
+    if (behavior == Behavior::RANDOM_MOVEMENT)
+        randomMovement();
+        
     Entity::update();
 }
 
@@ -77,7 +83,7 @@ void NPC::startDialog() {
     setDialog(name);
 
     resetMovement();
-    
+
     Game::player->interactingWith = this;
     Entity::startInteraction();
 }
@@ -89,5 +95,38 @@ void NPC::closeDialog() {
 }
 
 EntityStructure NPC::getStructure() {
-   return {type, Entity::Type::UNKNOWN, species, name, hp, position, inventory, haveDialog};
+    return {
+        .type = type,
+        .species = species,
+        .name = name,
+        .hp = hp,
+        .pos = position,
+        .inv = inventory,
+        .npc_hasdialog = haveDialog,
+        .behavior = behavior
+    };
+}
+
+void NPC::randomMovement() {
+    Tile* t = Game::island->map->getTileAt(position);
+
+    if (!t->walkable && Collision::AABB(collider->rect, t->collider)) {
+        reverseMovement();
+        resetMovement();
+        return;
+    }
+
+    if (velocity != Vector2D::ZERO && rand() % 20 != 0) return;
+
+    const Vector2D dir[4]= {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+
+    int i = rand() % 4;
+    velocity = dir[i];
+
+    if (velocity == Vector2D::ZERO) return;
+
+    playAnimation("Walk");
+
+    if (velocity.x > 0) setFlip(SDL_FLIP_NONE);
+    else setFlip(SDL_FLIP_HORIZONTAL);
 }

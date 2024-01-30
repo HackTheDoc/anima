@@ -339,6 +339,7 @@ void Event::handleMainMenuEvents() {
         Game::player->unlockPower(Power::SHIELD);
         Game::player->modifyNumenLevelBy(+10);
         window->quitGame();
+        std::cout << "initialized world 4 for dev usage" << std::endl;
         window->openGame(4);
         break;
     case SDLK_p:
@@ -471,20 +472,20 @@ void Event::handleFreeState() {
         switch (KeyMap::Key[k]) {
         case Event::ID::MOVE_UP:
             Game::player->playAnimation("Walk");
-            Game::player->vSpeed = -1;
+            Game::player->velocity.y = -1;
             break;
         case Event::ID::MOVE_DOWN:
             Game::player->playAnimation("Walk");
-            Game::player->vSpeed = 1;
+            Game::player->velocity.y = 1;
             break;
         case Event::ID::MOVE_LEFT:
             Game::player->playAnimation("Walk");
-            Game::player->hSpeed = -1;
+            Game::player->velocity.x = -1;
             Game::player->setFlip(SDL_FLIP_HORIZONTAL);
             break;
         case Event::ID::MOVE_RIGHT:
             Game::player->playAnimation("Walk");
-            Game::player->hSpeed = 1;
+            Game::player->velocity.x = 1;
             Game::player->setFlip(SDL_FLIP_NONE);
             break;
         case Event::ID::INTERACT:
@@ -520,12 +521,12 @@ void Event::handleFreeState() {
         case Event::ID::MOVE_UP:
         case Event::ID::MOVE_DOWN:
             Game::player->playAnimation("Idle");
-            Game::player->vSpeed = 0;
+            Game::player->velocity.y = 0;
             break;
         case Event::ID::MOVE_LEFT:
         case Event::ID::MOVE_RIGHT:
             Game::player->playAnimation("Idle");
-            Game::player->hSpeed = 0;
+            Game::player->velocity.x = 0;
             break;
         case Event::ID::INTERACT:
         case Event::ID::BODY_CONTROL:

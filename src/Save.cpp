@@ -7,15 +7,13 @@
 bool Save::Auto = false;
 std::string Save::pathToSaveFolder = "./data/worlds/";
 
-bool Save::Exist(int sid)
-{
+bool Save::Exist(int sid) {
     fs::path path(pathToSaveFolder + std::to_string(sid));
 
     return fs::exists(path);
 }
 
-bool Save::Create(int sid)
-{
+bool Save::Create(int sid) {
     if (Save::Exist(sid))
         return false;
 
@@ -43,8 +41,7 @@ bool Save::Create(int sid)
     return true;
 }
 
-bool Save::Erase(int sid)
-{
+bool Save::Erase(int sid) {
     if (!Save::Exist(sid))
         return false;
 
@@ -68,8 +65,7 @@ bool Save::Erase(int sid)
     return true;
 }
 
-bool Save::Update(int sid)
-{
+bool Save::Update(int sid) {
     if (!Save::Exist(sid))
         return false;
 
@@ -89,8 +85,7 @@ bool Save::Update(int sid)
     return true;
 }
 
-PlayerStructure Save::LoadPlayer(int sid)
-{
+PlayerStructure Save::LoadPlayer(int sid) {
     PlayerStructure p;
 
     std::ifstream infile(pathToSaveFolder + std::to_string(sid) + "/player.json");
@@ -125,6 +120,8 @@ PlayerStructure Save::LoadPlayer(int sid)
         break;
     case Entity::Type::NON_PLAYER_CHARACTER:
     default:
+        p.controlled_entity.species = entity["species"];
+        p.controlled_entity.behavior = entity["behavior"];
         p.controlled_entity.hp = entity["hp"];
         p.controlled_entity.npc_hasdialog = entity["dialog"];
         p.controlled_entity.pos.x = entity["x"];
@@ -136,8 +133,7 @@ PlayerStructure Save::LoadPlayer(int sid)
     return p;
 }
 
-json Save::LoadIsland(int sid, std::string name)
-{
+json Save::LoadIsland(int sid, std::string name) {
     std::ifstream infile(pathToSaveFolder + std::to_string(sid) + "/" + name + ".json");
     json island;
     infile >> island;
@@ -145,8 +141,7 @@ json Save::LoadIsland(int sid, std::string name)
     return island;
 }
 
-Inventory Save::LoadInventory(json inventory)
-{
+Inventory Save::LoadInventory(json inventory) {
     Inventory inv;
 
     inv.capacity = inventory["capacity"];
@@ -159,8 +154,7 @@ Inventory Save::LoadInventory(json inventory)
     return inv;
 }
 
-void Save::CreatePlayer(fs::path path)
-{
+void Save::CreatePlayer(fs::path path) {
     json player = {
         {"name", "unknown"},
         {"hp", Entity::MAX_HP},
@@ -183,15 +177,34 @@ void Save::CreatePlayer(fs::path path)
     outfile.close();
 }
 
-void Save::CreateIsland_0(fs::path path)
-{
+void Save::CreateIsland_0(fs::path path) {
     json island = {
         {"name", "island-0"},
         {"width", 15},
         {"height", 11},
         {"tiles", {{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}, {9, 9, 9, 9, 4, 3, 3, 3, 3, 3, 3, 5, 9, 9, 9}, {9, 9, 4, 3, 13, 0, 0, 0, 0, 0, 0, 12, 3, 5, 9}, {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 4, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 10, 6, 6, 6, 6, 6, 8, 9}, {9, 7, 6, 6, 6, 6, 6, 8, 9, 9, 9, 9, 9, 9, 9}, {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}}},
         {"portals", {{{"x", 1280}, {"y", 512}, {"destination", "island-1"}, {"destinationX", 768}, {"destinationY", 896}, {"opened", false}}}},
-        {"entities", {{{"type", Entity::Type::DOLL}, {"x", 768}, {"y", 384}, {"inventory", {{"capacity", 1}, {"items", {Item::ID::LAPIS_VITAE}}}}}, {{"type", Entity::Type::DEAD_BODY}, {"owner type", Entity::Type::NON_PLAYER_CHARACTER}, {"species", Entity::Species::GOBLIN}, {"name", "UNKNOWN"}, {"x", 1024}, {"y", 384}, {"dialog", false}}}},
+        {"entities", {
+            {
+                {"type", Entity::Type::DOLL}, 
+                {"x", 768}, 
+                {"y", 384}, 
+                {"inventory", {
+                    {"capacity", 1}, 
+                    {"items", {Item::ID::LAPIS_VITAE}}
+                }}
+            }, 
+            {
+                {"type", Entity::Type::DEAD_BODY},
+                {"owner type", Entity::Type::NON_PLAYER_CHARACTER},
+                {"species", Entity::Species::GOBLIN},
+                {"behavior", NPC::Behavior::STATIC},
+                {"name", "UNKNOWN"},
+                {"x", 1024},
+                {"y", 384},
+                {"dialog", false}
+            }
+        }},
         {"items", {{{"x", 1024}, {"y", 512}, {"id", Item::ID::LAPIS_VITAE}}}}};
 
     std::ofstream outfile(path);
@@ -199,8 +212,7 @@ void Save::CreateIsland_0(fs::path path)
     outfile.close();
 }
 
-void Save::CreateIsland_1(fs::path path)
-{
+void Save::CreateIsland_1(fs::path path) {
     json island = {
         {"name", "island-1"},
         {"width", 30},
@@ -210,7 +222,8 @@ void Save::CreateIsland_1(fs::path path)
         {"entities", {
             {
                 {"type", Entity::Type::NON_PLAYER_CHARACTER}, 
-                {"species", Entity::Species::HUMAN}, 
+                {"species", Entity::Species::HUMAN},
+                {"behavior", NPC::Behavior::STATIC}, 
                 {"name", "Guide"}, 
                 {"hp", Entity::MAX_HP}, 
                 {"x", 1024}, 
@@ -218,6 +231,20 @@ void Save::CreateIsland_1(fs::path path)
                 {"dialog", true}, 
                 {"inventory", {
                     {"capacity", 0}, 
+                    {"items", json::array()}
+                }}
+            },
+            {
+                {"type", Entity::Type::NON_PLAYER_CHARACTER},
+                {"species", Entity::Species::GOBLIN},
+                {"behavior", NPC::Behavior::RANDOM_MOVEMENT},
+                {"name", "Traveler"},
+                {"hp", Entity::MAX_HP},
+                {"x", 1280},
+                {"y", 768},
+                {"dialog", false},
+                {"inventory", {
+                    {"capacity", 1}, 
                     {"items", json::array()}
                 }}
             }
@@ -230,8 +257,7 @@ void Save::CreateIsland_1(fs::path path)
     outfile.close();
 }
 
-void Save::SavePlayer(fs::path path)
-{
+void Save::SavePlayer(fs::path path) {
     std::ifstream infile(path);
     json data;
     infile >> data;
@@ -268,8 +294,7 @@ void Save::SavePlayer(fs::path path)
     outfile.close();
 }
 
-void Save::SaveIsland(Island *island, fs::path path)
-{
+void Save::SaveIsland(Island *island, fs::path path) {
     std::ifstream infile(path);
     json data;
     infile >> data;
@@ -324,8 +349,7 @@ void Save::SaveIsland(Island *island, fs::path path)
     outfile.close();
 }
 
-json Save::OrganizeInventory(Inventory inventory)
-{
+json Save::OrganizeInventory(Inventory inventory) {
     std::vector<Item::ID> items;
 
     for (Item *i : inventory.item)
@@ -348,11 +372,11 @@ json Save::OrganizeItem(std::pair<Vector2D, int> i) {
     return item;
 }
 
-json Save::OrganizeNPC(EntityStructure npcs)
-{
+json Save::OrganizeNPC(EntityStructure npcs) {
     json npc = {
         {"type", npcs.type},
         {"species", npcs.species},
+        {"behavior", npcs.behavior},
         {"name", npcs.name},
         {"hp", npcs.hp},
         {"x", npcs.pos.x},
@@ -362,8 +386,7 @@ json Save::OrganizeNPC(EntityStructure npcs)
     return npc;
 }
 
-json Save::OrganizeDoll(EntityStructure dolls)
-{
+json Save::OrganizeDoll(EntityStructure dolls) {
     json doll = {
         {"type", dolls.type},
         {"x", dolls.pos.x},
@@ -372,15 +395,16 @@ json Save::OrganizeDoll(EntityStructure dolls)
     return doll;
 }
 
-json Save::OrganizeDeadBody(EntityStructure s)
-{
+json Save::OrganizeDeadBody(EntityStructure s) {
     json body = {
         {"type", s.type},
         {"owner type", s.type2},
         {"species", s.species},
+        {"behavior", s.behavior},
         {"name", s.name},
         {"x", s.pos.x},
         {"y", s.pos.y},
-        {"dialog", s.npc_hasdialog}};
+        {"dialog", s.npc_hasdialog}
+    };
     return body;
 }
