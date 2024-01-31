@@ -149,7 +149,7 @@ void Player::takeControlOf(Entity* e) {
 
     // check if the player have enough mental power
     if (e->numenLevel > this->numenLevel) {
-        UI::AddPopUp("YOU LACK MENTAL POWER");
+        UI::AddPopUp("YOU LACK NUMEN TOKENS");
         return;
     }
 
@@ -225,6 +225,10 @@ Inventory* Player::parseInventory() {
         UI::AddPopUp("YOU CANNOT OPEN YOUR INVENTORY");
         return nullptr;
     }
+    else if (controlledEntity->inventory.capacity == 0) {
+        UI::AddPopUp("THIS ENTITY DOES NOT HAVE AN INVENTORY");
+        return nullptr;
+    }
     else return &controlledEntity->inventory;
 }
 
@@ -263,7 +267,6 @@ PlayerStructure Player::getStructure() {
         case Entity::Type::PLAYER:
         case Entity::Type::UNKNOWN:
         default:
-            structure.controlled_entity = controlledEntity->getStructure();
             break;
         }
     }

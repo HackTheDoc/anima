@@ -22,6 +22,7 @@
   - [x] static npc
   - [x] moving npc
   - [x] doll
+  - [ ] fairy
   - [ ] knight
 - [ ] maps
   - [ ] starting island
@@ -30,5 +31,5 @@
 
 # To Fix
 
-- [ ] empty inventory existing as a 1-sized inventory
-- [ ] control power working in world 4 dev mod but not in any other one ...
+- [x] empty inventory existing as a 1-sized inventory
+- [x] control power working in world 4 dev mod but not in any other one ****

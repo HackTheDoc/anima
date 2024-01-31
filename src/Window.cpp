@@ -161,6 +161,7 @@ void Window::openControlsOptions() {
 }
 
 void Window::openGame(int wid) {
+
     if (!Save::Exist(wid))
         Save::Create(wid);
 
