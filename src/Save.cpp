@@ -118,6 +118,11 @@ PlayerStructure Save::LoadPlayer(int sid) {
     {
     case Entity::Type::PLAYER:
         break;
+    case Entity::DOLL:
+        p.controlled_entity.pos.x = entity["x"];
+        p.controlled_entity.pos.y = entity["y"];
+        p.controlled_entity.inv = LoadInventory(entity["inventory"]);
+        break;
     case Entity::Type::NON_PLAYER_CHARACTER:
     default:
         p.controlled_entity.species = entity["species"];

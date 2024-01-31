@@ -1,6 +1,7 @@
 #include "include/UI/UIButtons.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 UIButton::UIButton() {
     id = UIButton::ID::UNKNOWN;

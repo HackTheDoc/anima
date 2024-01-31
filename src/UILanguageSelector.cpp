@@ -1,6 +1,7 @@
 #include "include/UI/UILanguageSelector.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 UILanguageSelector::UILanguageSelector() {
     lbl = new UILabel(Text::Get("Language:"), "default bold", hue::white);

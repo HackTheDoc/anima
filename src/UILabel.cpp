@@ -1,6 +1,7 @@
 #include "include/UI/UILabel.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 UILabel::UILabel(std::string text, std::string font, const SDL_Color& color) {
     rect.x = rect.y = 0;
@@ -39,8 +40,8 @@ void UILabel::setText(std::string text, std::string font, const SDL_Color& color
     texture = Manager::GenerateText(
         text.c_str(),
         Window::manager->getFont(font),
-        mlength,
-        color
+        color,
+        mlength
     );
 
     SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);

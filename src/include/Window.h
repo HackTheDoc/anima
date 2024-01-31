@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "Manager.h"
+class Manager;
 #include "Event.h"
 #include "Text.h"
 

@@ -6,7 +6,7 @@
 #include "include/Manager.h"
 
 UIHint::UIHint(std::string t, std::string f) {
-    text = Manager::GenerateText(t.c_str(), Window::manager->getFont(f), 512, hue::black);
+    text = Manager::GenerateText(t.c_str(), Window::manager->getFont(f), hue::black, 512);
     SDL_QueryTexture(text, NULL, NULL, &destRect.w, &destRect.h);
     destRect.x = destRect.y = 0;
 }

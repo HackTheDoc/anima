@@ -1,6 +1,7 @@
 #include "include/UI/UIPopUp.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 const int UIPopUp::DELAY = 90;
 

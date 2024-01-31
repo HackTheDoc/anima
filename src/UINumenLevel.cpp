@@ -1,6 +1,7 @@
 #include "include/UI/UINumenLevel.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 #include "include/Game/Game.h"
 
 UINumenLevel::UINumenLevel(int x, int y, int w, int h, std::string font) {

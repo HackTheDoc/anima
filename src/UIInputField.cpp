@@ -1,6 +1,7 @@
 #include "include/UI/UIInputField.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 UIInputField::UIInputField(std::string title_text, std::string placeholder_text, UIButton::ID id, int max) {
     input = "";

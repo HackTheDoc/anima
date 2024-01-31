@@ -1,12 +1,12 @@
 #include "include/UI/UIKeyInput.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 #include "include/KeyMap.h"
 
 int UIKeyInput::Height = 0;
 
-UIKeyInput::UIKeyInput(Event::ID eid)
-{
+UIKeyInput::UIKeyInput(Event::ID eid) {
     this->eid = eid;
 
     rect = {0, 0, Window::screen.w / 4 + 64 * (Window::fullscreen + 1), UIKeyInput::Height};
@@ -17,8 +17,7 @@ UIKeyInput::UIKeyInput(Event::ID eid)
 
 UIKeyInput::~UIKeyInput() {}
 
-void UIKeyInput::draw()
-{
+void UIKeyInput::draw() {
     Manager::Draw(title, nullptr, &titleRect);
     Manager::Draw(key, nullptr, &keyRect);
 
@@ -31,8 +30,7 @@ void UIKeyInput::draw()
     Manager::DrawRect(&rect, hue::white);
 }
 
-void UIKeyInput::update()
-{
+void UIKeyInput::update() {
     SDL_Point m;
     SDL_GetMouseState(&m.x, &m.y);
 
@@ -72,8 +70,7 @@ void UIKeyInput::update()
     }
 }
 
-void UIKeyInput::destroy()
-{
+void UIKeyInput::destroy() {
     SDL_DestroyTexture(title);
     title = nullptr;
 
@@ -81,8 +78,7 @@ void UIKeyInput::destroy()
     key = nullptr;
 }
 
-void UIKeyInput::reload()
-{
+void UIKeyInput::reload() {
     rect = {0, 0, Window::screen.w / 4 + 64 * (Window::fullscreen + 1), UIKeyInput::Height};
 
     destroy();
@@ -90,8 +86,7 @@ void UIKeyInput::reload()
     setKey();
 }
 
-void UIKeyInput::place(int x, int y)
-{
+void UIKeyInput::place(int x, int y) {
     rect.x = x;
     rect.y = y;
 
@@ -102,8 +97,7 @@ void UIKeyInput::place(int x, int y)
     keyRect.y = y + (rect.h - keyRect.h) / 2 + 8 * (Window::fullscreen + 1);
 }
 
-void UIKeyInput::setTitle()
-{
+void UIKeyInput::setTitle() {
     std::string t;
 
     switch (eid)
@@ -156,13 +150,13 @@ void UIKeyInput::setTitle()
     title = Manager::GenerateText(
         t.c_str(),
         Window::manager->getFont("default"),
-        2 * rect.w / 3,
-        hue::white);
+        hue::white,
+        2 * rect.w / 3
+    );
     SDL_QueryTexture(title, NULL, NULL, &titleRect.w, &titleRect.h);
 }
 
-void UIKeyInput::setKey()
-{
+void UIKeyInput::setKey() {
     std::string t = to_string(eid);
     if (t == "")
         t = "...";
@@ -170,8 +164,9 @@ void UIKeyInput::setKey()
     key = Manager::GenerateText(
         t.c_str(),
         Window::manager->getFont("default"),
-        rect.w / 3,
-        hue::white);
+        hue::white,
+        rect.w / 3
+    );
     SDL_QueryTexture(key, NULL, NULL, &keyRect.w, &keyRect.h);
     place(rect.x, rect.y);
 

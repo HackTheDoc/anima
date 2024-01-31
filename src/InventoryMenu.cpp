@@ -1,6 +1,7 @@
 #include "include/WindowState/InventoryMenu.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 #include "include/Game/Game.h"
 
 InventoryMenu::InventoryMenu(Inventory *inv)
@@ -14,7 +15,7 @@ InventoryMenu::~InventoryMenu() {}
 void InventoryMenu::init()
 {
     title = new UILabel(Text::Get("Inventory"), "h3", hue::white);
-    usage = new UILabel(Text::Get("Do LEFT click to use or RIGHT click to drop an item."), "small", hue::white);
+    usage = new UILabel(Text::Get("LEFT click to use\nRIGHT click to drop"), "small", hue::white);
     itemDescription = new UITextBox("item", "default", hue::white);
 
     container.w = 3 * Window::screen.w / 5;

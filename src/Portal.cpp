@@ -1,6 +1,7 @@
 #include "include/Game/Map/Structures/Portal.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 #include "include/Save.h"
 
 #include "include/Game/Game.h"

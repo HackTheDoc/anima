@@ -1,6 +1,7 @@
 #include "include/WindowState/PauseMenu.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 PauseMenu::PauseMenu() {}
 

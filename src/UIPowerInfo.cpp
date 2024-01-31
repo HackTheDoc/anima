@@ -1,6 +1,7 @@
 #include "include/UI/UIPowerInfo.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 #include "include/Game/Game.h"
 
 UIPowerInfo::UIPowerInfo(Power pid, int w, int h, std::string font) {

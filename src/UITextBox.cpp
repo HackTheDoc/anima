@@ -1,6 +1,7 @@
 #include "include/UI/UITextBox.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 UITextBox::UITextBox(std::string t, std::string font, const SDL_Color& color) {
     text = new UILabel(t, font, color);

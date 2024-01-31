@@ -1,6 +1,7 @@
 #include "include/UI/UISaveModeSelector.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 #include "include/Save.h"
 
 UISaveModeSelector::UISaveModeSelector() {

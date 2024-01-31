@@ -1,6 +1,7 @@
 #include "include/Game/Items/Items.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 #include "include/Game/Map/Tile.h"
 
 #include <iostream>

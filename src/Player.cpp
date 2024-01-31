@@ -53,7 +53,7 @@ void Player::init() {
     interactingWith = nullptr;
 
     if (data.controlled_entity.type == Entity::Type::NON_PLAYER_CHARACTER) {
-        NPC* npc = new NPC(data.controlled_entity.name, data.controlled_entity.species, data.controlled_entity.behavior);
+        NPC* npc = new NPC(data.controlled_entity.name, data.controlled_entity.species, data.controlled_entity.behavior, data.controlled_entity.inv);
         npc->init();
         npc->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
         npc->haveDialog = data.controlled_entity.npc_hasdialog;
@@ -70,7 +70,7 @@ void Player::init() {
     }
 
     if (data.controlled_entity.type == Entity::Type::DOLL) {
-        Doll* doll = new Doll();
+        Doll* doll = new Doll(data.controlled_entity.inv);
         doll->init();
         doll->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
 

@@ -51,7 +51,7 @@ void UIDialogBox::setText(std::string text) {
         return;
     }
     haveContent = true;
-    content = Manager::GenerateText(text.c_str(), Window::manager->getFont("default"), rect.w - 2*26, hue::white);
+    content = Manager::GenerateText(text.c_str(), Window::manager->getFont("default"), hue::white, rect.w - 2*26);
     SDL_QueryTexture(content, NULL, NULL, &contentRect.w, &contentRect.h);
 }
 

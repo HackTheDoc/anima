@@ -1,5 +1,6 @@
 #include "include/Window.h"
 
+#include "include/Manager.h"
 #include "include/Save.h"
 #include "include/KeyMap.h"
 

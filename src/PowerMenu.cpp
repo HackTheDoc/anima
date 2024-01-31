@@ -1,6 +1,7 @@
 #include "include/WindowState/PowerMenu.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 PowerMenu::PowerMenu() {}
 

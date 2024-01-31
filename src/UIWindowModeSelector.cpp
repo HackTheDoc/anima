@@ -1,6 +1,7 @@
 #include "include/UI/UIWindowModeSelector.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 UIWindowModeSelector::UIWindowModeSelector() {
     lbl = new UILabel(Text::Get("Window Mode:"), "default bold", hue::white);

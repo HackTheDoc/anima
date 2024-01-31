@@ -128,18 +128,7 @@ SDL_Texture* Manager::LoadTexture(const char* filepath) {
     return texture;
 }
 
-SDL_Texture* Manager::GenerateText(const char* text, TTF_Font* font, const SDL_Color& color) {
-    if (font == nullptr)
-        return nullptr;
-
-    SDL_Surface* tmpSurface = TTF_RenderUTF8_Blended(font, text, color);
-
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
-    SDL_FreeSurface(tmpSurface);
-    return texture;
-}
-
-SDL_Texture* Manager::GenerateText(const char* text, TTF_Font* font, int length, const SDL_Color& color) {
+SDL_Texture* Manager::GenerateText(const char* text, TTF_Font* font, const SDL_Color& color, const int length) {
     if (font == nullptr)
         return nullptr;
 

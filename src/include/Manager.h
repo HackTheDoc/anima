@@ -10,6 +10,8 @@
 
 #include "hue.h"
 
+#include "Window.h"
+
 class Manager {
 public:
     Manager();
@@ -56,19 +58,7 @@ public:
     static SDL_Texture* LoadTexture(const char* filepath);
     
     /// @brief Generate a text texture
-    /// @param text text to generate
-    /// @param font font to use
-    /// @param color color to use
-    /// @return the generated texture or a null pointer
-    static SDL_Texture* GenerateText(const char* text, TTF_Font* font, const SDL_Color& color);
-
-    /// @brief Generate a text texture
-    /// @param text text to generate
-    /// @param font font to use
-    /// @param length max length of the generated texture in pixels
-    /// @param color color to use
-    /// @return the generated texture or a null pointer
-    static SDL_Texture* GenerateText(const char* text, TTF_Font* font, int length, const SDL_Color& color);
+    static SDL_Texture* GenerateText(const char* text, TTF_Font* font, const SDL_Color& color, const int length = Window::screen.w);
 
     /// @brief Draw a texture on the window
     /// @param texture texture to draw

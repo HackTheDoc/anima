@@ -3,6 +3,7 @@
 #include "include/Game/Game.h"
 
 #include "include/Window.h"
+#include "include/Manager.h"
 
 #include "include/WindowState/PlayMenu.h"
 

@@ -2,6 +2,7 @@
 
 #include "include/Window.h"
 #include "include/Manager.h"
+#include "include/Manager.h"
 
 UIHyperlink::UIHyperlink(std::string text, std::string url, std::string font, const SDL_Color& color) {
     this->url = url;
