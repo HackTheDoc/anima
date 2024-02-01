@@ -16,7 +16,7 @@ Entity::Entity() {
     hp = MAX_HP;
     numenLevel = INT8_MAX;
     controlled = false;
-    
+
     inventory.capacity = 0;
 }
 
@@ -61,17 +61,19 @@ void Entity::update() {
     if (detector)
         detector->update();
 
-    position.x += velocity.x*walkSpeed;
-    position.y += velocity.y*walkSpeed;
+    position.x += velocity.x * walkSpeed;
+    position.y += velocity.y * walkSpeed;
 }
 
 void Entity::draw() {
     if (sprite)
         sprite->draw();
+#ifdef DEV_MOD
     if (collider)
         collider->draw();
     if (detector)
         detector->draw();
+#endif
 }
 
 void Entity::kill() {
@@ -112,8 +114,8 @@ void Entity::resetMovement() {
 }
 
 void Entity::reverseMovement() {
-    position.x -= 2*velocity.x*walkSpeed;
-    position.y -= 2*velocity.y*walkSpeed;
+    position.x -= 2 * velocity.x * walkSpeed;
+    position.y -= 2 * velocity.y * walkSpeed;
 }
 
 void Entity::startInteraction() {
@@ -131,7 +133,7 @@ void Entity::addItemToInventory(Item::ID id) {
     if (inventory.item.size() >= inventory.capacity)
         return;
 
-    Item *i = Item::Create(id);
+    Item* i = Item::Create(id);
 
     if (i == nullptr)
         return;
@@ -152,7 +154,7 @@ bool Entity::addItemToInventory(Item* item) {
 }
 
 EntityStructure Entity::getStructure() {
-    return {type, Entity::Type::UNKNOWN, species, name, hp, position, inventory, false};
+    return { type, Entity::Type::UNKNOWN, species, name, hp, position, inventory, false };
 }
 
 /// @TODO: deceide the value for each species...
@@ -179,7 +181,7 @@ void Entity::randomMovement() {
 
     if (velocity != Vector2D::ZERO && rand() % 20 != 0) return;
 
-    const Vector2D dir[4]= {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+    const Vector2D dir[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
     int i = rand() % 4;
     velocity = dir[i];

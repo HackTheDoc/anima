@@ -109,6 +109,10 @@ Tile::Tile(Type t) {
         srcRect = { 112, 32, 16, 16 };
         walkable = true;
         break;
+    case Tile::Type::WALL:
+        srcRect = { 272, 32, 16, 16 };
+        walkable = false;
+        break;
     case Tile::Type::GRASS:
     default:
         srcRect = { 32, 96, 16, 16 };
@@ -135,9 +139,10 @@ void Tile::update() {
 void Tile::draw() {
     Manager::Draw(texture, &srcRect, &collider);
 
-    /// TODO: remove
+#ifdef DEV_MOD
     if (!walkable)
         Manager::DrawRect(&collider, hue::red);
+#endif
 }
 
 void Tile::destroy() {

@@ -11,6 +11,8 @@ public:
     static constexpr int SIZE = 128;
 
     enum Type {
+        NONE,
+        
         // Grass Tiles
         GRASS,
         GRASS_LEFT,
@@ -42,7 +44,10 @@ public:
         MOUNTAIN_TOP_LEFT_INNER,
         MOUNTAIN_TOP_RIGHT_INNER,
         MOUNTAIN_BOTTOM_LEFT_INNER,
-        MOUNTAIN_BOTTOM_RIGHT_INNER
+        MOUNTAIN_BOTTOM_RIGHT_INNER,
+
+        // other
+        WALL
     };
 
     Vector2D position;

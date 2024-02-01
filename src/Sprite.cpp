@@ -109,8 +109,8 @@ void Sprite::update() {
         srcRect.y = animationIndex * srcRect.h;
     }
 
-    destRect.x = owner->position.x - (destRect.w - owner->width / 4) / 2 - Game::camera.x;
-    destRect.y = owner->position.y - (destRect.h - owner->height / 2) * 0.75 - Game::camera.y;
+    destRect.x = owner->position.x - (destRect.w - destRect.w / 4) / 2 - Game::camera.x;
+    destRect.y = owner->position.y - (destRect.h - destRect.h / 2) * 0.75 - Game::camera.y;
 }
 
 void Sprite::draw() {

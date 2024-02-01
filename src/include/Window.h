@@ -1,3 +1,4 @@
+#define DEV_MOD
 #pragma once
 
 #include <string>

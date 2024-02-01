@@ -15,6 +15,8 @@ int sign(int n) {
 }
 
 Sprite* Player::DEFAULT_SPRITE = nullptr;
+EntityCollider* Player::DEFAULT_COLLIDER = nullptr;
+EntityDetector* Player::DEFAULT_DETECTOR = nullptr;
 
 Player::Player() {
     type = Type::PLAYER;
@@ -32,9 +34,11 @@ void Player::init() {
     DEFAULT_SPRITE->init("player", 6);
     sprite = DEFAULT_SPRITE;
 
-    collider = new EntityCollider(this);
+    DEFAULT_COLLIDER = new EntityCollider(this);
+    collider = DEFAULT_COLLIDER;
 
-    detector = new EntityDetector(this);
+    DEFAULT_DETECTOR = new EntityDetector(this);
+    detector = DEFAULT_DETECTOR;
 
     name = data.name;
     hp = data.hp;
@@ -156,6 +160,12 @@ void Player::takeControlOf(Entity* e) {
     this->sprite = e->sprite;
     this->sprite->linkTo(this);
 
+    this->collider = e->collider;
+    this->collider->setOwner(this);
+
+    this->detector = e->detector;
+    this->detector->setOwner(this);
+
     this->position = e->position;
 
     Game::island->removeEntity(e);
@@ -169,10 +179,14 @@ void Player::takeControlOf(Entity* e) {
 }
 
 void Player::releaseControledEntity() {
-    controlledEntity->sprite = this->sprite;
     controlledEntity->sprite->linkTo(controlledEntity);
+    this->sprite = DEFAULT_SPRITE;
 
-    this->sprite = Player::DEFAULT_SPRITE;
+    controlledEntity->collider->setOwner(controlledEntity);
+    this->collider = DEFAULT_COLLIDER;
+
+    controlledEntity->detector->setOwner(controlledEntity);
+    this->detector = DEFAULT_DETECTOR;
 
     controlledEntity->position = this->position;
     controlledEntity->resetMovement();

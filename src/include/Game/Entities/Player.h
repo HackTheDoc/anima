@@ -5,16 +5,14 @@
 class NPC;
 class DeadBody;
 
-enum Interaction
-{
+enum Interaction {
     NONE,
     USE,
     TAKE_CONTROL,
     RESURRECT
 };
 
-enum Power
-{
+enum Power {
     BODY_CONTROL,
     BODY_RESURRECTION,
     BODY_EXPLOSION,
@@ -24,10 +22,11 @@ enum Power
 
 struct PlayerStructure;
 
-class Player : public Entity
-{
+class Player : public Entity {
 private:
-    static Sprite *DEFAULT_SPRITE;
+    static Sprite* DEFAULT_SPRITE;
+    static EntityCollider* DEFAULT_COLLIDER;
+    static EntityDetector* DEFAULT_DETECTOR;
 
     bool hasUnlockedPower[Power::NUMBER];
 
@@ -36,8 +35,7 @@ private:
     void interactWithNPC(NPC *npc);
 
 public:
-    enum State
-    {
+    enum State {
         FREE,
         IN_DIALOG
     };
@@ -71,8 +69,7 @@ public:
     PlayerStructure getStructure();
 };
 
-struct PlayerStructure
-{
+struct PlayerStructure {
     std::string name;
     int hp;
     int numen_level;

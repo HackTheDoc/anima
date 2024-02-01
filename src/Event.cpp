@@ -175,13 +175,13 @@ Event::Event() {}
 
 Event::~Event() {}
 
-void Event::linkTo(Window *w) {
+void Event::linkTo(Window* w) {
     window = w;
 }
 
 void Event::handleButtonClick(UIButton::ID id) {
     switch (id) {
-    /* ----- MAIN MENU BUTTONS ----- */
+        /* ----- MAIN MENU BUTTONS ----- */
     case UIButton::ID::QUIT:
         Window::isRunning = false;
         break;
@@ -195,7 +195,7 @@ void Event::handleButtonClick(UIButton::ID id) {
         window->openCredits();
         break;
 
-    /* ----- PLAY MENU BUTTONS ----- */
+        /* ----- PLAY MENU BUTTONS ----- */
     case UIButton::ID::SELECT_SAVE_1:
         PlayMenu::Selection = 1;
         break;
@@ -232,7 +232,7 @@ void Event::handleButtonClick(UIButton::ID id) {
         window->openGame(PlayMenu::Selection);
         break;
 
-    /* ----- PAUSE MENU BUTTONS ----- */
+        /* ----- PAUSE MENU BUTTONS ----- */
     case UIButton::ID::RESUME_GAME:
         window->resumeGame();
         break;
@@ -243,7 +243,7 @@ void Event::handleButtonClick(UIButton::ID id) {
         window->quitGame();
         break;
 
-    /* ----- OPTIONS MENU BUTTONS ----- */
+        /* ----- OPTIONS MENU BUTTONS ----- */
     case UIButton::ID::QUIT_SETTINGS:
         window->openMainMenu();
         break;
@@ -254,7 +254,7 @@ void Event::handleButtonClick(UIButton::ID id) {
         window->openControlsOptions();
         break;
 
-    /* ----- CREDITS BUTTONS ----- */
+        /* ----- CREDITS BUTTONS ----- */
     case UIButton::ID::QUIT_CREDITS:
         window->openMainMenu();
         break;
@@ -331,7 +331,7 @@ void Event::handleMainMenuEvents() {
     case SDLK_r:
         window->openMainMenu();
         break;
-    /// TODO: DEV ONLY
+#ifdef DEV_MOD
     case SDLK_e:
         Save::Erase(4);
         window->openGame(4);
@@ -346,6 +346,7 @@ void Event::handleMainMenuEvents() {
     case SDLK_p:
         window->openGame(4);
         break;
+#endif
     case SDLK_o:
         window->openOptionsMenu();
         break;

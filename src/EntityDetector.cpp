@@ -8,6 +8,8 @@
 EntityDetector::EntityDetector(Entity* o) {
     rect = {0,0,0,0};
     setOwner(o);
+    rect.w = owner->width;
+    rect.h = owner->height;
 }
 
 EntityDetector::~EntityDetector() {}
@@ -25,9 +27,4 @@ void EntityDetector::draw() {
 
 void EntityDetector::setOwner(Entity* o) {
     owner = o;
-
-    if (owner != nullptr) {
-        rect.w = owner->width;
-        rect.h = owner->height;
-    }
 }
