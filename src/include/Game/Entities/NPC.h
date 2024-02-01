@@ -14,8 +14,6 @@ public:
 
     void init() override;
     void update() override;
-    void draw() override;
-    void kill() override;
 
     void setDialog(std::string id);
     void updateDialogSelectedAnswer(int i);
@@ -25,7 +23,4 @@ public:
     void closeDialog();
 
     EntityStructure getStructure();
-
-private:
-    void randomMovement();
 };

@@ -7,7 +7,7 @@
 
 Ignotum::Ignotum() {
     id = Item::ID::IGNOTUM;
-    name = "Lapis Memoriae";
+    name = "Ignotum";
     description = Text::Get("An unknown object who's usage been lost.");
     price = 20;
     

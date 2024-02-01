@@ -267,6 +267,7 @@ PlayerStructure Player::getStructure() {
         case Entity::Type::PLAYER:
         case Entity::Type::UNKNOWN:
         default:
+            structure.controlled_entity.type = Entity::Type::UNKNOWN;
             break;
         }
     }

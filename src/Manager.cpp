@@ -15,6 +15,7 @@ Manager::Manager() {
     textures["player"]      = LoadTexture("./assets/sprites/player.png"     );
     textures["human"]       = LoadTexture("./assets/sprites/Human.png"      );
     textures["goblin"]      = LoadTexture("./assets/sprites/Goblin.png"     );
+    textures["fairy"]       = LoadTexture("./assets/sprites/Fairy.png"     );
 
     textures["doll"]        = LoadTexture("./assets/sprites/Doll.png"       );
 

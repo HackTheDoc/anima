@@ -2,15 +2,21 @@
 
 #include "include/Game/Game.h"
 #include "include/Game/Map/Tile.h"
+#include "include/Game/Components/Collision.h"
 
 const int Entity::MAX_HP = 3;
 
 Entity::Entity() {
     name = "unknown";
+
     type = Type::UNKNOWN;
     species = Species::HUMAN;
     behavior = Behavior::STATIC;
+
+    hp = MAX_HP;
     numenLevel = INT8_MAX;
+    controlled = false;
+    
     inventory.capacity = 0;
 }
 
@@ -23,17 +29,28 @@ void Entity::init() {
     collider = nullptr;
     detector = nullptr;
 
-    hp = 1;
-
     position.Zero();
     velocity.Zero();
 
-    width = 128;
-    height = 128;
+    switch (species) {
+    case Species::FAIRIES:
+        width = 64;
+        height = 64;
+        walkSpeed = 8;
+        break;
+    case Species::GOBLIN:
+        width = 128;
+        height = 128;
+        walkSpeed = 2;
+        break;
+    case Species::HUMAN:
+    default:
+        width = 128;
+        height = 128;
+        walkSpeed = 4;
+        break;
+    }
 
-    walkSpeed = 2;
-
-    controlled = false;
 }
 
 void Entity::update() {
@@ -142,10 +159,35 @@ EntityStructure Entity::getStructure() {
 int Entity::GetMentalPower(Entity::Species species) {
     switch (species) {
     case Species::HUMAN:
+    case Species::FAIRIES:
         return 1;
     case Species::GOBLIN:
         return 2;
     default:
         return INT8_MAX;
     }
+}
+
+void Entity::randomMovement() {
+    Tile* t = Game::island->map->getTileAt(position);
+
+    if (!t->walkable && Collision::AABB(collider->rect, t->collider)) {
+        reverseMovement();
+        resetMovement();
+        return;
+    }
+
+    if (velocity != Vector2D::ZERO && rand() % 20 != 0) return;
+
+    const Vector2D dir[4]= {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+
+    int i = rand() % 4;
+    velocity = dir[i];
+
+    if (velocity == Vector2D::ZERO) return;
+
+    playAnimation("Walk");
+
+    if (velocity.x > 0) setFlip(SDL_FLIP_NONE);
+    else setFlip(SDL_FLIP_HORIZONTAL);
 }

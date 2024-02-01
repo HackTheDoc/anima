@@ -37,8 +37,6 @@ void NPC::init() {
 
     position.Zero();
 
-    walkSpeed = 4;
-
     numenLevel = GetMentalPower(species);
 }
 
@@ -47,14 +45,6 @@ void NPC::update() {
         randomMovement();
         
     Entity::update();
-}
-
-void NPC::draw() {
-    Entity::draw();
-}
-
-void NPC::kill() {
-    Entity::kill();
 }
 
 void NPC::setDialog(std::string id) {
@@ -105,28 +95,4 @@ EntityStructure NPC::getStructure() {
         .npc_hasdialog = haveDialog,
         .behavior = behavior
     };
-}
-
-void NPC::randomMovement() {
-    Tile* t = Game::island->map->getTileAt(position);
-
-    if (!t->walkable && Collision::AABB(collider->rect, t->collider)) {
-        reverseMovement();
-        resetMovement();
-        return;
-    }
-
-    if (velocity != Vector2D::ZERO && rand() % 20 != 0) return;
-
-    const Vector2D dir[4]= {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
-
-    int i = rand() % 4;
-    velocity = dir[i];
-
-    if (velocity == Vector2D::ZERO) return;
-
-    playAnimation("Walk");
-
-    if (velocity.x > 0) setFlip(SDL_FLIP_NONE);
-    else setFlip(SDL_FLIP_HORIZONTAL);
 }

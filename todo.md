@@ -2,7 +2,7 @@
 
 - [x] find a name for the game
 - [ ] write the specifications
-- [x] implement menues
+- [ ] implement menues
   - [x] Main
   - [x] Play
   - [x] Options
@@ -10,6 +10,8 @@
   - [x] Pause
   - [x] Power
   - [x] Inventory
+  - [ ] Quests
+  - [ ] Memory
 - [ ] implement power for the players
   - [x] body control
   - [x] body resurection
@@ -25,8 +27,11 @@
   - [ ] fairy
   - [ ] knight
 - [ ] maps
-  - [ ] starting island
-  - [ ] a second one (need to deceide wich one)
+  - [ ] plains islands
+    - [ ] lost temple
+    - [ ] other islands
+  - [ ] other regions
+  
 > More to come
 
 # To Fix

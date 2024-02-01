@@ -24,6 +24,7 @@ public:
 
     enum Species {
         HUMAN,
+        FAIRIES,
         GOBLIN
     };
     Species species;
@@ -80,6 +81,9 @@ public:
     EntityStructure getStructure();
 
     static int GetMentalPower(Entity::Species species);
+
+protected:
+    void randomMovement();
 };
 
 struct EntityStructure {

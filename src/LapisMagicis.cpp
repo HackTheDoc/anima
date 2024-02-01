@@ -7,7 +7,7 @@
 
 LapisMagicis::LapisMagicis() {
     id = Item::ID::LAPIS_MAGICIS;
-    name = "Lapis Memoriae";
+    name = "Lapis Magicis";
     description = Text::Get("A cristal containing magical power.\nIt can be use to to many great things !");
     price = 20;
     

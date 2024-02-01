@@ -15,8 +15,8 @@ Sprite::~Sprite() {}
 void Sprite::init(std::string tag, int numberOfAnimations) {
     srcRect.x = 0;
     srcRect.y = 0;
-    srcRect.w = owner->width / 4;
-    srcRect.h = owner->height / 4;
+    srcRect.w = 32;
+    srcRect.h = 32;
 
     destRect.w = owner->width;
     destRect.h = owner->height;
@@ -87,6 +87,9 @@ void Sprite::init(int species, int numberOfAnimations) {
 
     switch (species)
     {
+    case Entity::Species::FAIRIES:
+        tag = "fairy";
+        break;
     case Entity::Species::GOBLIN:
         tag = "goblin";
         break;

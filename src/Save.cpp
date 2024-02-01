@@ -73,7 +73,7 @@ bool Save::Update(int sid) {
 
     // SAVE ISLANDS
 
-    std::map<std::string, Island *> islands = Game::GetExploredIslands();
+    std::map<std::string, Island*> islands = Game::GetExploredIslands();
 
     for (auto island : islands)
         SaveIsland(island.second, path / (island.first + ".json"));
@@ -114,8 +114,7 @@ PlayerStructure Save::LoadPlayer(int sid) {
     if (p.controlled_entity.type == Entity::Type::UNKNOWN)
         return p;
 
-    switch (p.controlled_entity.type)
-    {
+    switch (p.controlled_entity.type) {
     case Entity::Type::PLAYER:
         break;
     case Entity::DOLL:
@@ -159,6 +158,8 @@ Inventory Save::LoadInventory(json inventory) {
     return inv;
 }
 
+/* ----- CREATE ----- */
+
 void Save::CreatePlayer(fs::path path) {
     json player = {
         {"name", "unknown"},
@@ -175,7 +176,8 @@ void Save::CreatePlayer(fs::path path) {
 
         {"state", Player::State::FREE},
 
-        {"controlled entity", {{"type", Entity::Type::UNKNOWN}, {"name", "noone"}, {"inventory", {{"capacity", 0}, {"items", json::array()}}}}}};
+        {"controlled entity", CreateNoone()}
+    };
 
     std::ofstream outfile(path);
     outfile << std::setw(2) << player << std::endl;
@@ -187,30 +189,32 @@ void Save::CreateIsland_0(fs::path path) {
         {"name", "island-0"},
         {"width", 15},
         {"height", 11},
-        {"tiles", {{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}, {9, 9, 9, 9, 4, 3, 3, 3, 3, 3, 3, 5, 9, 9, 9}, {9, 9, 4, 3, 13, 0, 0, 0, 0, 0, 0, 12, 3, 5, 9}, {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 4, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9}, {9, 1, 0, 0, 0, 0, 0, 10, 6, 6, 6, 6, 6, 8, 9}, {9, 7, 6, 6, 6, 6, 6, 8, 9, 9, 9, 9, 9, 9, 9}, {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}}},
-        {"portals", {{{"x", 1280}, {"y", 512}, {"destination", "island-1"}, {"destinationX", 768}, {"destinationY", 896}, {"opened", false}}}},
-        {"entities", {
-            {
-                {"type", Entity::Type::DOLL}, 
-                {"x", 768}, 
-                {"y", 384}, 
-                {"inventory", {
-                    {"capacity", 1}, 
-                    {"items", {Item::ID::LAPIS_VITAE}}
-                }}
-            }, 
-            {
-                {"type", Entity::Type::DEAD_BODY},
-                {"owner type", Entity::Type::NON_PLAYER_CHARACTER},
-                {"species", Entity::Species::GOBLIN},
-                {"behavior", NPC::Behavior::STATIC},
-                {"name", "UNKNOWN"},
-                {"x", 1024},
-                {"y", 384},
-                {"dialog", false}
+        {"tiles", {
+            {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
+            {9, 9, 9, 9, 4, 3, 3, 3, 3, 3, 3, 5, 9, 9, 9},
+            {9, 9, 4, 3, 13, 0, 0, 0, 0, 0, 0, 12, 3, 5, 9},
+            {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9},
+            {9, 4, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9},
+            {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9},
+            {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9},
+            {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9},
+            {9, 1, 0, 0, 0, 0, 0, 10, 6, 6, 6, 6, 6, 8, 9},
+            {9, 7, 6, 6, 6, 6, 6, 8, 9, 9, 9, 9, 9, 9, 9},
+            {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}
             }
+        },
+        {"portals", {
+            CreatePortal(1280, 512, "island-1", 768, 896)
         }},
-        {"items", {{{"x", 1024}, {"y", 512}, {"id", Item::ID::LAPIS_VITAE}}}}};
+        {"entities", {
+            CreateDoll(768, 384, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
+            CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown"),
+            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1), 1)
+        }},
+        {"items", {
+            CreateItem(1024, 512, Item::ID::LAPIS_VITAE)
+        }}
+    };
 
     std::ofstream outfile(path);
     outfile << std::setw(2) << island << std::endl;
@@ -222,37 +226,33 @@ void Save::CreateIsland_1(fs::path path) {
         {"name", "island-1"},
         {"width", 30},
         {"height", 20},
-        {"tiles", {{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5}, {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 4, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 18, 17, 17, 17, 17, 19, 0, 0, 2}, {9, 9, 9, 9, 9, 9, 9, 4, 3, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 18, 17, 26, 14, 14, 14, 14, 25, 19, 0, 2}, {9, 9, 9, 9, 9, 4, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 16, 0, 2}, {9, 9, 4, 3, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 17, 26, 14, 14, 14, 14, 14, 14, 14, 25, 19, 2}, {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2}, {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2}, {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 24, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2}, {9, 4, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 20, 24, 14, 14, 14, 14, 14, 14, 14, 16, 2}, {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 20, 24, 14, 14, 14, 23, 20, 22, 2}, {4, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 20, 20, 20, 22, 0, 0, 2}, {1, 0, 0, 0, 0, 18, 17, 17, 17, 17, 19, 0, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2}, {1, 0, 0, 18, 17, 26, 14, 14, 14, 14, 16, 0, 2, 7, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2}, {1, 0, 0, 15, 14, 14, 14, 14, 14, 14, 16, 0, 12, 5, 7, 6, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 8}, {1, 0, 0, 15, 14, 14, 14, 14, 14, 23, 22, 0, 0, 12, 3, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 6, 8, 9}, {1, 0, 0, 21, 24, 14, 14, 14, 23, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 8, 9, 9, 9, 9}, {1, 0, 0, 0, 21, 20, 20, 20, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 8, 9, 9, 9, 9, 9, 9}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 6, 8, 9, 9, 9, 9, 9, 9, 9, 9}, {7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}}},
-        {"portals", {{{"x", 768}, {"y", 896}, {"destination", "island-0"}, {"destinationX", 1280}, {"destinationY", 512}, {"opened", false}}}},
+        {"tiles", {
+            {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5}, 
+            {9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 4, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 18, 17, 17, 17, 17, 19, 0, 0, 2}, 
+            {9, 9, 9, 9, 9, 9, 9, 4, 3, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 18, 17, 26, 14, 14, 14, 14, 25, 19, 0, 2}, 
+            {9, 9, 9, 9, 9, 4, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 16, 0, 2}, 
+            {9, 9, 4, 3, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 17, 26, 14, 14, 14, 14, 14, 14, 14, 25, 19, 2}, 
+            {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2}, 
+            {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2}, 
+            {9, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 24, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2}, 
+            {9, 4, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 2},
+            {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 20, 24, 14, 14, 14, 14, 14, 14, 14, 16, 2},
+            {9, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 20, 24, 14, 14, 14, 23, 20, 22, 2},
+            {4, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 20, 20, 20, 22, 0, 0, 2},
+            {1, 0, 0, 0, 0, 18, 17, 17, 17, 17, 19, 0, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+            {1, 0, 0, 18, 17, 26, 14, 14, 14, 14, 16, 0, 2, 7, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+            {1, 0, 0, 15, 14, 14, 14, 14, 14, 14, 16, 0, 12, 5, 7, 6, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 8},
+            {1, 0, 0, 15, 14, 14, 14, 14, 14, 23, 22, 0, 0, 12, 3, 3, 13, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 6, 8, 9},
+            {1, 0, 0, 21, 24, 14, 14, 14, 23, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 8, 9, 9, 9, 9},
+            {1, 0, 0, 0, 21, 20, 20, 20, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 8, 9, 9, 9, 9, 9, 9},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 6, 6, 8, 9, 9, 9, 9, 9, 9, 9, 9},
+            {7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}}},
+        {"portals", {
+            CreatePortal(768, 896, "island-0", 1280, 512)
+        }},
         {"entities", {
-            {
-                {"type", Entity::Type::NON_PLAYER_CHARACTER}, 
-                {"species", Entity::Species::HUMAN},
-                {"behavior", NPC::Behavior::STATIC}, 
-                {"name", "Guide"}, 
-                {"hp", Entity::MAX_HP}, 
-                {"x", 1024}, 
-                {"y", 512}, 
-                {"dialog", true}, 
-                {"inventory", {
-                    {"capacity", 0}, 
-                    {"items", json::array()}
-                }}
-            },
-            {
-                {"type", Entity::Type::NON_PLAYER_CHARACTER},
-                {"species", Entity::Species::GOBLIN},
-                {"behavior", NPC::Behavior::RANDOM_MOVEMENT},
-                {"name", "Traveler"},
-                {"hp", Entity::MAX_HP},
-                {"x", 1280},
-                {"y", 768},
-                {"dialog", false},
-                {"inventory", {
-                    {"capacity", 1}, 
-                    {"items", json::array()}
-                }}
-            }
+            CreateNPC(1024, 512, Entity::Species::HUMAN, Entity::Behavior::STATIC, "Guide", CreateInventory(0), true),
+            CreateNPC(1280, 768, Entity::Species::GOBLIN, Entity::Behavior::RANDOM_MOVEMENT, "Traveler", CreateInventory(1)),
         }},
         {"items", json::array()}
     };
@@ -262,6 +262,7 @@ void Save::CreateIsland_1(fs::path path) {
     outfile.close();
 }
 
+/* ----- SAVE ----- */
 void Save::SavePlayer(fs::path path) {
     std::ifstream infile(path);
     json data;
@@ -289,8 +290,10 @@ void Save::SavePlayer(fs::path path) {
     case Entity::Type::PLAYER:
         break;
     case Entity::Type::NON_PLAYER_CHARACTER:
-    default:
         data["controlled entity"] = OrganizeNPC(player.controlled_entity);
+        break;
+    default:
+        data["controlled entity"] = CreateNoone();
         break;
     }
 
@@ -299,7 +302,7 @@ void Save::SavePlayer(fs::path path) {
     outfile.close();
 }
 
-void Save::SaveIsland(Island *island, fs::path path) {
+void Save::SaveIsland(Island* island, fs::path path) {
     std::ifstream infile(path);
     json data;
     infile >> data;
@@ -308,16 +311,7 @@ void Save::SaveIsland(Island *island, fs::path path) {
     std::vector<PortalStructure> pdata = island->getPortals();
     std::vector<json> portals;
     for (PortalStructure pd : pdata)
-    {
-        json p = {
-            {"x", pd.pos.x},
-            {"y", pd.pos.y},
-            {"destination", pd.dest},
-            {"destinationX", pd.dest_pos.x},
-            {"destinationY", pd.dest_pos.y},
-            {"opened", pd.opened}};
-        portals.push_back(p);
-    }
+        portals.push_back(CreatePortal(pd.pos.x, pd.pos.y, pd.dest, pd.dest_pos.x, pd.dest_pos.y, pd.opened));
     data["portals"] = portals;
 
     std::vector<EntityStructure> edata = island->getEntities();
@@ -345,7 +339,7 @@ void Save::SaveIsland(Island *island, fs::path path) {
 
     std::vector<std::pair<Vector2D, Item::ID>> idata = island->getItems();
     std::vector<json> items;
-    for (std::pair<Vector2D, Item::ID> i : idata) 
+    for (std::pair<Vector2D, Item::ID> i : idata)
         items.push_back(OrganizeItem(i));
     data["items"] = items;
 
@@ -354,62 +348,104 @@ void Save::SaveIsland(Island *island, fs::path path) {
     outfile.close();
 }
 
-json Save::OrganizeInventory(Inventory inventory) {
-    std::vector<Item::ID> items;
+/* ----- STRUCTURE CREATION ----- */
 
-    for (Item *i : inventory.item)
+json Save::CreateInventory(const int capacity, std::vector<int> items) {
+    return {
+        {"capacity", capacity},
+        {"items", items}
+    };
+}
+
+json Save::CreateItem(const int x, const int y, const int id) {
+    return {
+        {"x", x},
+        {"y", y},
+        {"id", id}
+    };
+}
+
+json Save::CreatePortal(const int xp, const int yp, const std::string& dest, const int xd, const int yd, const bool opened) {
+    return {
+        {"x", xp},
+        {"y", yp},
+        {"destination", dest},
+        {"destinationX", xd},
+        {"destinationY", yd},
+        {"opened", opened}
+    };
+}
+
+json Save::CreateNoone() {
+    return {
+        {"type", Entity::Type::UNKNOWN},
+        {"name", "noone"},
+        {"inventory", {
+            {"capacity", 0},
+            json::array()
+        }}
+    };
+}
+
+json Save::CreateNPC(const int x, const int y, const int species, const int behavior, const std::string& name, const json inventory, const int hp, const bool hasdialog) {
+    return {
+        {"type", Entity::Type::NON_PLAYER_CHARACTER},
+        {"species", species},
+        {"behavior", behavior},
+        {"name", name},
+        {"hp", hp},
+        {"x", x},
+        {"y", y},
+        {"dialog", hasdialog},
+        {"inventory", inventory}
+    };
+}
+
+json Save::CreateDoll(const int x, const int y, const json inv) {
+    return {
+        {"type", Entity::Type::DOLL},
+        {"x", x},
+        {"y", y},
+        {"inventory", inv}
+    };
+}
+
+json Save::CreateDeadBody(const int x, const int y, const int species, const int otype, const int obehavior, const std::string& oname, const bool ohasdialog) {
+    return {
+        {"type", Entity::Type::DEAD_BODY},
+        {"owner type", otype},
+        {"species", species},
+        {"behavior", obehavior},
+        {"name", oname},
+        {"x", x},
+        {"y", y},
+        {"dialog", ohasdialog}
+    };
+}
+
+/* ----- STRUCTURE ORGANIZATION ----- */
+
+json Save::OrganizeInventory(Inventory inventory) {
+    std::vector<int> items;
+
+    for (Item* i : inventory.item)
         items.push_back(i->id);
 
-    json inv = {
-        {"capacity", inventory.capacity},
-        {"items", items}};
-
-    return inv;
+    return CreateInventory(inventory.capacity, items);
 }
 
 json Save::OrganizeItem(std::pair<Vector2D, int> i) {
-    json item = {
-        {"x", i.first.x},
-        {"y", i.first.y},
-        {"id", i.second}
-    };
-
-    return item;
+    return CreateItem(i.first.x, i.first.y, i.second);
 }
 
 json Save::OrganizeNPC(EntityStructure npcs) {
-    json npc = {
-        {"type", npcs.type},
-        {"species", npcs.species},
-        {"behavior", npcs.behavior},
-        {"name", npcs.name},
-        {"hp", npcs.hp},
-        {"x", npcs.pos.x},
-        {"y", npcs.pos.y},
-        {"dialog", npcs.npc_hasdialog},
-        {"inventory", OrganizeInventory(npcs.inv)}};
-    return npc;
+    return CreateNPC(npcs.pos.x, npcs.pos.y, npcs.species, npcs.behavior, npcs.name, OrganizeInventory(npcs.inv), npcs.hp, npcs.npc_hasdialog);
 }
 
 json Save::OrganizeDoll(EntityStructure dolls) {
-    json doll = {
-        {"type", dolls.type},
-        {"x", dolls.pos.x},
-        {"y", dolls.pos.y},
-        {"inventory", OrganizeInventory(dolls.inv)}};
-    return doll;
+    return CreateDoll(dolls.pos.x, dolls.pos.y, OrganizeInventory(dolls.inv));
 }
 
 json Save::OrganizeDeadBody(EntityStructure s) {
-    json body = {
-        {"type", s.type},
-        {"owner type", s.type2},
-        {"species", s.species},
-        {"behavior", s.behavior},
-        {"name", s.name},
-        {"x", s.pos.x},
-        {"y", s.pos.y},
-        {"dialog", s.npc_hasdialog}
-    };
-    return body;
+    return CreateDeadBody(s.pos.x, s.pos.y, s.species, s.type2, s.behavior, s.name, s.npc_hasdialog);
 }

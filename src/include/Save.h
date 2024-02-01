@@ -55,7 +55,60 @@ public:
     /// @param inventory 
     /// @return the structured inventory or an error if the entry json structure isn't appropriate
     static Inventory LoadInventory(json inventory);
+private:
+    /// @brief path to the folder where the save are stored
+    static std::string pathToSaveFolder;
 
+    /* ----- CREATE ----- */
+    
+    /// @brief create a new player.json file at the given path
+    /// @param path be careful of the extension
+    static void CreatePlayer(fs::path path);
+
+    /// @brief create a new island-0.json file a the given path
+    /// @param path be careful of the extension
+    static void CreateIsland_0(fs::path path);
+
+    /// @brief create a new island-1.json file a the given path
+    /// @param path be careful of the extension
+    static void CreateIsland_1(fs::path path);
+    
+    /* ----- SAVE ----- */
+
+    /// @brief save the player state in a file a the given path
+    /// @param path be careful of the extension
+    static void SavePlayer(fs::path path);
+
+    /// @brief save an island informations (entities, portals, etc)
+    /// @param island pointer to the island to save
+    /// @param path path to the island file (careful with the extension)
+    static void SaveIsland(Island* island, fs::path path);
+
+    /* ----- STRUCTURE CREATION ----- */
+
+    static json CreateInventory(const int capacity, std::vector<int> items = {});
+    
+    static json CreateItem(const int x, const int y, const int id);
+
+    /// @brief Create a portal's json structure
+    /// @param xp x position on the map (in pixels)
+    /// @param yp y position on the map (in pixels)
+    /// @param dest name of the destination island
+    /// @param xd x position on the destination map (in pixels)
+    /// @param yd y position on the destination map (in pixels)
+    /// @param opened (default: false)
+    /// @return 
+    static json CreatePortal(const int xp, const int yp, const std::string& dest, const int xd, const int yd, const bool opened = false);
+
+    static json CreateNoone();
+    
+    static json CreateNPC(const int x, const int y, const int species, const int behavior, const std::string& name, const json inventory, const int hp=3, const bool hasdialog=false);
+
+    static json CreateDoll(const int x, const int y, const json inv);
+
+    static json CreateDeadBody(const int x, const int y, const int species, const int otype, const int obehavior, const std::string& oname, const bool ohasdialog=false);
+
+    /* ----- STRUCTURE ORGANIZATION ----- */
     /// @brief structure a json object with an inventory's informations
     /// @param inventory inventory structure
     /// @return structured json object
@@ -77,29 +130,4 @@ public:
     /// @param npcs data structure of the DeadBody
     /// @return structured json object
     static json OrganizeDeadBody(EntityStructure s); 
-
-private:
-    /// @brief path to the folder where the save are stored
-    static std::string pathToSaveFolder;
-
-    /// @brief create a new player.json file at the given path
-    /// @param path be careful of the extension
-    static void CreatePlayer(fs::path path);
-
-    /// @brief create a new island-0.json file a the given path
-    /// @param path be careful of the extension
-    static void CreateIsland_0(fs::path path);
-
-    /// @brief create a new island-1.json file a the given path
-    /// @param path be careful of the extension
-    static void CreateIsland_1(fs::path path);
-    
-    /// @brief save the player state in a file a the given path
-    /// @param path be careful of the extension
-    static void SavePlayer(fs::path path);
-
-    /// @brief save an island informations (entities, portals, etc)
-    /// @param island pointer to the island to save
-    /// @param path path to the island file (careful with the extension)
-    static void SaveIsland(Island* island, fs::path path); 
 };
