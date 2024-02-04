@@ -65,7 +65,7 @@ public:
     void unlockPower(Power pid);
     bool haveUnlockedPower(Power pid);
 
-    Inventory* parseInventory();
+    Inventory* parseInventory(const bool display_err_msg = false);
     Entity* parseControlledEntity();
 
     PlayerStructure getStructure();

@@ -15,6 +15,7 @@ LapisVitae::LapisVitae() {
 
 LapisVitae::~LapisVitae() {}
 
-void LapisVitae::use() {
+bool LapisVitae::use() {
     Game::player->modifyNumenLevelBy(+1);
+    return true;
 }

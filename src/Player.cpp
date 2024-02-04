@@ -102,6 +102,9 @@ void Player::draw() {
 
 void Player::kill() {
     Entity::kill();
+
+    controlledEntity = nullptr;
+    quest = nullptr;
 }
 
 void Player::interactWith(Entity* e) {
@@ -235,13 +238,15 @@ bool Player::haveUnlockedPower(Power pid) {
     return hasUnlockedPower[pid];
 }
 
-Inventory* Player::parseInventory() {
+Inventory* Player::parseInventory(const bool display_err_msg) {
     if (controlledEntity == nullptr) {
-        UI::AddPopUp("YOU CANNOT OPEN YOUR INVENTORY");
+        if (display_err_msg)
+            UI::AddPopUp("YOU CANNOT OPEN YOUR INVENTORY");
         return nullptr;
     }
     else if (controlledEntity->inventory.capacity == 0) {
-        UI::AddPopUp("THIS ENTITY DOES NOT HAVE AN INVENTORY");
+        if (display_err_msg)
+            UI::AddPopUp("THIS ENTITY DOES NOT HAVE AN INVENTORY");
         return nullptr;
     }
     else return &controlledEntity->inventory;

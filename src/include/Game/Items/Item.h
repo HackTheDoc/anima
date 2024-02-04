@@ -5,11 +5,9 @@
 
 #include "../Components/Collider.h"
 
-class Item
-{
+class Item {
 public:
-    enum ID
-    {
+    enum ID {
         UNKNOWN,
         LAPIS_VITAE,
         LAPIS_MEMORIAE,
@@ -26,7 +24,7 @@ public:
 
     Item();
     ~Item();
-    virtual void use();
+    virtual bool use();
     virtual void read();
 
     void drawIconAt(SDL_Rect rect);

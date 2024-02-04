@@ -210,12 +210,12 @@ void Save::CreateIsland_0(fs::path path) {
             {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
         }},
         {"portals", {
-            CreatePortal(1280, 512, "island-1", 768, 896)
+            CreatePortal(1280, 512, "island-1", 768, 896, 1)
         }},
         {"entities", {
             CreateDoll(432, 544, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
             CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown"),
-            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1), 1)
+            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1, {Item::ID::LAPIS_MAGICIS}), 1)
         }},
         {"items", {
             CreateItem(1024, 512, Item::ID::LAPIS_VITAE)
@@ -255,11 +255,11 @@ void Save::CreateIsland_1(fs::path path) {
             { 8,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
         }},
         {"portals", {
-            CreatePortal(768, 896, "island-0", 1280, 512)
+            CreatePortal(768, 896, "island-0", 1280, 512, 2)
         }},
         {"entities", {
-            CreateNPC(1024, 512, Entity::Species::HUMAN, Entity::Behavior::STATIC, "Guide", CreateInventory(0), true),
-            CreateNPC(1280, 768, Entity::Species::GOBLIN, Entity::Behavior::RANDOM_MOVEMENT, "Traveler", CreateInventory(1)),
+            CreateNPC(1024, 512, Entity::Species::HUMAN, Entity::Behavior::STATIC, "Guide", CreateInventory(0), Entity::MAX_HP, true),
+            CreateNPC(1280, 768, Entity::Species::GOBLIN, Entity::Behavior::RANDOM_MOVEMENT, "Traveler", CreateInventory(1, {Item::ID::LAPIS_MAGICIS})),
         }},
         {"items", json::array()}
     };
@@ -270,6 +270,7 @@ void Save::CreateIsland_1(fs::path path) {
 }
 
 /* ----- SAVE ----- */
+
 void Save::SavePlayer(fs::path path) {
     std::ifstream infile(path);
     json data;
@@ -321,7 +322,7 @@ void Save::SaveIsland(Island* island, fs::path path) {
     std::vector<PortalStructure> pdata = island->getPortals();
     std::vector<json> portals;
     for (PortalStructure pd : pdata)
-        portals.push_back(CreatePortal(pd.pos.x, pd.pos.y, pd.dest, pd.dest_pos.x, pd.dest_pos.y, pd.opened));
+        portals.push_back(CreatePortal(pd.pos.x, pd.pos.y, pd.dest, pd.dest_pos.x, pd.dest_pos.y, pd.damage_level));
     data["portals"] = portals;
 
     std::vector<EntityStructure> edata = island->getEntities();
@@ -375,14 +376,14 @@ json Save::CreateItem(const int x, const int y, const int id) {
     };
 }
 
-json Save::CreatePortal(const int xp, const int yp, const std::string& dest, const int xd, const int yd, const bool opened) {
+json Save::CreatePortal(const int xp, const int yp, const std::string& dest, const int xd, const int yd, const int damage_level) {
     return {
         {"x", xp},
         {"y", yp},
         {"destination", dest},
         {"destinationX", xd},
         {"destinationY", yd},
-        {"opened", opened}
+        {"damage level", damage_level}
     };
 }
 

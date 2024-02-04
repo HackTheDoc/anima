@@ -12,7 +12,7 @@ class Island {
 public:
     Map* map;
     
-    Island(std::string name);
+    Island(const std::string& name);
     ~Island();
 
     void init();
@@ -23,13 +23,13 @@ public:
     void getSize(int* w, int* h);
     std::string getName();
 
-    void addPortal(int x, int y, std::string dest, int destX, int destY, bool opened);
-    void addItem(int x, int y, Item::ID id);
-    void addItem(Vector2D pos, Item* i);
-    void addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool haveDialog, NPC::Behavior behavior);
-    void addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool haveDialog, NPC::Behavior behavior, Inventory inv);
-    void addDoll(int x, int y, Inventory inv);
-    void addDeadBody(Entity::Species species, Entity::Type type, std::string name, int x, int y, bool haveDialog, NPC::Behavior behavior);
+    void addPortal(const int x, const int y, const std::string& dest, const int destX, const int destY, const int damage_lvl);
+    void addItem(const int x, const int y, const Item::ID id);
+    void addItem(const Vector2D& pos, Item* i);
+    void addNPC(Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool haveDialog, const NPC::Behavior behavior);
+    void addNPC(Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool haveDialog, const NPC::Behavior behavior, const Inventory& inv);
+    void addDoll(const int x, const int y, const Inventory& inv);
+    void addDeadBody(const Entity::Species species, const Entity::Type type, const std::string& name, const int x, const int y, const bool haveDialog, const NPC::Behavior behavior);
     
     void removeEntity(Entity* e);
     void addEntity(Entity* e);

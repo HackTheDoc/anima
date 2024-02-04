@@ -8,5 +8,5 @@ public:
 
     ~LapisVitae();
 
-    void use() override;
+    bool use() override;
 };

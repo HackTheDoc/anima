@@ -6,6 +6,4 @@ class Ignotum : public Item {
 public:
     Ignotum();
     ~Ignotum();
-
-    void use() override;
 };

@@ -16,7 +16,3 @@ LapisMemoriae::LapisMemoriae() {
 }
 
 LapisMemoriae::~LapisMemoriae() {}
-
-void LapisMemoriae::use() {
-    std::cout << "using lapis memoriae" << std::endl;
-}

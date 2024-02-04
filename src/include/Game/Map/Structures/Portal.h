@@ -10,7 +10,7 @@ struct PortalStructure {
     Vector2D pos;
     std::string dest;
     Vector2D dest_pos;
-    bool opened;
+    int damage_level;
 };
 
 class Portal {
@@ -21,15 +21,15 @@ public:
     Portal();
     ~Portal();
 
-    void init(int x, int y, std::string dest, int destX, int destY, bool opened);
+    void init(int x, int y, std::string dest, int destX, int destY, int dmg_lvl);
     void update();
     void draw();
     void destroy();
 
-    void activate();
-    void use();
+    bool isRepaired();
+    void repair();
 
-    bool isActivated();
+    void use();
 
     PortalStructure getStructure();
 
@@ -40,5 +40,5 @@ private:
     std::string dest;
     Vector2D destPos;
 
-    bool on;
+    int damage_level;
 };

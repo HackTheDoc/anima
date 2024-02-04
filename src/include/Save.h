@@ -98,7 +98,7 @@ private:
     /// @param yd y position on the destination map (in pixels)
     /// @param opened (default: false)
     /// @return 
-    static json CreatePortal(const int xp, const int yp, const std::string& dest, const int xd, const int yd, const bool opened = false);
+    static json CreatePortal(const int xp, const int yp, const std::string& dest, const int xd, const int yd, const int damage_level);
 
     static json CreateNoone();
     

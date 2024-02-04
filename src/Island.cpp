@@ -9,10 +9,9 @@
 #include "include/Game/Game.h"
 #include "include/Game/Components/Collision.h"
 
-Island::Island(std::string name) {
-    this->name = name;
-    map = new Map();
-}
+Island::Island(const std::string& name)
+    : name(name)
+    { map = new Map(); }
 
 Island::~Island() {}
 
@@ -36,7 +35,7 @@ void Island::init() {
             portal["destination"],
             portal["destinationX"],
             portal["destinationY"],
-            portal["opened"]);
+            portal["damage level"]);
     }
 
     // LOADING ITEMS
@@ -123,7 +122,7 @@ std::string Island::getName() {
     return name;
 }
 
-void Island::addPortal(int x, int y, std::string dest, int destX, int destY, bool opened) {
+void Island::addPortal(const int x, const int y, const std::string& dest, const int destX, const int destY, const int damage_lvl) {
     Portal* p = new Portal();
     p->init(
         x,
@@ -131,11 +130,12 @@ void Island::addPortal(int x, int y, std::string dest, int destX, int destY, boo
         dest,
         destX + (Tile::SIZE - Game::player->collider->rect.w) / 2,
         destY + (Tile::SIZE - Game::player->collider->rect.h) / 2,
-        opened);
+        damage_lvl
+    );
     portals.push_back(p);
 }
 
-void Island::addItem(int x, int y, Item::ID id) {
+void Island::addItem(const int x, const int y, const Item::ID id) {
     Item* i = Item::Create(id);
 
     if (i == nullptr)
@@ -146,12 +146,12 @@ void Island::addItem(int x, int y, Item::ID id) {
     items.push_back(i);
 }
 
-void Island::addItem(Vector2D pos, Item* i) {
+void Island::addItem(const Vector2D& pos, Item* i) {
     i->collider->position = pos;
     items.push_back(i);
 }
 
-void Island::addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool hasDialog, Entity::Behavior behavior) {
+void Island::addNPC(const Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool hasDialog, const Entity::Behavior behavior) {
     NPC* npc = new NPC(name, species, behavior);
     npc->init();
     npc->setPosition(x, y);
@@ -160,7 +160,7 @@ void Island::addNPC(Entity::Species species, std::string name, int hp, int x, in
     addEntity(npc);
 }
 
-void Island::addNPC(Entity::Species species, std::string name, int hp, int x, int y, bool hasDialog, Entity::Behavior behavior, Inventory inv) {
+void Island::addNPC(const Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool hasDialog, const Entity::Behavior behavior, const Inventory& inv) {
     NPC* npc = new NPC(name, species, behavior, inv);
     npc->init();
     npc->setPosition(x, y);
@@ -169,14 +169,14 @@ void Island::addNPC(Entity::Species species, std::string name, int hp, int x, in
     addEntity(npc);
 }
 
-void Island::addDoll(int x, int y, Inventory inv) {
+void Island::addDoll(const int x, const int y, const Inventory& inv) {
     Doll* doll = new Doll(inv);
     doll->init();
     doll->setPosition(x, y);
     addEntity(doll);
 }
 
-void Island::addDeadBody(Entity::Species species, Entity::Type type, std::string name, int x, int y, bool haveDialog, Entity::Behavior behavior) {
+void Island::addDeadBody(const Entity::Species species, const Entity::Type type, const std::string& name, const int x, const int y, const bool haveDialog, const Entity::Behavior behavior) {
     DeadBody* b = new DeadBody(species);
     b->init();
     b->ownerType = type;
@@ -213,16 +213,16 @@ void Island::updateFreeState() {
 
     for (const auto& p : portals) {
         p->update();
-
+            
         if (Collision::AABB(Game::player->detector, p->collider)) {
-            if (p->isActivated()) {
-                Game::ui->hideHint(" - Activate");
+            if (p->isRepaired()) {
+                Game::ui->hideHint(" - Repair");
             }
             else
             {
-                Game::ui->useHint(" - Activate", p);
+                Game::ui->useHint(" - Repair", p);
                 if (Game::player->interaction == Interaction::USE)
-                    p->activate();
+                    p->repair();
             }
         }
 

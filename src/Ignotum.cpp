@@ -16,7 +16,3 @@ Ignotum::Ignotum() {
 }
 
 Ignotum::~Ignotum() {}
-
-void Ignotum::use() {
-    std::cout << "using ignotum" << std::endl;
-}

@@ -6,8 +6,7 @@
 
 #include <iostream>
 
-Item::Item()
-{
+Item::Item() {
     id = Item::ID::UNKNOWN;
     name = description = "";
     price = 0;
@@ -17,10 +16,11 @@ Item::Item()
 
 Item::~Item() {}
 
-void Item::use() {}
+bool Item::use() {
+    return false;
+}
 
-void Item::read()
-{
+void Item::read() {
     std::cout << "-> " << id << " data :" << std::endl;
     std::cout << "      name : " << name << std::endl;
     std::cout << "      description : " << description << std::endl;
@@ -45,12 +45,16 @@ std::string Item::to_string() {
     return name+" ("+std::to_string(price)+"G)\n"+description;
 }
 
-Item *Item::Create(Item::ID it)
-{
-    switch (it)
-    {
+Item *Item::Create(Item::ID it) {
+    switch (it) {
+    case Item::ID::LAPIS_MAGICIS:
+        return new LapisMagicis();
+    case Item::ID::LAPIS_MEMORIAE:
+        return new LapisMemoriae();
     case Item::ID::LAPIS_VITAE:
         return new LapisVitae();
+    case Item::ID::IGNOTUM:
+        return new Ignotum();
     default:
         return new Item();
     }

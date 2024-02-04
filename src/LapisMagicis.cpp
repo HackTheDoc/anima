@@ -16,7 +16,3 @@ LapisMagicis::LapisMagicis() {
 }
 
 LapisMagicis::~LapisMagicis() {}
-
-void LapisMagicis::use() {
-    std::cout << "using lapis magicis" << std::endl;
-}

@@ -543,7 +543,7 @@ void Event::handleFreeState() {
             window->openPowerMenu();
             break;
         case Event::ID::OPEN_INVENTORY:
-            window->openInventory(Game::player->parseInventory());
+            window->openInventory(Game::player->parseInventory(true));
             break;
         case Event::ID::OPEN_QUEST_MENU:
             window->openQuestMenu();

@@ -6,6 +6,4 @@ class LapisMemoriae : public Item {
 public:
     LapisMemoriae();
     ~LapisMemoriae();
-
-    void use() override;
 };

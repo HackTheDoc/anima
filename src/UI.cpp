@@ -40,6 +40,9 @@ void UI::init() {
     UIHint* activate = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Activate"), "small");
     add(" - Activate", activate);
 
+    UIHint* repair = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Repair"), "small");
+    add(" - Repair", repair);
+
     UIHint* talk = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Talk"), "default");
     add(" - Talk", talk);
 
