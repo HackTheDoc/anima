@@ -5,8 +5,7 @@
 
 std::map<SDL_KeyCode, Event::ID> KeyMap::Key = {};
 
-void KeyMap::Load()
-{
+void KeyMap::Load() {
     std::fstream infile("./config.json");
     nlohmann::json config;
     infile >> config;
@@ -16,26 +15,27 @@ void KeyMap::Load()
     auto rkmap = config["controls"];
 
     KeyMap::Key = {
-        {rkmap["pause"], Event::ID::PAUSE},
-        {rkmap["power menu"], Event::ID::OPEN_POWER_MENU},
-        {rkmap["inventory"], Event::ID::OPEN_INVENTORY},
+        {rkmap["pause"]             , Event::ID::PAUSE              },
+        {rkmap["power menu"]        , Event::ID::OPEN_POWER_MENU    },
+        {rkmap["inventory"]         , Event::ID::OPEN_INVENTORY     },
+        {rkmap["quest menu"]        , Event::ID::OPEN_QUEST_MENU    },
 
-        {rkmap["move up"], Event::ID::MOVE_UP},
-        {rkmap["move down"], Event::ID::MOVE_DOWN},
-        {rkmap["move left"], Event::ID::MOVE_LEFT},
-        {rkmap["move right"], Event::ID::MOVE_RIGHT},
+        {rkmap["move up"]           , Event::ID::MOVE_UP            },
+        {rkmap["move down"]         , Event::ID::MOVE_DOWN          },
+        {rkmap["move left"]         , Event::ID::MOVE_LEFT          },
+        {rkmap["move right"]        , Event::ID::MOVE_RIGHT},
 
-        {rkmap["interact"], Event::ID::INTERACT},
-        {rkmap["take control"], Event::ID::BODY_CONTROL},
-        {rkmap["body resurrection"], Event::ID::BODY_RESURRECTION},
+        {rkmap["interact"]          , Event::ID::INTERACT           },
+        {rkmap["take control"]      , Event::ID::BODY_CONTROL       },
+        {rkmap["body resurrection"] , Event::ID::BODY_RESURRECTION  },
 
-        {rkmap["valid dialog"], Event::ID::VALID_DIALOG},
-        {rkmap["next answer"], Event::ID::NEXT_ANSWER},
-        {rkmap["previous answer"], Event::ID::PREVIOUS_ANSWER}};
+        {rkmap["valid dialog"]      , Event::ID::VALID_DIALOG       },
+        {rkmap["next answer"]       , Event::ID::NEXT_ANSWER        },
+        {rkmap["previous answer"]   , Event::ID::PREVIOUS_ANSWER    },
+    };
 }
 
-void KeyMap::Save()
-{
+void KeyMap::Save() {
     std::fstream infile("./config.json");
     nlohmann::json config;
     infile >> config;
@@ -56,8 +56,7 @@ void KeyMap::Save()
     outfile.close();
 }
 
-bool KeyMap::Set(Event::ID eid, SDL_KeyCode kcode)
-{
+bool KeyMap::Set(Event::ID eid, SDL_KeyCode kcode) {
     std::map<SDL_KeyCode, Event::ID>::iterator it = KeyMap::Key.begin();
 
     while (it != KeyMap::Key.end() && (it->first != kcode || (it->first == kcode && it->second == eid)))
@@ -83,8 +82,7 @@ bool KeyMap::Set(Event::ID eid, SDL_KeyCode kcode)
     return true;
 }
 
-SDL_KeyCode KeyMap::GetKeyCode(Event::ID eid)
-{
+SDL_KeyCode KeyMap::GetKeyCode(Event::ID eid) {
     std::map<SDL_KeyCode, Event::ID>::iterator it = KeyMap::Key.begin();
 
     while (it != KeyMap::Key.end() && it->second != eid)
@@ -101,6 +99,8 @@ std::string KeyMap::EventName(Event::ID eid) {
         return "power menu";
     case Event::ID::OPEN_INVENTORY:
         return "inventory";
+    case Event::ID::OPEN_QUEST_MENU:
+        return "quest menu";
     case Event::ID::MOVE_UP:
         return "move up";
     case Event::ID::MOVE_DOWN:

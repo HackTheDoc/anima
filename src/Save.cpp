@@ -107,6 +107,10 @@ PlayerStructure Save::LoadPlayer(int sid) {
 
     p.state = player["state"];
 
+    p.curr_main_quest = player["main quest"];
+    for (std::string q : player["side quests"])
+        p.curr_other_quests.push_back(q);
+
     auto entity = player["controlled entity"];
     p.controlled_entity.type = entity["type"];
     p.controlled_entity.name = entity["name"];
@@ -175,6 +179,9 @@ void Save::CreatePlayer(fs::path path) {
         {"y", 800},
 
         {"state", Player::State::FREE},
+
+        {"main quest", "An inmate"}, // will be changed
+        {"side quests", json::array()},
 
         {"controlled entity", CreateNoone()}
     };
@@ -284,6 +291,9 @@ void Save::SavePlayer(fs::path path) {
     data["y"] = player.pos.y;
 
     data["state"] = player.state;
+
+    data["main quest"] = player.curr_main_quest;
+    data["side quests"] = player.curr_other_quests;
 
     switch (player.controlled_entity.type)
     {

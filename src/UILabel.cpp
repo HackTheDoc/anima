@@ -3,16 +3,10 @@
 #include "include/Window.h"
 #include "include/Manager.h"
 
-UILabel::UILabel(std::string text, std::string font, const SDL_Color& color) {
-    rect.x = rect.y = 0;
+UILabel::UILabel(const std::string& text, const std::string& font, const SDL_Color& color, const int mlength, const bool centered) {
+    rect = {0,0,0,0};
 
-    setText(text, font, color);
-}
-
-UILabel::UILabel(std::string text, std::string font, const SDL_Color& color, int mlength) {
-    rect.x = rect.y = 0;
-
-    setText(text, font, color, mlength);
+    setText(text, font, color, mlength, centered);
 }
 
 UILabel::~UILabel() {}
@@ -26,22 +20,15 @@ void UILabel::destroy() {
     texture = nullptr;
 }
 
-void UILabel::setText(std::string text, std::string font, const SDL_Color& color) {
+void UILabel::setText(const std::string& text, const std::string& font, const SDL_Color& color, int mlength, const bool centered) {
+    if (mlength < 0) mlength = Window::screen.w;
+    
     texture = Manager::GenerateText(
-        text.c_str(),
-        Window::manager->getFont(font),
-        color
-    );
-
-    SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
-}
-
-void UILabel::setText(std::string text, std::string font, const SDL_Color& color, int mlength) {
-    texture = Manager::GenerateText(
-        text.c_str(),
+        text,
         Window::manager->getFont(font),
         color,
-        mlength
+        mlength,
+        centered
     );
 
     SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);

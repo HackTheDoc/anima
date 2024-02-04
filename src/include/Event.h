@@ -19,6 +19,7 @@ public:
         PAUSE,
         OPEN_POWER_MENU,
         OPEN_INVENTORY,
+        OPEN_QUEST_MENU,
 
         // FREE
         MOVE_UP,
@@ -81,6 +82,7 @@ private:
     void handlePauseMenuEvents();
     void handlePowerMenuEvents();
     void handleInventoryMenuEvents();
+    void handleQuestMenuEvents();
 
     /// @brief handle free state authorized events
     void handleFreeState();

@@ -17,3 +17,5 @@
 #include "PowerMenu.h"
 
 #include "InventoryMenu.h"
+
+#include "QuestMenu.h"

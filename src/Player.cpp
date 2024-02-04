@@ -6,13 +6,7 @@
 
 #include "include/Save.h"
 
-int sign(int n) {
-    if (n > 0)
-        return 1;
-    if (n < 0)
-        return -1;
-    return 0;
-}
+QuestSystem* Player::quest = nullptr;
 
 Sprite* Player::DEFAULT_SPRITE = nullptr;
 EntityCollider* Player::DEFAULT_COLLIDER = nullptr;
@@ -43,16 +37,25 @@ void Player::init() {
     name = data.name;
     hp = data.hp;
 
+    // powers
     numenLevel = data.numen_level;
     hasUnlockedPower[Power::BODY_CONTROL] = true;
     hasUnlockedPower[Power::BODY_RESURRECTION] = data.power[Power::BODY_RESURRECTION];
     hasUnlockedPower[Power::BODY_EXPLOSION] = data.power[Power::BODY_EXPLOSION];
     hasUnlockedPower[Power::SHIELD] = data.power[Power::SHIELD];
 
-    position = data.pos;
+    // state & quests
+    state = data.state;
 
+    quest = new QuestSystem(data.curr_main_quest);
+    for (std::string q : data.curr_other_quests)
+        quest->addQuest(q);
+
+    // pos & speed
+    position = data.pos;
     walkSpeed = 6;
 
+    // interactions
     interaction = Interaction::NONE;
     interactingWith = nullptr;
 
@@ -73,7 +76,7 @@ void Player::init() {
         this->walkSpeed = npc->walkSpeed;
     }
 
-    if (data.controlled_entity.type == Entity::Type::DOLL) {
+    else if (data.controlled_entity.type == Entity::Type::DOLL) {
         Doll* doll = new Doll(data.controlled_entity.inv);
         doll->init();
         doll->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
@@ -87,8 +90,6 @@ void Player::init() {
 
         this->walkSpeed = doll->walkSpeed;
     }
-
-    state = data.state;
 }
 
 void Player::update() {
@@ -256,19 +257,28 @@ PlayerStructure Player::getStructure() {
     e.name = "noone";
 
     PlayerStructure structure;
+
     structure.name = name;
     structure.hp = hp;
+    
     structure.numen_level = numenLevel;
     structure.power[Power::BODY_CONTROL] = hasUnlockedPower[Power::BODY_CONTROL];
     structure.power[Power::BODY_RESURRECTION] = hasUnlockedPower[Power::BODY_RESURRECTION];
     structure.power[Power::BODY_EXPLOSION] = hasUnlockedPower[Power::BODY_EXPLOSION];
     structure.power[Power::SHIELD] = hasUnlockedPower[Power::SHIELD];
+    
     structure.island = Game::island->getName();
+    
     structure.pos = position;
+    
     structure.controlled_entity = e;
 
     if (state == State::IN_DIALOG)
         structure.state = State::FREE;
+
+    structure.curr_main_quest = quest->main.title;
+    for (Quest q : quest->others)
+        structure.curr_other_quests.push_back(q.title);
 
     if (controlledEntity != nullptr) {
         switch (controlledEntity->type) {

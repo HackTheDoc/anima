@@ -300,6 +300,9 @@ void Event::handleKeyboardInputs() {
     case WindowState::Type::INVENTORY_MENU:
         handleInventoryMenuEvents();
         break;
+    case WindowState::Type::QUEST_MENU:
+        handleQuestMenuEvents();
+        break;
     case WindowState::Type::UNKNOWN:
     default:
         break;
@@ -346,6 +349,10 @@ void Event::handleMainMenuEvents() {
     case SDLK_p:
         window->openGame(4);
         break;
+#else
+    case SDLK_p:
+        window->openPlayMenu();
+        break;
 #endif
     case SDLK_o:
         window->openOptionsMenu();
@@ -366,6 +373,7 @@ void Event::handleOptionsMenuEvents() {
     case SDLK_q:
         window->openMainMenu();
         break;
+#ifdef DEV_MOD
     case SDLK_g:
         window->openGeneralOptions();
         break;
@@ -378,6 +386,7 @@ void Event::handleOptionsMenuEvents() {
     case SDLK_l:
         window->execute("next language");
         break;
+#endif
     default:
         break;
     }
@@ -467,6 +476,17 @@ void Event::handleInventoryMenuEvents() {
     }
 }
 
+void Event::handleQuestMenuEvents() {
+    if (e.type != SDL_KEYUP)
+        return;
+
+    SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
+    if (KeyMap::Key[k] == Event::ID::OPEN_QUEST_MENU) {
+        window->resumeGame();
+        return;
+    }
+}
+
 void Event::handleFreeState() {
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
 
@@ -510,6 +530,11 @@ void Event::handleFreeState() {
     }
 
     if (e.type == SDL_KEYUP) {
+#ifdef DEV_MOD
+        if (e.key.keysym.sym == SDLK_k && SDL_GetModState() & KMOD_CTRL)
+            Player::quest->main.finish();
+#endif
+
         switch (KeyMap::Key[k]) {
         case Event::ID::PAUSE:
             window->pauseGame();
@@ -519,6 +544,9 @@ void Event::handleFreeState() {
             break;
         case Event::ID::OPEN_INVENTORY:
             window->openInventory(Game::player->parseInventory());
+            break;
+        case Event::ID::OPEN_QUEST_MENU:
+            window->openQuestMenu();
             break;
         case Event::ID::MOVE_UP:
         case Event::ID::MOVE_DOWN:

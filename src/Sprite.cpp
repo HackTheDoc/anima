@@ -6,7 +6,7 @@
 Sprite::Sprite(Entity* o) {
     linkTo(o);
     texture = nullptr;
-    srcRect = destRect = {0,0,0,0};
+    srcRect = destRect = { 0,0,0,0 };
     frames = animationSpeed = animationIndex = 0;
 }
 
@@ -127,7 +127,7 @@ void Sprite::setSprite(std::string tag) {
 
 void Sprite::play(std::string animationName) {
     if (!animated) return;
-    
+
     currentAnimation = animationName;
     frames = animations[animationName].frames;
     animationIndex = animations[animationName].index;

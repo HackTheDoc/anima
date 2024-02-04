@@ -129,11 +129,95 @@ SDL_Texture* Manager::LoadTexture(const char* filepath) {
     return texture;
 }
 
-SDL_Texture* Manager::GenerateText(const char* text, TTF_Font* font, const SDL_Color& color, const int length) {
-    if (font == nullptr)
+SDL_Texture* Manager::GenerateText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length, const bool centered) {
+    if (font == nullptr || text.empty())
         return nullptr;
 
-    SDL_Surface* tmpSurface = TTF_RenderUTF8_Blended_Wrapped(font, text, color, length);
+    if (centered)
+        return GenerateCenterAnchoredText(text, font, color, length);
+
+    return GenerateLeftAnchoredText(text, font, color, length);
+}
+
+SDL_Texture* Manager::GenerateLeftAnchoredText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length) {
+    SDL_Surface* tmpSurface = TTF_RenderUTF8_Blended_Wrapped(font, text.c_str(), color, length);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
+    SDL_FreeSurface(tmpSurface);
+    return texture;
+}
+
+SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length) {
+    // add new line where needed
+    const int fontHeight = TTF_FontHeight(font);
+    int spaceWidth;
+    TTF_GlyphMetrics(font, ' ', nullptr, nullptr, nullptr, nullptr, &spaceWidth);
+
+    int totalWidth = 0;
+    int totalHeight = 0;
+    int currWidth = 0;
+    std::stringstream ss;
+
+    /* char by char method
+    for (const char& c : text) {
+        int charWidth;
+        TTF_GlyphMetrics(font, c, nullptr, nullptr, nullptr, nullptr, &charWidth);
+        currWidth += charWidth;
+
+        if (currWidth > length) {
+            totalWidth = std::max(totalWidth, currWidth);
+
+            ss << '\n';
+            currWidth = charWidth;
+            totalHeight += fontHeight;
+        }
+
+        ss << c;
+    }
+    */
+
+    std::stringstream rawss(text);
+    std::string w;
+    while (std::getline(rawss, w, ' ')) {
+        currWidth += spaceWidth;
+        
+        int wordWidth;
+        TTF_SizeText(font, w.c_str(), &wordWidth, nullptr);
+
+        if (currWidth + wordWidth > length) {
+            totalWidth = std::max(totalWidth, currWidth);
+            totalHeight += fontHeight;
+            ss << '\n';
+            currWidth = 0;
+        }
+
+        ss << w << ' ';
+        currWidth += wordWidth;
+    }
+
+    if (currWidth > 0) totalHeight += fontHeight;
+
+    // generate the actual surface
+    SDL_Surface* tmpSurface = SDL_CreateRGBSurfaceWithFormat(0, totalWidth, totalHeight, 32, SDL_PIXELFORMAT_RGBA8888);
+    if (tmpSurface == nullptr) return nullptr;
+    SDL_SetSurfaceBlendMode(tmpSurface, SDL_BLENDMODE_BLEND);
+
+    int currY = 0;
+    ss.clear();
+    ss.seekg(0);
+
+    std::string l;
+    while(std::getline(ss, l, '\n')) {
+        SDL_Surface* lSurface = TTF_RenderUTF8_Blended(font, l.c_str(), color);
+        if (lSurface == nullptr) continue;
+
+        SDL_Rect r = {(tmpSurface->w - lSurface->w)/2, currY, lSurface->w, lSurface->h};
+        SDL_UpperBlitScaled(lSurface, nullptr, tmpSurface, &r);
+
+        SDL_FreeSurface(lSurface);
+
+        currY += lSurface->h;
+    }
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
     return texture;
@@ -204,12 +288,8 @@ void Manager::updateCurrentWindowState() {
 }
 
 void Manager::renderCurrentWindowState() {
-    if (currentWindowState == WindowState::Type::PAUSE_MENU     ||
-        currentWindowState == WindowState::Type::POWER_MENU     ||
-        currentWindowState == WindowState::Type::INVENTORY_MENU
-    ) {
+    if (currentWindowState > WindowState::Type::GAME)
         windowStates[WindowState::Type::GAME]->render();
-    }
     windowStates[currentWindowState]->render();
 }
 
@@ -230,4 +310,3 @@ WindowState* Manager::getCurrentState() {
 WindowState::Type Manager::getCurrentStateID() {
     return currentWindowState;
 }
-

@@ -1,5 +1,6 @@
-#define DEV_MOD
 #pragma once
+
+#define DEV_MOD
 
 #include <string>
 #include <SDL2/SDL.h>
@@ -51,11 +52,12 @@ public:
     /// @brief destroy loaded components and kill runing subprocesses
     void kill();
 
+    /* ----- MAIN MENU ----- */
+
     /// @brief open main menu
     void openMainMenu();
 
-    /// @brief open the world selection menu
-    void openPlayMenu();
+    /* ----- OPTIONS ----- */
 
     /// @brief open the option menu
     void openOptionsMenu();
@@ -65,6 +67,11 @@ public:
 
     /// @brief open control section in the option menu
     void openControlsOptions();
+
+    /* ----- GAME ----- */
+
+    /// @brief open the world selection menu
+    void openPlayMenu();
 
     /// @brief open the game
     /// @param wid id of the world to load
@@ -81,11 +88,15 @@ public:
 
     void openInventory(Inventory* inv);
 
+    void openQuestMenu();
+
     /// @brief close pause menu
     void resumeGame();
 
-    /// @brief open the credits page
+    /* ----- CREDITS ----- */
     void openCredits();
+
+    /* ----- OTHER ----- */
 
     /// @brief execute a specific command - non implemented command will be throw
     /// @param cmd 

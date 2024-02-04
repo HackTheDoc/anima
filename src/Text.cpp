@@ -5,7 +5,7 @@
 #include <fstream>
 
 std::string Text::Get(std::string tag) {
-    nlohmann::json data = OpenTranslation();
+    json data = OpenTranslation();
 
     std::string t = data[tag];
 
@@ -13,7 +13,7 @@ std::string Text::Get(std::string tag) {
 }
 
 DialogTemplate Text::GetDialog(std::string tag) {
-    nlohmann::json raw = OpenTranslation();
+    json raw = OpenTranslation();
 
     auto data = raw["dialog"][tag];
     DialogTemplate d;
@@ -30,8 +30,22 @@ DialogTemplate Text::GetDialog(std::string tag) {
     return d;
 }
 
+QuestTemplate Text::GetQuest(const std::string& tag) {
+    json raw = OpenTranslation();
 
-nlohmann::json Text::OpenTranslation() {
+    auto data = raw["quest"][tag];
+    QuestTemplate q;
+
+    q.title = data["title"];
+    q.content = data["content"];
+
+    if (data["have next"]) q.next = data["next"];
+    else q.next = {};
+
+    return q;
+}
+
+json Text::OpenTranslation() {
     std::string path = "./data/translations/";
 
     switch (Window::language) {
@@ -46,7 +60,7 @@ nlohmann::json Text::OpenTranslation() {
     }
 
     std::fstream infile(path);
-    nlohmann::json data;
+    json data;
     infile >> data;
     infile.close();
 

@@ -11,7 +11,8 @@ public:
         GAME,
         PAUSE_MENU,
         POWER_MENU,
-        INVENTORY_MENU
+        INVENTORY_MENU,
+        QUEST_MENU
     };
 
     WindowState() {}

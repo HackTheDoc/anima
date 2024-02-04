@@ -85,24 +85,30 @@ void OptionsMenu::createControlsPage() {
         y + 5 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* ki = new UIKeyInput(Event::ID::INTERACT);
-    ki->place(
+    UIKeyInput* kqm = new UIKeyInput(Event::ID::OPEN_QUEST_MENU);
+    kqm->place(
         (w - kp->width()) / 2,
-        y + 9 * UIKeyInput::Height / 2
+        y + 7 * UIKeyInput::Height / 2
     );
 
     /* ----- POWERS ----- */
 
+    UIKeyInput* ki = new UIKeyInput(Event::ID::INTERACT);
+    ki->place(
+        (w - kp->width()) / 2,
+        y + 11 * UIKeyInput::Height / 2
+    );
+
     UIKeyInput* kbc = new UIKeyInput(Event::ID::BODY_CONTROL);
     kbc->place(
         (w - kp->width()) / 2,
-        y + 11 * UIKeyInput::Height / 2
+        y + 13 * UIKeyInput::Height / 2
     );
 
     UIKeyInput* kbr = new UIKeyInput(Event::ID::BODY_RESURRECTION);
     kbr->place(
         (w - kp->width()) / 2,
-        y + 13 * UIKeyInput::Height / 2
+        y + 15 * UIKeyInput::Height / 2
     );
 
     /* ----- MOVEMENTS ----- */
@@ -150,6 +156,7 @@ void OptionsMenu::createControlsPage() {
         kp,
         kpm,
         kim,
+        kqm,
 
         ki,
         kbc,
@@ -189,54 +196,62 @@ void OptionsMenu::reloadControlsPage() {
     );
 
     UIKeyInput* kim = static_cast<UIKeyInput*>(page["controls"][2]);
+    kpm->reload();
     kim->place(
         (w - kp->width()) / 2,
         y + 5 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* ki = static_cast<UIKeyInput*>(page["controls"][3]);
-    ki->reload();
-    ki->place(
+    UIKeyInput* kqm = static_cast<UIKeyInput*>(page["controls"][3]);
+    kqm->reload();
+    kqm->place(
         (w - kp->width()) / 2,
-        y + 9 * UIKeyInput::Height / 2
+        y + 7 * UIKeyInput::Height / 2
     );
 
     /* ----- POWERS ----- */
 
-    UIKeyInput* kbr = static_cast<UIKeyInput*>(page["controls"][4]);
-    kbr->reload();
-    kbr->place(
+    UIKeyInput* ki = static_cast<UIKeyInput*>(page["controls"][4]);
+    ki->reload();
+    ki->place(
         (w - kp->width()) / 2,
         y + 11 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* kbc = static_cast<UIKeyInput*>(page["controls"][5]);
-    kbc->place(
+    UIKeyInput* kbr = static_cast<UIKeyInput*>(page["controls"][5]);
+    kbr->reload();
+    kbr->place(
         (w - kp->width()) / 2,
         y + 13 * UIKeyInput::Height / 2
     );
 
+    UIKeyInput* kbc = static_cast<UIKeyInput*>(page["controls"][6]);
+    kbc->place(
+        (w - kp->width()) / 2,
+        y + 15 * UIKeyInput::Height / 2
+    );
+
     /* ----- MOVEMENTS ----- */
 
-    UIKeyInput* kmu = static_cast<UIKeyInput*>(page["controls"][6]);
+    UIKeyInput* kmu = static_cast<UIKeyInput*>(page["controls"][7]);
     kmu->reload();
     kmu->place(
         w + (w - kp->width()) / 2,
         y + UIKeyInput::Height / 2
     );
-    UIKeyInput* kmd = static_cast<UIKeyInput*>(page["controls"][7]);
+    UIKeyInput* kmd = static_cast<UIKeyInput*>(page["controls"][8]);
     kmd->reload();
     kmd->place(
         w + (w - kp->width()) / 2,
         y + 3 * UIKeyInput::Height / 2
     );
-    UIKeyInput* kml = static_cast<UIKeyInput*>(page["controls"][8]);
+    UIKeyInput* kml = static_cast<UIKeyInput*>(page["controls"][9]);
     kml->reload();
     kml->place(
         w + (w - kp->width()) / 2,
         y + 5 * UIKeyInput::Height / 2
     );
-    UIKeyInput* kmr = static_cast<UIKeyInput*>(page["controls"][9]);
+    UIKeyInput* kmr = static_cast<UIKeyInput*>(page["controls"][10]);
     kmr->reload();
     kmr->place(
         w + (w - kp->width()) / 2,
@@ -245,19 +260,19 @@ void OptionsMenu::reloadControlsPage() {
 
     /* ----- DIALOGS ----- */
     
-    UIKeyInput* kvd = static_cast<UIKeyInput*>(page["controls"][10]);
+    UIKeyInput* kvd = static_cast<UIKeyInput*>(page["controls"][11]);
     kvd->reload();
     kvd->place(
         2*w + (w - kp->width()) / 2,
         y + UIKeyInput::Height / 2
     );
-    UIKeyInput* kna = static_cast<UIKeyInput*>(page["controls"][11]);
+    UIKeyInput* kna = static_cast<UIKeyInput*>(page["controls"][12]);
     kna->reload();
     kna->place(
         2*w + (w - kp->width()) / 2,
         y + 3 * UIKeyInput::Height / 2
     );
-    UIKeyInput* kpa = static_cast<UIKeyInput*>(page["controls"][12]);
+    UIKeyInput* kpa = static_cast<UIKeyInput*>(page["controls"][13]);
     kpa->reload();
     kpa->place(
         2*w + (w - kp->width()) / 2,

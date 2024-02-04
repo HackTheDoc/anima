@@ -58,7 +58,7 @@ public:
     static SDL_Texture* LoadTexture(const char* filepath);
     
     /// @brief Generate a text texture
-    static SDL_Texture* GenerateText(const char* text, TTF_Font* font, const SDL_Color& color, const int length = Window::screen.w);
+    static SDL_Texture* GenerateText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length = Window::screen.w, const bool centered = false);
 
     /// @brief Draw a texture on the window
     /// @param texture texture to draw
@@ -132,4 +132,7 @@ private:
 
     std::map<WindowState::Type, WindowState*> windowStates;
     WindowState::Type currentWindowState, previousWindowState;
+
+    static SDL_Texture* GenerateLeftAnchoredText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length);
+    static SDL_Texture* GenerateCenterAnchoredText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length);
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "../Components/QuestSystem.h"
 
 class NPC;
 class DeadBody;
@@ -39,8 +40,9 @@ public:
         FREE,
         IN_DIALOG
     };
-
     State state;
+
+    static QuestSystem* quest;
 
     Interaction interaction;
     NPC *interactingWith;
@@ -76,6 +78,9 @@ struct PlayerStructure {
     bool power[Power::NUMBER];
 
     Player::State state;
+
+    std::string curr_main_quest;
+    std::vector<std::string> curr_other_quests;
 
     std::string island;
     Vector2D pos;

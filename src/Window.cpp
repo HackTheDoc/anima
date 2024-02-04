@@ -130,6 +130,8 @@ void Window::kill() {
     SDL_Quit();
 }
 
+/* ----- MAIN MENU ----- */
+
 void Window::openMainMenu() {
     manager->clearWindowStates();
 
@@ -137,10 +139,7 @@ void Window::openMainMenu() {
     manager->setCurrentWindowState(WindowState::Type::MAIN);
 }
 
-void Window::openPlayMenu() {
-    manager->addWindowState(WindowState::Type::PLAY_MENU, new PlayMenu());
-    manager->setCurrentWindowState(WindowState::Type::PLAY_MENU);
-}
+/* ----- OPTIONS ----- */
 
 void Window::openOptionsMenu() {
     manager->addWindowState(WindowState::Type::OPTIONS_MENU, new OptionsMenu());
@@ -159,6 +158,13 @@ void Window::openControlsOptions() {
     OptionsMenu* om = static_cast<OptionsMenu*>(ws);
 
     om->usePage("controls");
+}
+
+/* ----- GAME ----- */
+
+void Window::openPlayMenu() {
+    manager->addWindowState(WindowState::Type::PLAY_MENU, new PlayMenu());
+    manager->setCurrentWindowState(WindowState::Type::PLAY_MENU);
 }
 
 void Window::openGame(int wid) {
@@ -228,17 +234,26 @@ void Window::openInventory(Inventory* inv) {
     manager->setCurrentWindowState(WindowState::Type::INVENTORY_MENU);
 }
 
+void Window::openQuestMenu() {
+    manager->addWindowState(WindowState::Type::QUEST_MENU, new QuestMenu());
+    manager->setCurrentWindowState(WindowState::Type::QUEST_MENU);
+}
+
 void Window::resumeGame() {
     manager->removeWindowState(manager->getCurrentStateID());
 
     manager->setCurrentWindowState(WindowState::Type::GAME);
 }
 
+/* ----- CREDITS ----- */
+
 void Window::openCredits() {
     manager->removeWindowState(WindowState::Type::MAIN);
     manager->addWindowState(WindowState::Type::CREDITS, new Credits());
     manager->setCurrentWindowState(WindowState::Type::CREDITS);
 }
+
+/* ----- OTHER ----- */
 
 void Window::execute(std::string cmd) {
     if (cmd == "next window mode") {

@@ -111,6 +111,9 @@ void UIKeyInput::setTitle() {
     case Event::ID::OPEN_INVENTORY:
         t = Text::Get("Inventory");
         break;
+    case Event::ID::OPEN_QUEST_MENU:
+        t = Text::Get("Quests");
+        break;
     case Event::ID::MOVE_UP:
         t = Text::Get("Move Up");
         break;
