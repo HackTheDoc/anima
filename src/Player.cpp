@@ -94,6 +94,42 @@ void Player::init() {
 
 void Player::update() {
     Entity::update();
+
+    if (controlledEntity == nullptr || controlledEntity->type != Entity::Type::NON_PLAYER_CHARACTER || controlledEntity->immortal)
+        return;
+
+    timeLeftBeforeHealthDecreasalOfControlledEntity--;
+
+    if (timeLeftBeforeHealthDecreasalOfControlledEntity > 0)
+        return;
+
+    controlledEntity->hp--;
+    setControlledEntityHealthDecreasalRate();
+
+    // if the controlled entity is dead
+    if (controlledEntity->hp <= 0) {
+        UI::AddPopUp("YOUR BODY DIED");
+
+        bool hasdialog = false;
+        if (controlledEntity->type == Entity::Type::NON_PLAYER_CHARACTER) {
+            NPC* npc = static_cast<NPC*>(controlledEntity);
+            hasdialog = npc->haveDialog;
+        }
+
+        Game::island->addDeadBody(
+            controlledEntity->species, 
+            controlledEntity->type, 
+            controlledEntity->name,
+            position.x,
+            position.y,
+            hasdialog,
+            controlledEntity->behavior,
+            controlledEntity->inventory
+        );        
+        
+        controlledEntity->kill();
+        reset();
+    }
 }
 
 void Player::draw() {
@@ -115,7 +151,9 @@ void Player::interactWith(Entity* e) {
                 Game::ui->useHint(" - Talk", e);
         break;
     case Entity::Type::DEAD_BODY:
-        if (haveUnlockedPower(Power::BODY_RESURRECTION))
+        if (controlled)
+            Game::ui->useHint(" - Search", e);
+        else if (haveUnlockedPower(Power::BODY_RESURRECTION))
             Game::ui->useHint(" - Resurrect", e);
     default:
         break;
@@ -178,30 +216,27 @@ void Player::takeControlOf(Entity* e) {
     e->controlled = true;
     this->controlled = true;
 
+    setControlledEntityHealthDecreasalRate();
+
     this->walkSpeed = e->walkSpeed;
     playAnimation("Idle");
 }
 
 void Player::releaseControledEntity() {
     controlledEntity->sprite->linkTo(controlledEntity);
-    this->sprite = DEFAULT_SPRITE;
 
     controlledEntity->collider->setOwner(controlledEntity);
-    this->collider = DEFAULT_COLLIDER;
 
     controlledEntity->detector->setOwner(controlledEntity);
-    this->detector = DEFAULT_DETECTOR;
 
     controlledEntity->position = this->position;
     controlledEntity->resetMovement();
 
+    controlledEntity->controlled = false;
+
     Game::island->addEntity(controlledEntity);
 
-    controlledEntity->controlled = false;
-    this->controlledEntity = nullptr;
-    this->controlled = false;
-
-    walkSpeed = 6;
+    reset();
 }
 
 void Player::resurrectEntity(DeadBody* body) {
@@ -216,7 +251,7 @@ void Player::resurrectEntity(DeadBody* body) {
 
     switch (body->ownerType) {
     case Entity::Type::NON_PLAYER_CHARACTER:
-        Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog, body->behavior);
+        Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog, body->behavior, body->inventory);
         break;
     default:
         break;
@@ -265,17 +300,17 @@ PlayerStructure Player::getStructure() {
 
     structure.name = name;
     structure.hp = hp;
-    
+
     structure.numen_level = numenLevel;
     structure.power[Power::BODY_CONTROL] = hasUnlockedPower[Power::BODY_CONTROL];
     structure.power[Power::BODY_RESURRECTION] = hasUnlockedPower[Power::BODY_RESURRECTION];
     structure.power[Power::BODY_EXPLOSION] = hasUnlockedPower[Power::BODY_EXPLOSION];
     structure.power[Power::SHIELD] = hasUnlockedPower[Power::SHIELD];
-    
+
     structure.island = Game::island->getName();
-    
+
     structure.pos = position;
-    
+
     structure.controlled_entity = e;
 
     if (state == State::IN_DIALOG)
@@ -302,4 +337,36 @@ PlayerStructure Player::getStructure() {
     }
 
     return structure;
+}
+
+/// TODO: define the health decreasal rate for each species
+void Player::setControlledEntityHealthDecreasalRate() {
+    if (controlledEntity == nullptr || controlledEntity->type != Entity::Type::NON_PLAYER_CHARACTER) {
+        timeLeftBeforeHealthDecreasalOfControlledEntity = 0;
+        return;
+    }
+
+    switch (controlledEntity->species) {
+    case Entity::Species::FAIRIES:
+        timeLeftBeforeHealthDecreasalOfControlledEntity = 300;
+        break;
+    case Entity::Species::GOBLIN:
+        timeLeftBeforeHealthDecreasalOfControlledEntity = 450;
+        break;
+    case Entity::Species::HUMAN:
+    default:
+        timeLeftBeforeHealthDecreasalOfControlledEntity = 600;
+        break;
+    }
+}
+
+void Player::reset() {
+    sprite = DEFAULT_SPRITE;
+    collider = DEFAULT_COLLIDER;
+    detector = DEFAULT_DETECTOR;
+
+    controlledEntity = nullptr;
+    controlled = false;
+
+    walkSpeed = 6;
 }

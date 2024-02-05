@@ -32,13 +32,20 @@ private:
     bool hasUnlockedPower[Power::NUMBER];
 
     Entity *controlledEntity;
+    int timeLeftBeforeHealthDecreasalOfControlledEntity;
+    void setControlledEntityHealthDecreasalRate();
 
     void interactWithNPC(NPC *npc);
+
+    // become a spirit;
+    void reset();
 
 public:
     enum State {
         FREE,
-        IN_DIALOG
+        IN_DIALOG,
+
+        DEAD
     };
     State state;
 

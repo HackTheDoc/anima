@@ -154,8 +154,7 @@ Inventory Save::LoadInventory(json inventory) {
 
     inv.capacity = inventory["capacity"];
 
-    for (auto i : inventory["items"])
-    {
+    for (auto i : inventory["items"]) {
         inv.item.push_back(Item::Create(i));
     }
 
@@ -214,7 +213,7 @@ void Save::CreateIsland_0(fs::path path) {
         }},
         {"entities", {
             CreateDoll(432, 544, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
-            CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown"),
+            CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown", CreateInventory(1)),
             CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1, {Item::ID::LAPIS_MAGICIS}), 1)
         }},
         {"items", {
@@ -398,7 +397,7 @@ json Save::CreateNoone() {
     };
 }
 
-json Save::CreateNPC(const int x, const int y, const int species, const int behavior, const std::string& name, const json inventory, const int hp, const bool hasdialog) {
+json Save::CreateNPC(const int x, const int y, const int species, const int behavior, const std::string& name, const json& inventory, const int hp, const bool hasdialog) {
     return {
         {"type", Entity::Type::NON_PLAYER_CHARACTER},
         {"species", species},
@@ -412,7 +411,7 @@ json Save::CreateNPC(const int x, const int y, const int species, const int beha
     };
 }
 
-json Save::CreateDoll(const int x, const int y, const json inv) {
+json Save::CreateDoll(const int x, const int y, const json& inv) {
     return {
         {"type", Entity::Type::DOLL},
         {"x", x},
@@ -421,7 +420,7 @@ json Save::CreateDoll(const int x, const int y, const json inv) {
     };
 }
 
-json Save::CreateDeadBody(const int x, const int y, const int species, const int otype, const int obehavior, const std::string& oname, const bool ohasdialog) {
+json Save::CreateDeadBody(const int x, const int y, const int species, const int otype, const int obehavior, const std::string& oname, const json& oinv, const bool ohasdialog) {
     return {
         {"type", Entity::Type::DEAD_BODY},
         {"owner type", otype},
@@ -430,6 +429,7 @@ json Save::CreateDeadBody(const int x, const int y, const int species, const int
         {"name", oname},
         {"x", x},
         {"y", y},
+        {"inventory", oinv},
         {"dialog", ohasdialog}
     };
 }
@@ -458,5 +458,5 @@ json Save::OrganizeDoll(EntityStructure dolls) {
 }
 
 json Save::OrganizeDeadBody(EntityStructure s) {
-    return CreateDeadBody(s.pos.x, s.pos.y, s.species, s.type2, s.behavior, s.name, s.npc_hasdialog);
+    return CreateDeadBody(s.pos.x, s.pos.y, s.species, s.type2, s.behavior, s.name, OrganizeInventory(s.inv), s.npc_hasdialog);
 }

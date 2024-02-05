@@ -60,7 +60,7 @@ void Island::init() {
             addDoll(entity["x"], entity["y"], Save::LoadInventory(entity["inventory"]));
             break;
         case Entity::DEAD_BODY:
-            addDeadBody(entity["species"], entity["owner type"], entity["name"], entity["x"], entity["y"], entity["dialog"], entity["behavior"]);
+            addDeadBody(entity["species"], entity["owner type"], entity["name"], entity["x"], entity["y"], entity["dialog"], entity["behavior"], Save::LoadInventory(entity["inventory"]));
             break;
         default:
             break;
@@ -176,7 +176,7 @@ void Island::addDoll(const int x, const int y, const Inventory& inv) {
     addEntity(doll);
 }
 
-void Island::addDeadBody(const Entity::Species species, const Entity::Type type, const std::string& name, const int x, const int y, const bool haveDialog, const Entity::Behavior behavior) {
+void Island::addDeadBody(const Entity::Species species, const Entity::Type type, const std::string& name, const int x, const int y, const bool haveDialog, const Entity::Behavior behavior, const Inventory& inv) {
     DeadBody* b = new DeadBody(species);
     b->init();
     b->ownerType = type;
@@ -194,6 +194,8 @@ void Island::addDeadBody(const Entity::Species species, const Entity::Type type,
         b->numenLevel = INT32_MAX;
         break;
     }
+
+    b->inventory = inv;
 
     entities.push_back(b);
 }

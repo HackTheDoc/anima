@@ -51,6 +51,9 @@ void UI::init() {
 
     UIHint* pickUp = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Pick up"), "default");
     add(" - Pick up", pickUp);
+
+    UIHint* search = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Search"), "default");
+    add(" - Search", search);
 }
 
 void UI::update() {

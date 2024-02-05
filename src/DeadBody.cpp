@@ -28,6 +28,7 @@ EntityStructure DeadBody::getStructure() {
         .species = species,
         .name = name,
         .pos = position,
+        .inv = inventory,
         .npc_hasdialog = ownerHasDialog,
         .behavior = behavior
     };

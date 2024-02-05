@@ -102,11 +102,11 @@ private:
 
     static json CreateNoone();
     
-    static json CreateNPC(const int x, const int y, const int species, const int behavior, const std::string& name, const json inventory, const int hp=3, const bool hasdialog=false);
+    static json CreateNPC(const int x, const int y, const int species, const int behavior, const std::string& name, const json& inventory, const int hp=3, const bool hasdialog=false);
 
-    static json CreateDoll(const int x, const int y, const json inv);
+    static json CreateDoll(const int x, const int y, const json& inv);
 
-    static json CreateDeadBody(const int x, const int y, const int species, const int otype, const int obehavior, const std::string& oname, const bool ohasdialog=false);
+    static json CreateDeadBody(const int x, const int y, const int species, const int otype, const int obehavior, const std::string& oname, const json& oinv, const bool ohasdialog=false);
 
     /* ----- STRUCTURE ORGANIZATION ----- */
     /// @brief structure a json object with an inventory's informations
