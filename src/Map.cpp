@@ -24,6 +24,9 @@ void Map::update() {
         for (auto t : l) {
             t->update();
 
+#ifdef DEV_MOD
+            if (!Game::player->controlled) continue;
+#endif
             if (!t->walkable && Collision::AABB(Game::player->collider->rect, t->collider)) {
                 Game::player->reverseMovement();
                 Game::player->resetMovement();
@@ -70,7 +73,7 @@ Tile* Map::getTileAt(Vector2D p) {
 
 void Map::setTile(int x, int y, Tile::Type type) {
     Tile* t = new Tile(type);
-    
+
     t->init(x, y);
 
     tiles[y][x] = t;

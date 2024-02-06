@@ -50,8 +50,8 @@ void Game::update() {
     // camerapp
     int mapWidth, mapHeight;
     island->getSize(&mapWidth, &mapHeight);
-    int maxCameraX = mapWidth - camera.w;
-    int maxCameraY = mapHeight - camera.h;
+    const int maxCameraX = mapWidth - camera.w;
+    const int maxCameraY = mapHeight - camera.h;
 
     camera.x = player->position.x - Window::screen.w*.5;
     camera.y = player->position.y - Window::screen.h*.5;
