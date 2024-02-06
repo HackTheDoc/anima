@@ -63,7 +63,8 @@ private:
     
     /// @brief create a new player.json file at the given path
     /// @param path be careful of the extension
-    static void CreatePlayer(fs::path path);
+    /// @param pos starting position of the player
+    static void CreatePlayer(fs::path path, const Vector2D& pos);
 
     /// @brief create a new island-0.json file a the given path
     /// @param path be careful of the extension
@@ -72,6 +73,8 @@ private:
     /// @brief create a new island-1.json file a the given path
     /// @param path be careful of the extension
     static void CreateIsland_1(fs::path path);
+
+    static void CreateIsland_LostTemple(fs::path path, const Vector2D& dpos1, const Vector2D& dpos2, const Vector2D& dpos3);
     
     /* ----- SAVE ----- */
 

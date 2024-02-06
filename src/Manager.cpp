@@ -12,7 +12,7 @@ Manager::Manager() {
     textures["path"]        = LoadTexture("./assets/tiles/path.png"         );
 
     // Entities 
-    textures["player"]      = LoadTexture("./assets/sprites/player.png"     );
+    textures["spirit"]      = LoadTexture("./assets/sprites/Spirit.png"     );
     textures["human"]       = LoadTexture("./assets/sprites/Human.png"      );
     textures["goblin"]      = LoadTexture("./assets/sprites/Goblin.png"     );
     textures["fairy"]       = LoadTexture("./assets/sprites/Fairy.png"     );

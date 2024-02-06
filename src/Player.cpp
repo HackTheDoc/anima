@@ -25,7 +25,7 @@ void Player::init() {
     Entity::init();
 
     DEFAULT_SPRITE = new Sprite(this);
-    DEFAULT_SPRITE->init("player", 6);
+    DEFAULT_SPRITE->init("spirit", 6);
     sprite = DEFAULT_SPRITE;
 
     DEFAULT_COLLIDER = new EntityCollider(this);
@@ -137,9 +137,20 @@ void Player::draw() {
 }
 
 void Player::kill() {
-    Entity::kill();
-
+    if (controlledEntity != nullptr)
+        controlledEntity->kill();
     controlledEntity = nullptr;
+
+    DEFAULT_SPRITE->destroy();
+    delete DEFAULT_SPRITE;
+    DEFAULT_SPRITE = nullptr;
+
+    delete DEFAULT_COLLIDER;
+    DEFAULT_COLLIDER = nullptr;
+
+    delete DEFAULT_DETECTOR;
+    DEFAULT_DETECTOR = nullptr;
+
     quest = nullptr;
 }
 
@@ -348,7 +359,7 @@ void Player::setControlledEntityHealthDecreasalRate() {
 
     switch (controlledEntity->species) {
     case Entity::Species::FAIRIES:
-        timeLeftBeforeHealthDecreasalOfControlledEntity = 300;
+        timeLeftBeforeHealthDecreasalOfControlledEntity = 180;
         break;
     case Entity::Species::GOBLIN:
         timeLeftBeforeHealthDecreasalOfControlledEntity = 450;

@@ -8,6 +8,8 @@ obj/
 
 temp/
 
+tiled/
+
 *.d
 
 todo.md

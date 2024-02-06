@@ -7,19 +7,24 @@ std::chrono::time_point<std::chrono::system_clock> Game::StartTime;
 int Game::WorldID = 1;
 std::string Game::WorldName = "World 0";
 
-UI* Game::ui = new UI();
+UI* Game::ui = nullptr;
 
 Island* Game::island = nullptr;
 std::map<std::string, Island*> Game::exploredIslands = {};
 
 SDL_Rect Game::camera = {0, 0, 0, 0};
-Player* Game::player = new Player();
+Player* Game::player = nullptr;
 
 Game::Game() {}
 
 Game::~Game() {}
 
 void Game::init() {
+    ui = new UI();
+    player = new Player();
+    island = nullptr;
+    exploredIslands.clear();
+
     camera = Window::screen;
     
     player->init();

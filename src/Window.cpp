@@ -214,7 +214,7 @@ void Window::quitGame() {
     outfile << std::setw(2) << config << std::endl;
     outfile.close();
 
-   openMainMenu();
+    openMainMenu();
 }
 
 void Window::pauseGame() {
