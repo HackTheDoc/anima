@@ -194,15 +194,20 @@ void Save::CreatePlayer(fs::path path, const Vector2D& pos) {
         {"exp power unlocked", false},
         {"shield power unlocked", false},
 
+#ifdef DEV_MOD
+        {"island", "island-0"},
+        {"x", 384},
+        {"y", 768},
+#else
         {"island", "lost-temple"},
         {"x", pos.x},
         {"y", pos.y},
+#endif
 
         {"state", Player::State::FREE},
 
         {"main quest", "An inmate"}, // will be changed
         {"side quests", json::array()},
-
         {"controlled entity", CreateDoll(pos.x, 2976, CreateInventory(1))}
     };
 
@@ -234,8 +239,8 @@ void Save::CreateIsland_0(fs::path path) {
         }},
         {"entities", {
             CreateDoll(432, 544, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
-            CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown", CreateInventory(1)),
-            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1, {Item::ID::LAPIS_MAGICIS}), 1)
+            CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown", CreateInventory(1, {Item::ID::LAPIS_MAGICIS})),
+            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1), 1)
         }},
         {"items", {
             CreateItem(1024, 512, Item::ID::LAPIS_VITAE)
@@ -491,7 +496,11 @@ json Save::CreatePortal(const int xp, const int yp, const std::string& dest, con
         {"destination", dest},
         {"destinationX", xd},
         {"destinationY", yd},
+#ifdef DEV_MOD
+        {"damage level", 0}
+#else
         {"damage level", damage_level}
+#endif
     };
 }
 
@@ -499,10 +508,7 @@ json Save::CreateNoone() {
     return {
         {"type", Entity::Type::UNKNOWN},
         {"name", "noone"},
-        {"inventory", {
-            {"capacity", 0},
-            json::array()
-        }}
+        {"inventory", CreateInventory(0)}
     };
 }
 

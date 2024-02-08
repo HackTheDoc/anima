@@ -36,6 +36,9 @@ private:
     void setControlledEntityHealthDecreasalRate();
 
     void interactWithNPC(NPC *npc);
+    void interactWithDeadBody(DeadBody* body);
+    void searchDeadBody(DeadBody* body);
+    void resurrectDeadBody(DeadBody *body);
 
     // become a spirit;
     void reset();
@@ -65,7 +68,6 @@ public:
     void interactWith(Entity *e);
     void takeControlOf(Entity *e);
     void releaseControledEntity();
-    void resurrectEntity(DeadBody *body);
 
     void modifyNumenLevelBy(int ammount);
 

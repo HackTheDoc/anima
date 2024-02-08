@@ -174,13 +174,15 @@ void Player::interactWith(Entity* e) {
     case Interaction::USE:
         if (NPC* npc = dynamic_cast<NPC*>(e))
             interactWithNPC(npc);
+        if (DeadBody* body = dynamic_cast<DeadBody*>(e))
+            searchDeadBody(body);
         break;
     case Interaction::TAKE_CONTROL:
         takeControlOf(e);
         break;
     case Interaction::RESURRECT:
         if (DeadBody* body = dynamic_cast<DeadBody*>(e))
-            resurrectEntity(body);
+            resurrectDeadBody(body);
         break;
     default:
         break;
@@ -199,6 +201,43 @@ void Player::interactWithNPC(NPC* npc) {
 
     if (npc->haveDialog)
         npc->startDialog();
+}
+
+void Player::searchDeadBody(DeadBody* body) {
+    if (!controlled) return;
+
+    Inventory* inv = parseInventory();
+
+    if (inv->is_full())
+        UI::AddPopUp("INVENTORY FULL");
+    else if (body->inventory.is_empty())
+        UI::AddPopUp("NOTHING WAS FOUND");
+    else {
+        UI::AddPopUp("YOU FOUND SOMETHING");
+        Item* i = body->inventory.extract_random_item();
+        inv->add_item(i);
+    }
+}
+
+void Player::resurrectDeadBody(DeadBody* body) {
+    if (body->numenLevel > this->numenLevel) {
+        UI::AddPopUp("YOU LACK MENTAL POWER");
+        return;
+    }
+
+    Game::ui->useHint("NONE");
+
+    Game::island->removeEntity(body);
+
+    switch (body->ownerType) {
+    case Entity::Type::NON_PLAYER_CHARACTER:
+        Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog, body->behavior, body->inventory);
+        break;
+    default:
+        break;
+    }
+
+    modifyNumenLevelBy(-3);
 }
 
 void Player::takeControlOf(Entity* e) {
@@ -248,27 +287,6 @@ void Player::releaseControledEntity() {
     Game::island->addEntity(controlledEntity);
 
     reset();
-}
-
-void Player::resurrectEntity(DeadBody* body) {
-    if (body->numenLevel > this->numenLevel) {
-        UI::AddPopUp("YOU LACK MENTAL POWER");
-        return;
-    }
-
-    Game::ui->useHint("NONE");
-
-    Game::island->removeEntity(body);
-
-    switch (body->ownerType) {
-    case Entity::Type::NON_PLAYER_CHARACTER:
-        Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog, body->behavior, body->inventory);
-        break;
-    default:
-        break;
-    }
-
-    modifyNumenLevelBy(-3);
 }
 
 void Player::modifyNumenLevelBy(int ammount) {
