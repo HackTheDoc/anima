@@ -36,7 +36,6 @@ private:
     void setControlledEntityHealthDecreasalRate();
 
     void interactWithNPC(NPC *npc);
-    void interactWithDeadBody(DeadBody* body);
     void searchDeadBody(DeadBody* body);
     void resurrectDeadBody(DeadBody *body);
 
@@ -88,8 +87,8 @@ struct PlayerStructure {
 
     Player::State state;
 
-    std::string curr_main_quest;
-    std::vector<std::string> curr_other_quests;
+    Quest::ID curr_main_quest;
+    std::vector<Quest::ID> curr_other_quests;
 
     std::string island;
     Vector2D pos;

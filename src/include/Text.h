@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <string>
-#include <optional>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -25,7 +24,6 @@ struct DialogTemplate {
 struct QuestTemplate {
     std::string title;
     std::string content;
-    std::optional<std::string> next;
 };
 
 class Text {
@@ -45,7 +43,7 @@ public:
     /// @return structure containing the dialog's data
     static DialogTemplate GetDialog(std::string tag);
 
-    static QuestTemplate GetQuest(const std::string& tag);
+    static QuestTemplate GetQuest(const int qid);
 
 private:
     /// @brief open the right translation file

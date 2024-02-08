@@ -12,7 +12,8 @@ public:
         PAUSE_MENU,
         POWER_MENU,
         INVENTORY_MENU,
-        QUEST_MENU
+        QUEST_MENU,
+        DEATH_MENU
     };
 
     WindowState() {}

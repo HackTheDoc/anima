@@ -39,6 +39,11 @@ void Game::init() {
 }
 
 void Game::update() {
+    if (player->has_died()) {
+        Window::event.raise(Event::ID::OPEN_PLAYER_DEATH_MENU);
+        return;
+    }
+
     ui->useHint("NONE");
 
     player->update();

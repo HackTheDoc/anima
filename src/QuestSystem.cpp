@@ -1,39 +1,41 @@
 #include "include/Game/Components/QuestSystem.h"
 
-#include "include/Text.h"
+Quest::Quest() : id(ID::UNKNOWN) {}
 
-void Quest::load(const std::string& t) {
-    QuestTemplate q = Text::GetQuest(t);
-
-    title = q.title;
-    content = q.content;
-    next = q.next;
-}
+Quest::Quest(const ID id) : id(id) {}
 
 void Quest::finish() {
-    if (!next.has_value()) return;
-
-    load(next.value());
+    if (const auto& n = next())
+        id = n.value();
 }
 
 void Quest::isFinished() {
     /// TODO:
 }
 
-QuestSystem::QuestSystem(const std::string& curr_main) {
+std::optional<Quest::ID> Quest::next() {
+    switch (id) {
+    case ID::AN_INMATE:
+        return ID::COMING_SOON;
+    case ID::UNKNOWN:
+    case ID::COMING_SOON:
+    default:
+        return {};
+    }
+}
+
+QuestSystem::QuestSystem(const Quest::ID curr_main) {
     others = {};
     curr_other = -1;
-
-    main.load(curr_main);
+    main.id = curr_main;
 }
 
 QuestSystem::~QuestSystem() {
     others.clear();
 }
 
-void QuestSystem::addQuest(const std::string& t) {
-    Quest q;
-    q.load(t);
+void QuestSystem::addQuest(const Quest::ID t) {
+    Quest q{t};
     others.push_back(q);
     curr_other++;
 }

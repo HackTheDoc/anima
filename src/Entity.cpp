@@ -153,6 +153,10 @@ bool Entity::addItemToInventory(Item* item) {
     return true;
 }
 
+bool Entity::has_died() {
+    return hp == 0;
+}
+
 EntityStructure Entity::getStructure() {
     return { type, Entity::Type::UNKNOWN, species, name, hp, position, inventory, false };
 }

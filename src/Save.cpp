@@ -129,7 +129,7 @@ PlayerStructure Save::LoadPlayer(int sid) {
     p.state = player["state"];
 
     p.curr_main_quest = player["main quest"];
-    for (std::string q : player["side quests"])
+    for (const Quest::ID q : player["side quests"])
         p.curr_other_quests.push_back(q);
 
     auto entity = player["controlled entity"];
@@ -187,7 +187,7 @@ Inventory Save::LoadInventory(json inventory) {
 void Save::CreatePlayer(fs::path path, const Vector2D& pos) {
     json player = {
         {"name", "unknown"},
-        {"hp", Entity::MAX_HP},
+        {"hp", 1},
 
         {"mental power", 1}, // start with 1 mental power
         {"res power unlocked", false},
@@ -206,7 +206,7 @@ void Save::CreatePlayer(fs::path path, const Vector2D& pos) {
 
         {"state", Player::State::FREE},
 
-        {"main quest", "An inmate"}, // will be changed
+        {"main quest", Quest::ID::AN_INMATE}, // will be changed
         {"side quests", json::array()},
         {"controlled entity", CreateDoll(pos.x, 2976, CreateInventory(1))}
     };

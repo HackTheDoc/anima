@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-std::string to_string(Event::ID eid) {
+std::string to_string(const Event::ID eid) {
     switch (KeyMap::GetKeyCode(eid)) {
     case SDLK_a:
         return "A";
@@ -179,7 +179,7 @@ void Event::linkTo(Window* w) {
     window = w;
 }
 
-void Event::handleButtonClick(UIButton::ID id) {
+void Event::handleButtonClick(const UIButton::ID id) {
     switch (id) {
         /* ----- MAIN MENU BUTTONS ----- */
     case UIButton::ID::QUIT:
@@ -259,12 +259,17 @@ void Event::handleButtonClick(UIButton::ID id) {
         window->openMainMenu();
         break;
 
+        /* ----- DEATH MENU BUTTONS ----- */
+    case UIButton::ID::LOAD_LAST_SAVE:
+        window->loadLastGameSave();
+        break;
+    
     default:
         break;
     }
 }
 
-void Event::handleSelection(UIChoice::ID id) {
+void Event::handleSelection(const UIChoice::ID id) {
     switch (id) {
     case UIChoice::LG_ENGLISH:
         Window::SetLanguage(Text::Language::ENGLISH);
@@ -303,6 +308,9 @@ void Event::handleKeyboardInputs() {
     case WindowState::Type::QUEST_MENU:
         handleQuestMenuEvents();
         break;
+    case WindowState::Type::DEATH_MENU:
+        handleDeathMenuEvents();
+        break;
     case WindowState::Type::UNKNOWN:
     default:
         break;
@@ -317,11 +325,33 @@ bool Event::mouseClickRight() {
     return e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_RIGHT;
 }
 
-bool Event::raised(Event::ID id) {
+bool Event::raised(const Event::ID id) {
     if (e.type != SDL_KEYUP) return false;
 
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
     return KeyMap::Key[k] == id;
+}
+
+void Event::raise(const Event::ID id) {
+    switch (id) {
+        case PAUSE:
+            window->pauseGame();
+            break;
+        case OPEN_POWER_MENU:
+            window->openPowerMenu();
+            break;
+        case OPEN_INVENTORY:
+            window->openInventory(Game::player->parseInventory(true));
+            break;
+        case OPEN_QUEST_MENU:
+            window->openQuestMenu();
+            break;
+        case OPEN_PLAYER_DEATH_MENU:
+            window->openDeathMenu();
+            break;
+        default:
+            break;
+    }
 }
 
 void Event::handleMainMenuEvents() {
@@ -487,6 +517,24 @@ void Event::handleQuestMenuEvents() {
     }
 }
 
+void Event::handleDeathMenuEvents() {
+    if (e.type != SDL_KEYUP)
+        return;
+
+    switch (e.key.keysym.sym) {
+    case SDLK_q:
+        if (SDL_GetModState() & KMOD_CTRL)
+            window->quitGame();
+        break;
+    case SDLK_r:
+        if (SDL_GetModState() & KMOD_CTRL)
+            window->loadLastGameSave();
+        break;
+    default:
+        break;
+    }
+}
+
 void Event::handleFreeState() {
     SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
 
@@ -536,18 +584,6 @@ void Event::handleFreeState() {
 #endif
 
         switch (KeyMap::Key[k]) {
-        case Event::ID::PAUSE:
-            window->pauseGame();
-            break;
-        case Event::ID::OPEN_POWER_MENU:
-            window->openPowerMenu();
-            break;
-        case Event::ID::OPEN_INVENTORY:
-            window->openInventory(Game::player->parseInventory(true));
-            break;
-        case Event::ID::OPEN_QUEST_MENU:
-            window->openQuestMenu();
-            break;
         case Event::ID::MOVE_UP:
         case Event::ID::MOVE_DOWN:
             Game::player->playAnimation("Idle");
@@ -565,6 +601,7 @@ void Event::handleFreeState() {
             break;
         case Event::ID::UNKNOWN:
         default:
+            raise(KeyMap::Key[k]);
             break;
         }
     }

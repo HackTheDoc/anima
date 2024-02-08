@@ -48,7 +48,7 @@ void Player::init() {
     state = data.state;
 
     quest = new QuestSystem(data.curr_main_quest);
-    for (std::string q : data.curr_other_quests)
+    for (const Quest::ID q : data.curr_other_quests)
         quest->addQuest(q);
 
     // pos & speed
@@ -95,7 +95,15 @@ void Player::init() {
 void Player::update() {
     Entity::update();
 
-    if (controlledEntity == nullptr || controlledEntity->type != Entity::Type::NON_PLAYER_CHARACTER || controlledEntity->immortal)
+    if (controlledEntity == nullptr) {
+        timeLeftBeforeHealthDecreasalOfControlledEntity--;
+        if (timeLeftBeforeHealthDecreasalOfControlledEntity > 0)
+            return;
+        hp = 0;
+        return;
+    }
+
+    if (controlledEntity->immortal)
         return;
 
     timeLeftBeforeHealthDecreasalOfControlledEntity--;
@@ -151,6 +159,7 @@ void Player::kill() {
     delete DEFAULT_DETECTOR;
     DEFAULT_DETECTOR = nullptr;
 
+    delete quest;
     quest = nullptr;
 }
 
@@ -266,6 +275,7 @@ void Player::takeControlOf(Entity* e) {
     e->controlled = true;
     this->controlled = true;
 
+    this->hp = e->hp;
     setControlledEntityHealthDecreasalRate();
 
     this->walkSpeed = e->walkSpeed;
@@ -345,9 +355,9 @@ PlayerStructure Player::getStructure() {
     if (state == State::IN_DIALOG)
         structure.state = State::FREE;
 
-    structure.curr_main_quest = quest->main.title;
+    structure.curr_main_quest = quest->main.id;
     for (Quest q : quest->others)
-        structure.curr_other_quests.push_back(q.title);
+        structure.curr_other_quests.push_back(q.id);
 
     if (controlledEntity != nullptr) {
         switch (controlledEntity->type) {
@@ -370,11 +380,13 @@ PlayerStructure Player::getStructure() {
 
 /// TODO: define the health decreasal rate for each species
 void Player::setControlledEntityHealthDecreasalRate() {
-    if (controlledEntity == nullptr || controlledEntity->type != Entity::Type::NON_PLAYER_CHARACTER) {
-        timeLeftBeforeHealthDecreasalOfControlledEntity = 0;
+    // SPIRIT FORM OF THE PLAYER
+    if (controlledEntity == nullptr) {
+        timeLeftBeforeHealthDecreasalOfControlledEntity = 450;
         return;
     }
 
+    // CONTROLLING AN ENTITY
     switch (controlledEntity->species) {
     case Entity::Species::FAIRIES:
         timeLeftBeforeHealthDecreasalOfControlledEntity = 180;
@@ -398,4 +410,6 @@ void Player::reset() {
     controlled = false;
 
     walkSpeed = 6;
+
+    hp = 1;
 }

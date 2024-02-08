@@ -1,5 +1,6 @@
 #include "include/WindowState/QuestMenu.h"
 
+#include "include/Text.h"
 #include "include/Window.h"
 #include "include/Manager.h"
 
@@ -23,8 +24,10 @@ void QuestMenu::init() {
     );
 
     const int mlength = container.w-8*(Window::fullscreen+1);
-    mainqt = new UILabel(Player::quest->main.title, "h4", hue::white, mlength);
-    mainqc = new UILabel(Player::quest->main.content, "big", hue::white, mlength, true);
+
+    QuestTemplate mqt = Text::GetQuest(Player::quest->main.id);
+    mainqt = new UILabel(mqt.title, "h4", hue::white, mlength);
+    mainqc = new UILabel(mqt.content, "big", hue::white, mlength, true);
 
     const int yoff = (container.h + title->y() + title->height() + 4*(Window::fullscreen+1)) / 2;
     const int h = mainqt->height() + mainqc->height() + 4*(Window::fullscreen+1);

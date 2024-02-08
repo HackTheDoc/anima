@@ -15,6 +15,7 @@ namespace hue {
     const SDL_Color blur                = {  61,  60,  58, 192 };
     const SDL_Color blur_dark           = {  89,  89,  89, 216 };
     const SDL_Color blur_white          = { 255, 255, 255, 192 };
+    const SDL_Color blur_red            = { 179,   0,   0, 176 };
 
 
     const SDL_Color portal_off          = { 255, 127, 127, 255 };

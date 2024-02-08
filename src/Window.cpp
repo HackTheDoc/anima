@@ -167,7 +167,7 @@ void Window::openPlayMenu() {
     manager->setCurrentWindowState(WindowState::Type::PLAY_MENU);
 }
 
-void Window::openGame(int wid) {
+void Window::openGame(const int wid) {
     srand(time(nullptr));
     
     if (!Save::Exist(wid))
@@ -181,7 +181,7 @@ void Window::openGame(int wid) {
 }
 
 void Window::quitGame() {
-    if (Save::Auto)
+    if (Save::Auto && !Game::player->has_died())
         Save::Update(Game::WorldID);
 
     // SAVE PLAY TIME
@@ -237,6 +237,17 @@ void Window::openInventory(Inventory* inv) {
 void Window::openQuestMenu() {
     manager->addWindowState(WindowState::Type::QUEST_MENU, new QuestMenu());
     manager->setCurrentWindowState(WindowState::Type::QUEST_MENU);
+}
+
+void Window::openDeathMenu() {
+    manager->addWindowState(WindowState::Type::DEATH_MENU, new DeathMenu());
+    manager->setCurrentWindowState(WindowState::Type::DEATH_MENU);
+}
+
+void Window::loadLastGameSave() {
+    const int wid = Game::WorldID;
+    quitGame();
+    openGame(wid);
 }
 
 void Window::resumeGame() {

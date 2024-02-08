@@ -5,13 +5,20 @@
 #include <optional>
 
 struct Quest {
-    std::string title{ "UNKNOWN" };
-    std::string content{ "" };
-    std::optional<std::string> next{};
+    enum ID {
+        UNKNOWN,
+        COMING_SOON,
 
-    void load(const std::string& t);
+        AN_INMATE
+    };
+    ID id;
+
+    Quest();
+    Quest(const ID id);
+
     void finish();
     void isFinished();
+    std::optional<ID> next();
 };
 
 class QuestSystem {
@@ -21,8 +28,8 @@ public:
     std::vector<Quest> others;
     size_t curr_other;
 
-    QuestSystem(const std::string& curr_main);
+    QuestSystem(const Quest::ID curr_main);
     ~QuestSystem();
 
-    void addQuest(const std::string& t);
+    void addQuest(const Quest::ID t);
 };

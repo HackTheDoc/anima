@@ -47,6 +47,9 @@ public:
         // CREDITS
 
         QUIT_CREDITS,
+
+        // DEATH MENU
+        LOAD_LAST_SAVE
     };
 
     /// @brief create a useless button

@@ -78,6 +78,8 @@ public:
     void addItemToInventory(Item::ID id);
     bool addItemToInventory(Item* item);
 
+    bool has_died();
+
     EntityStructure getStructure();
 
     static int GetMentalPower(Entity::Species species);

@@ -75,7 +75,7 @@ public:
 
     /// @brief open the game
     /// @param wid id of the world to load
-    void openGame(int wid);
+    void openGame(const int wid);
 
     /// @brief quit the world and save playtime
     void quitGame();
@@ -89,6 +89,9 @@ public:
     void openInventory(Inventory* inv);
 
     void openQuestMenu();
+
+    void openDeathMenu();
+    void loadLastGameSave();
 
     /// @brief close pause menu
     void resumeGame();

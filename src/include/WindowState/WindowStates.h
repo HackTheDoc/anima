@@ -19,3 +19,5 @@
 #include "InventoryMenu.h"
 
 #include "QuestMenu.h"
+
+#include "DeathMenu.h"

@@ -20,6 +20,7 @@ public:
         OPEN_POWER_MENU,
         OPEN_INVENTORY,
         OPEN_QUEST_MENU,
+        OPEN_PLAYER_DEATH_MENU,
 
         // FREE
         MOVE_UP,
@@ -49,11 +50,11 @@ public:
 
     /// @brief handle a button click
     /// @param id id of the button
-    void handleButtonClick(UIButton::ID id);
+    void handleButtonClick(const UIButton::ID id);
 
     /// @brief handle a selection choice
     /// @param id id of the choice
-    void handleSelection(UIChoice::ID id);
+    void handleSelection(const UIChoice::ID id);
 
     /// @brief handle user's keyboard inputs
     void handleKeyboardInputs();
@@ -69,7 +70,9 @@ public:
     /// @brief check wether a specific event been raised or not
     /// @param id
     /// @return
-    bool raised(Event::ID id);
+    bool raised(const Event::ID id);
+
+    void raise(const Event::ID id);
 
 private:
     /// TODO: decide wether i will keep those shortcuts or not...
@@ -83,6 +86,7 @@ private:
     void handlePowerMenuEvents();
     void handleInventoryMenuEvents();
     void handleQuestMenuEvents();
+    void handleDeathMenuEvents();
 
     /// @brief handle free state authorized events
     void handleFreeState();
@@ -91,4 +95,4 @@ private:
     void handleDialogState();
 };
 
-std::string to_string(Event::ID eid);
+std::string to_string(const Event::ID eid);

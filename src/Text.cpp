@@ -5,17 +5,17 @@
 #include <fstream>
 
 std::string Text::Get(std::string tag) {
-    json data = OpenTranslation();
+    const json data = OpenTranslation();
 
-    std::string t = data[tag];
+    const std::string t = data[tag];
 
     return t;
 }
 
 DialogTemplate Text::GetDialog(std::string tag) {
-    json raw = OpenTranslation();
+    const json raw = OpenTranslation();
 
-    auto data = raw["dialog"][tag];
+    const auto& data = raw["dialog"][tag];
     DialogTemplate d;
 
     d.text = data["text"];
@@ -23,25 +23,22 @@ DialogTemplate Text::GetDialog(std::string tag) {
 
     int n = data["numberOfAnswers"];
     for (int i = 0; i < n; i++) {
-        auto a = data[std::to_string(i)];
+        const auto& a = data[std::to_string(i)];
         d.answers.push_back({a[0], a[1], a[2], (32+16*Window::fullscreen)*(i+1)});
     }
 
     return d;
 }
 
-QuestTemplate Text::GetQuest(const std::string& tag) {
-    json raw = OpenTranslation();
+QuestTemplate Text::GetQuest(const int qid) {
+    const json raw = OpenTranslation();
 
-    auto data = raw["quest"][tag];
+    const auto& data = raw["quest"][qid];
     QuestTemplate q;
 
     q.title = data["title"];
     q.content = data["content"];
-
-    if (data["have next"]) q.next = data["next"];
-    else q.next = {};
-
+    
     return q;
 }
 
