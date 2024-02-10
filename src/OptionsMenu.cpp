@@ -2,6 +2,8 @@
 
 #include "include/Window.h"
 #include "include/Manager.h"
+#include "include/Save.h"
+#include "include/Game/Tutorial.h"
 
 #include "include/UI/UIElements.h"
 
@@ -22,16 +24,23 @@ void OptionsMenu::createGeneralPage() {
         wms->y() + wms->height() + 32*(Window::fullscreen+1)
     );
 
-    UISaveModeSelector* sms = new UISaveModeSelector();
+    UIActivator* sms = new UIActivator("Save Mode:", &Save::Auto);
     sms->place(
         (Window::screen.w - sms->width()) / 2,
         lgs->y() + lgs->height() + 32*(Window::fullscreen+1)
+    );
+
+    UIActivator* tms = new UIActivator("Tutorial:", &Tutorial::activated);
+    tms->place(
+        (Window::screen.w - tms->width()) / 2,
+        sms->y() + sms->height() + 32*(Window::fullscreen+1)
     );
     
     page["general"] = {
         wms,
         lgs,
-        sms
+        sms,
+        tms
     };
 }
 
@@ -50,12 +59,18 @@ void OptionsMenu::reloadGeneralPage() {
         wms->y() + wms->height() + 32*(Window::fullscreen+1)
     );
 
-
-    UISaveModeSelector* sms = static_cast<UISaveModeSelector*>(page["general"][2]);
+    UIActivator* sms = static_cast<UIActivator*>(page["general"][2]);
     sms->reload();
     sms->place(
         (Window::screen.w - sms->width()) / 2,
         lgs->y() + lgs->height() + 32*(Window::fullscreen+1)
+    );
+
+    UIActivator* tms = static_cast<UIActivator*>(page["general"][3]);
+    tms->reload();
+    tms->place(
+        (Window::screen.w - tms->width()) / 2,
+        sms->y() + sms->height() + 32*(Window::fullscreen+1)
     );
 }
 

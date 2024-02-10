@@ -1,13 +1,15 @@
-#include "include/UI/UISaveModeSelector.h"
+#include "include/UI/UIActivator.h"
 
 #include "include/Window.h"
 #include "include/Manager.h"
-#include "include/Save.h"
 
-UISaveModeSelector::UISaveModeSelector() {
-    title = new UILabel(Text::Get("Save Mode:"), "default bold", hue::white);
+UIActivator::UIActivator(const std::string& t, bool* v) {
+    tag = t;
+    var = v;
 
-    value = new UILabel(Text::Get(vstring[Save::Auto]), "default", hue::white);
+    title = new UILabel(Text::Get(tag), "default bold", hue::white);
+
+    value = new UILabel(Text::Get(vstring[*var]), "default", hue::white);
 
     rect.w = title->width() + value->width() + 4*(Window::fullscreen+1);
     rect.h = std::max(title->height(), value->height());
@@ -15,20 +17,20 @@ UISaveModeSelector::UISaveModeSelector() {
     place(0,0);
 }
 
-UISaveModeSelector::~UISaveModeSelector() {}
+UIActivator::~UIActivator() {}
 
-void UISaveModeSelector::draw() {
+void UIActivator::draw() {
     title->draw();
     value->draw();
 }
 
-void UISaveModeSelector::update() {
+void UIActivator::update() {
     SDL_Point m;
     SDL_GetMouseState(&m.x, &m.y);
     if (SDL_PointInRect(&m, &rect) && Window::event.mouseClickLeft()) {
-        Save::Auto = !Save::Auto;
+        *var = !*var;
 
-        value->setText(Text::Get(vstring[Save::Auto]), "default", hue::white);
+        value->setText(Text::Get(vstring[*var]), "default", hue::white);
         value->place(
             title->x() + title->width() + 4*(Window::fullscreen+1),
             rect.y + (rect.h - value->height()) / 2
@@ -38,12 +40,12 @@ void UISaveModeSelector::update() {
     }
 }
 
-void UISaveModeSelector::destroy() {
+void UIActivator::destroy() {
     title->destroy();
     value->destroy();
 }
 
-void UISaveModeSelector::place(int x, int y) {
+void UIActivator::place(int x, int y) {
     rect.x = x;
     rect.y = y;
 
@@ -58,10 +60,10 @@ void UISaveModeSelector::place(int x, int y) {
     );
 }
 
-void UISaveModeSelector::reload() {
-    title->setText(Text::Get("Save Mode:"), "default bold", hue::white);
+void UIActivator::reload() {
+    title->setText(Text::Get(tag), "default bold", hue::white);
 
-    value->setText(Text::Get(vstring[Save::Auto]), "default", hue::white);
+    value->setText(Text::Get(vstring[*var]), "default", hue::white);
 
     rect.w = title->width() + value->width() + 4*(Window::fullscreen+1);
     rect.h = std::max(title->height(), value->height());

@@ -3,10 +3,10 @@
 #include "UIElement.h"
 #include "UILabel.h"
 
-class UISaveModeSelector : public UIElement {
+class UIActivator : public UIElement {
 public:
-    UISaveModeSelector();
-    ~UISaveModeSelector();
+    UIActivator(const std::string& t, bool* v);
+    ~UIActivator();
 
     void draw() override;
     void update() override;
@@ -26,4 +26,7 @@ private:
 
     UILabel* title;
     UILabel* value;
+
+    std::string tag;
+    bool* var;
 };

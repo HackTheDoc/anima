@@ -23,7 +23,7 @@ bool Save::Create(int sid) {
 
     // create player
 
-    std::vector<Vector2D> doll_pos= {
+    std::vector<Vector2D> doll_pos = {
         {2956, 2956}, // bottom right
         {2260, 2956}, // bottom left
         {2956, 2232}, // top right
@@ -41,8 +41,8 @@ bool Save::Create(int sid) {
     i = rand() % 2;
     Vector2D dpos2 = doll_pos[i];
     doll_pos.erase(doll_pos.cbegin() + i);
-    
-    CreateIsland_LostTemple(path/"lost-temple.json", dpos1, dpos2, doll_pos[0]);
+
+    CreateIsland_LostTemple(path / "lost-temple.json", dpos1, dpos2, doll_pos[0]);
 
     CreateIsland_0(path / "island-0.json");
     CreateIsland_1(path / "island-1.json");
@@ -113,6 +113,8 @@ PlayerStructure Save::LoadPlayer(int sid) {
     json player;
     infile >> player;
     infile.close();
+
+    p.tutorial_step = player["tutorial step"];
 
     p.name = player["name"];
     p.hp = player["hp"];
@@ -186,6 +188,8 @@ Inventory Save::LoadInventory(json inventory) {
 
 void Save::CreatePlayer(fs::path path, const Vector2D& pos) {
     json player = {
+        {"tutorial step", Tutorial::Step::OPEN_INVENTORY},
+
         {"name", "unknown"},
         {"hp", 1},
 
@@ -365,10 +369,10 @@ void Save::CreateIsland_LostTemple(fs::path path, const Vector2D& dpos1, const V
 
             if (!lapisMagicisPlaced) {
                 lapisMagicisPlaced = true;
-                entities.push_back(CreateNPC(x*128,y*128,Entity::Species::GOBLIN,Entity::Behavior::RANDOM_MOVEMENT,"fairy",CreateInventory(1,{Item::ID::LAPIS_MAGICIS})));
+                entities.push_back(CreateNPC(x * 128, y * 128, Entity::Species::GOBLIN, Entity::Behavior::RANDOM_MOVEMENT, "fairy", CreateInventory(1, { Item::ID::LAPIS_MAGICIS })));
             }
             else
-                entities.push_back(CreateNPC(x*128,y*128,Entity::Species::FAIRIES,Entity::Behavior::RANDOM_MOVEMENT,"fairy",CreateInventory(1)));
+                entities.push_back(CreateNPC(x * 128, y * 128, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "fairy", CreateInventory(1)));
         }
     }
 
@@ -388,6 +392,8 @@ void Save::SavePlayer(fs::path path) {
     infile.close();
 
     PlayerStructure player = Game::player->getStructure();
+
+    data["tutorial step"] = player.tutorial_step;
 
     data["name"] = player.name;
     data["hp"] = player.hp;
@@ -499,7 +505,7 @@ json Save::CreatePortal(const int xp, const int yp, const std::string& dest, con
 #ifdef DEV_MOD
         {"damage level", 0}
 #else
-        {"damage level", damage_level}
+        { "damage level", damage_level }
 #endif
     };
 }

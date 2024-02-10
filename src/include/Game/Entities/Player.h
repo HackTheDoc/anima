@@ -87,6 +87,8 @@ struct PlayerStructure {
 
     Player::State state;
 
+    int tutorial_step;
+
     Quest::ID curr_main_quest;
     std::vector<Quest::ID> curr_other_quests;
 

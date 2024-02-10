@@ -11,7 +11,7 @@
 #include "UIChoice.h"
 #include "UILanguageSelector.h"
 #include "UIWindowModeSelector.h"
-#include "UISaveModeSelector.h"
+#include "UIActivator.h"
 
 #include "UIKeyInput.h"
 #include "UIInputField.h"

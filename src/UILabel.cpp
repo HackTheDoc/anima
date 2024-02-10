@@ -3,6 +3,11 @@
 #include "include/Window.h"
 #include "include/Manager.h"
 
+UILabel::UILabel() {
+    rect = {0,0,0,0};
+    texture = nullptr;
+}
+
 UILabel::UILabel(const std::string& text, const std::string& font, const SDL_Color& color, const int mlength, const bool centered) {
     rect = {0,0,0,0};
 

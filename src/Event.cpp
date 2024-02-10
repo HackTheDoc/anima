@@ -263,7 +263,7 @@ void Event::handleButtonClick(const UIButton::ID id) {
     case UIButton::ID::LOAD_LAST_SAVE:
         window->loadLastGameSave();
         break;
-    
+
     default:
         break;
     }
@@ -337,23 +337,26 @@ bool Event::raised(const Event::ID id) {
 
 void Event::raise(const Event::ID id) {
     switch (id) {
-        case PAUSE:
-            window->pauseGame();
-            break;
-        case OPEN_POWER_MENU:
-            window->openPowerMenu();
-            break;
-        case OPEN_INVENTORY:
-            window->openInventory(Game::player->parseInventory(true));
-            break;
-        case OPEN_QUEST_MENU:
-            window->openQuestMenu();
-            break;
-        case OPEN_PLAYER_DEATH_MENU:
-            window->openDeathMenu();
-            break;
-        default:
-            break;
+    case PAUSE:
+        window->pauseGame();
+        break;
+    case OPEN_POWER_MENU:
+        Tutorial::Complete(Tutorial::Step::OPEN_BENEDICTIONS);
+        window->openPowerMenu();
+        break;
+    case OPEN_INVENTORY:
+        Tutorial::Complete(Tutorial::Step::OPEN_INVENTORY);
+        window->openInventory(Game::player->parseInventory(true));
+        break;
+    case OPEN_QUEST_MENU:
+        Tutorial::Complete(Tutorial::Step::OPEN_QUESTS);
+        window->openQuestMenu();
+        break;
+    case OPEN_PLAYER_DEATH_MENU:
+        window->openDeathMenu();
+        break;
+    default:
+        break;
     }
 }
 
@@ -559,19 +562,23 @@ void Event::handleFreeState() {
     if (e.type == SDL_KEYDOWN) {
         switch (KeyMap::Key[k]) {
         case Event::ID::MOVE_UP:
+            Tutorial::Complete(Tutorial::Step::MOVEMENTS);
             Game::player->playAnimation("Walk");
             Game::player->velocity.y = -1;
             break;
         case Event::ID::MOVE_DOWN:
+            Tutorial::Complete(Tutorial::Step::MOVEMENTS);
             Game::player->playAnimation("Walk");
             Game::player->velocity.y = 1;
             break;
         case Event::ID::MOVE_LEFT:
+            Tutorial::Complete(Tutorial::Step::MOVEMENTS);
             Game::player->playAnimation("Walk");
             Game::player->velocity.x = -1;
             Game::player->setFlip(SDL_FLIP_HORIZONTAL);
             break;
         case Event::ID::MOVE_RIGHT:
+            Tutorial::Complete(Tutorial::Step::MOVEMENTS);
             Game::player->playAnimation("Walk");
             Game::player->velocity.x = 1;
             Game::player->setFlip(SDL_FLIP_NONE);
@@ -580,6 +587,7 @@ void Event::handleFreeState() {
             Game::player->interaction = Interaction::USE;
             break;
         case Event::ID::BODY_CONTROL:
+            Tutorial::Complete(Tutorial::Step::USE_CONTROL_POWER);
             if (Game::player->controlled)
                 Game::player->releaseControledEntity();
             else

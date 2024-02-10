@@ -23,7 +23,7 @@ bool Window::fullscreen = false;
 Text::Language Window::language = Text::Language::ENGLISH;
 
 SDL_Renderer* Window::renderer = nullptr;
-SDL_Rect Window::screen = {0, 0, 1280, 720};
+SDL_Rect Window::screen = { 0, 0, 1280, 720 };
 
 Manager* Window::manager = nullptr;
 Event Window::event;
@@ -59,7 +59,7 @@ int Window::init() {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer)
         return -3;
-    
+
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     Manager::SetRenderDrawColor(hue::white);
 
@@ -75,6 +75,8 @@ int Window::init() {
     SetWindowMode(mode);
 
     Save::Auto = config["autosave"];
+
+    Tutorial::activated = config["tutorial"];
 
     KeyMap::Load();
 
@@ -169,7 +171,7 @@ void Window::openPlayMenu() {
 
 void Window::openGame(const int wid) {
     srand(time(nullptr));
-    
+
     if (!Save::Exist(wid))
         Save::Create(wid);
 
@@ -274,7 +276,7 @@ void Window::execute(std::string cmd) {
         OptionsMenu* om = static_cast<OptionsMenu*>(ws);
 
         om->next("window mode");
-        
+
         return;
     }
 
@@ -283,7 +285,7 @@ void Window::execute(std::string cmd) {
         OptionsMenu* om = static_cast<OptionsMenu*>(ws);
 
         om->next("language");
-        
+
         return;
     }
 
@@ -292,7 +294,7 @@ void Window::execute(std::string cmd) {
         Credits* cr = static_cast<Credits*>(ws);
 
         cr->useHyperlink("discord");
-        
+
         return;
     }
 
@@ -301,7 +303,7 @@ void Window::execute(std::string cmd) {
         Credits* cr = static_cast<Credits*>(ws);
 
         cr->useHyperlink("twitter");
-        
+
         return;
     }
 
@@ -310,7 +312,7 @@ void Window::execute(std::string cmd) {
         Credits* cr = static_cast<Credits*>(ws);
 
         cr->useHyperlink("github");
-        
+
         return;
     }
 }
@@ -320,10 +322,10 @@ void Window::SetWindowMode(Uint32 mode) {
     SDL_GetWindowSize(window, &screen.w, &screen.h);
 
     fullscreen = (mode == SDL_WINDOW_FULLSCREEN_DESKTOP);
-    
+
     if (!fullscreen)
-        screen = {0,0,1280,720};
-    
+        screen = { 0,0,1280,720 };
+
     if (!Window::isRunning)
         return;
 
@@ -356,10 +358,12 @@ void Window::SaveConfig() {
         config["window mode"] = SDL_WINDOW_FULLSCREEN_DESKTOP;
     else
         config["window mode"] = 0;
-    
+
     config["language"] = Window::language;
 
     config["autosave"] = Save::Auto;
+
+    config["tutorial"] = Tutorial::activated;
 
     std::ofstream outfile("./config.json");
     outfile << std::setw(2) << config << std::endl;

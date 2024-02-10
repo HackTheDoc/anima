@@ -1,6 +1,7 @@
 #include "include/Manager.h"
 
 #include "include/Window.h"
+#include "include/Game/Tutorial.h"
 
 #include <vector>
 #include <sstream>
@@ -8,24 +9,24 @@
 
 Manager::Manager() {
     // Tiles
-    textures["ground"]      = LoadTexture("./assets/tiles/ground.png"       );
-    textures["path"]        = LoadTexture("./assets/tiles/path.png"         );
+    textures["ground"] = LoadTexture("./assets/tiles/ground.png");
+    textures["path"] = LoadTexture("./assets/tiles/path.png");
 
     // Entities 
-    textures["spirit"]      = LoadTexture("./assets/sprites/Spirit.png"     );
-    textures["human"]       = LoadTexture("./assets/sprites/Human.png"      );
-    textures["goblin"]      = LoadTexture("./assets/sprites/Goblin.png"     );
-    textures["fairy"]       = LoadTexture("./assets/sprites/Fairy.png"     );
+    textures["spirit"] = LoadTexture("./assets/sprites/Spirit.png");
+    textures["human"] = LoadTexture("./assets/sprites/Human.png");
+    textures["goblin"] = LoadTexture("./assets/sprites/Goblin.png");
+    textures["fairy"] = LoadTexture("./assets/sprites/Fairy.png");
 
-    textures["doll"]        = LoadTexture("./assets/sprites/Doll.png"       );
+    textures["doll"] = LoadTexture("./assets/sprites/Doll.png");
 
-    textures["dead body"]   = LoadTexture("./assets/sprites/Dead Body.png"  );
+    textures["dead body"] = LoadTexture("./assets/sprites/Dead Body.png");
 
     // UI
-    textures["textbox"]     = LoadTexture("./assets/UI/textbox.png"         );
+    textures["textbox"] = LoadTexture("./assets/UI/textbox.png");
 
     // Items
-    textures["items"]       = LoadTexture("./assets/items.png"              );
+    textures["items"] = LoadTexture("./assets/items.png");
 
     // WIndow States
     currentWindowState = WindowState::Type::UNKNOWN;
@@ -44,7 +45,7 @@ SDL_Color Manager::SetRenderDrawColor(SDL_Color c) {
     SDL_GetRenderDrawColor(Window::renderer, &temp.r, &temp.g, &temp.b, &temp.a);
 
     SDL_SetRenderDrawColor(Window::renderer, c.r, c.g, c.b, c.a);
-    
+
     return temp;
 }
 
@@ -63,34 +64,34 @@ void Manager::loadFonts() {
     if (Window::fullscreen) {
         float sc = (float)Window::screen.w / 1280.0;
 
-        fonts["h1"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 160*sc);
-        fonts["h2"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 120*sc);
-        fonts["h2 bold"]        = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 120*sc);
-        fonts["h3"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 76 *sc);
-        fonts["h3 bold"]        = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 76 *sc);
-        fonts["h4"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 64 *sc);
-        fonts["h4 bold"]        = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 64 *sc);
+        fonts["h1"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 160 * sc);
+        fonts["h2"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 120 * sc);
+        fonts["h2 bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 120 * sc);
+        fonts["h3"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 76 * sc);
+        fonts["h3 bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 76 * sc);
+        fonts["h4"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 64 * sc);
+        fonts["h4 bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 64 * sc);
 
-        fonts["big"]            = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 48 *sc);
-        fonts["big bold"]       = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 48 *sc);
-        fonts["default"]        = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 32 *sc);
-        fonts["default bold"]   = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 32 *sc);
-        fonts["small"]          = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 16 *sc);
+        fonts["big"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 48 * sc);
+        fonts["big bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 48 * sc);
+        fonts["default"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 32 * sc);
+        fonts["default bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 32 * sc);
+        fonts["small"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 16 * sc);
     }
     else {
-        fonts["h1"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 160   );
-        fonts["h2"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 120   );
-        fonts["h2 bold"]        = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 120   );
-        fonts["h3"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 76    );
-        fonts["h3 bold"]        = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 76    );
-        fonts["h4"]             = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 64    );
-        fonts["h4 bold"]        = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 64    );
+        fonts["h1"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 160);
+        fonts["h2"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 120);
+        fonts["h2 bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 120);
+        fonts["h3"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 76);
+        fonts["h3 bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 76);
+        fonts["h4"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 64);
+        fonts["h4 bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 64);
 
-        fonts["big"]            = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 48    );
-        fonts["big bold"]       = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 48    );
-        fonts["default"]        = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 32    );
-        fonts["default bold"]   = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf"         , 32    );
-        fonts["small"]          = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf"      , 16    );
+        fonts["big"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 48);
+        fonts["big bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 48);
+        fonts["default"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 32);
+        fonts["default bold"] = TTF_OpenFont("./assets/font/Oxanium-Bold.ttf", 32);
+        fonts["small"] = TTF_OpenFont("./assets/font/Oxanium-Regular.ttf", 16);
     }
 }
 
@@ -123,7 +124,7 @@ SDL_Texture* Manager::LoadTexture(const char* filepath) {
     SDL_Surface* tmpSurface = IMG_Load(filepath);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
-    
+
     if (texture == nullptr) std::cout << SDL_GetError() << std::endl;
 
     return texture;
@@ -164,7 +165,7 @@ SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, TTF_Fo
         std::string w;
         while (std::getline(lss, w, ' ')) {
             currWidth += spaceWidth;
-            
+
             int wordWidth;
             TTF_SizeText(font, w.c_str(), &wordWidth, nullptr);
 
@@ -192,11 +193,11 @@ SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, TTF_Fo
     ss.clear();
     ss.seekg(0);
 
-    while(std::getline(ss, l, '\n')) {
+    while (std::getline(ss, l, '\n')) {
         SDL_Surface* lSurface = TTF_RenderUTF8_Blended(font, l.c_str(), color);
         if (lSurface == nullptr) continue;
 
-        SDL_Rect r = {(tmpSurface->w - lSurface->w)/2, currY, lSurface->w, lSurface->h};
+        SDL_Rect r = { (tmpSurface->w - lSurface->w) / 2, currY, lSurface->w, lSurface->h };
         SDL_UpperBlitScaled(lSurface, nullptr, tmpSurface, &r);
 
         SDL_FreeSurface(lSurface);
@@ -258,8 +259,8 @@ void Manager::addWindowState(const WindowState::Type id, WindowState* ws) {
 void Manager::removeWindowState(const WindowState::Type id) {
     if (windowStates.count(id) == 0)
         return
-    
-    windowStates[id]->clean();
+
+        windowStates[id]->clean();
     windowStates.erase(id);
     currentWindowState = previousWindowState;
 }
@@ -277,6 +278,9 @@ void Manager::renderCurrentWindowState() {
     if (currentWindowState > WindowState::Type::GAME)
         windowStates[WindowState::Type::GAME]->render();
     windowStates[currentWindowState]->render();
+
+    if (currentWindowState >= WindowState::Type::GAME)
+        Tutorial::Render();
 }
 
 void Manager::clearWindowStates() {
@@ -284,7 +288,7 @@ void Manager::clearWindowStates() {
         ws.second->clean();
     }
     windowStates.clear();
-    
+
     previousWindowState = WindowState::Type::UNKNOWN;
     currentWindowState = WindowState::Type::UNKNOWN;
 }
@@ -292,11 +296,11 @@ void Manager::clearWindowStates() {
 WindowState* Manager::getState(const WindowState::Type id) {
     if (windowStates.count(id) == 0)
         return nullptr;
-    return windowStates[id]; 
+    return windowStates[id];
 }
 
 WindowState* Manager::getCurrentState() {
-    return windowStates[currentWindowState];     
+    return windowStates[currentWindowState];
 }
 
 WindowState::Type Manager::getCurrentStateID() {

@@ -12,6 +12,8 @@
 
 #include "../UI/UI.h"
 
+#include "Tutorial.h"
+
 class Game : public WindowState {
 public:
     static std::chrono::time_point<std::chrono::system_clock> StartTime;

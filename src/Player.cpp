@@ -44,6 +44,9 @@ void Player::init() {
     hasUnlockedPower[Power::BODY_EXPLOSION] = data.power[Power::BODY_EXPLOSION];
     hasUnlockedPower[Power::SHIELD] = data.power[Power::SHIELD];
 
+    // tutorial
+    Tutorial::Init(data.tutorial_step);
+
     // state & quests
     state = data.state;
 
@@ -148,6 +151,8 @@ void Player::draw() {
 }
 
 void Player::kill() {
+    Tutorial::Destroy();
+
     if (controlledEntity != nullptr)
         controlledEntity->kill();
     controlledEntity = nullptr;
@@ -339,6 +344,8 @@ PlayerStructure Player::getStructure() {
     e.name = "noone";
 
     PlayerStructure structure;
+
+    structure.tutorial_step = Tutorial::current;
 
     structure.name = name;
     structure.hp = hp;
