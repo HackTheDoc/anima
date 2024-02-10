@@ -172,7 +172,9 @@ void Window::openPlayMenu() {
 void Window::openGame(const int wid) {
     srand(time(nullptr));
 
-    if (!Save::Exist(wid))
+    const bool wexist = Save::Exist(wid);
+
+    if (!wexist)
         Save::Create(wid);
 
     Game::WorldID = wid;
@@ -180,8 +182,11 @@ void Window::openGame(const int wid) {
     manager->removeWindowState(WindowState::Type::MAIN);
     manager->addWindowState(WindowState::Type::GAME, new Game());
 
-    manager->addWindowState(WindowState::Type::CINEMATIC, new Cinematic("introduction"));
-    manager->setCurrentWindowState(WindowState::Type::CINEMATIC);
+    if (!wexist) {
+        manager->addWindowState(WindowState::Type::CINEMATIC, new Cinematic("introduction"));
+        manager->setCurrentWindowState(WindowState::Type::CINEMATIC);
+    }
+    else manager->setCurrentWindowState(WindowState::Type::GAME);
 }
 
 void Window::quitGame() {

@@ -94,6 +94,8 @@ void Player::init() {
         this->walkSpeed = doll->walkSpeed;
     }
 
+    else controlledEntity = nullptr;
+
     setHealthDecreasalRate();
 }
 
@@ -392,6 +394,7 @@ PlayerStructure Player::getStructure() {
 void Player::setHealthDecreasalRate() {
     // SPIRIT FORM OF THE PLAYER
     if (controlledEntity == nullptr) {
+        std::cout << "aa" << std::endl;
         timeLeftBeforeHealthDecreasalOfControlledEntity = 900 * std::max(1, numenLevel / 2);
         return;
     }

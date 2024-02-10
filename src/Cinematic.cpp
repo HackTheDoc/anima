@@ -6,7 +6,7 @@
 
 constexpr std::chrono::milliseconds TRANSITION_DURATION(1000);
 constexpr std::chrono::milliseconds TRANSITION_OUT_DURATION(2000);
-constexpr std::chrono::milliseconds TEXT_DURATION(3000);
+constexpr std::chrono::milliseconds TEXT_DURATION(5000);
 
 Cinematic::Cinematic(const std::string& tag) : tag(tag) {}
 
