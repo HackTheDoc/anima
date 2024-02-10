@@ -81,6 +81,8 @@ private:
     void handleOptionsMenuEvents();
     void handleCreditsEvents();
 
+    void handleCinematicEvents();
+
     void handleGameEvents();
     void handlePauseMenuEvents();
     void handlePowerMenuEvents();

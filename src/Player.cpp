@@ -90,6 +90,8 @@ void Player::init() {
 
         this->walkSpeed = doll->walkSpeed;
     }
+
+    setHealthDecreasalRate();
 }
 
 void Player::update() {
@@ -97,6 +99,7 @@ void Player::update() {
 
     if (controlledEntity == nullptr) {
         timeLeftBeforeHealthDecreasalOfControlledEntity--;
+        std::cout << timeLeftBeforeHealthDecreasalOfControlledEntity << std::endl;
         if (timeLeftBeforeHealthDecreasalOfControlledEntity > 0)
             return;
         hp = 0;
@@ -112,7 +115,7 @@ void Player::update() {
         return;
 
     controlledEntity->hp--;
-    setControlledEntityHealthDecreasalRate();
+    setHealthDecreasalRate();
 
     // if the controlled entity is dead
     if (controlledEntity->hp <= 0) {
@@ -125,16 +128,16 @@ void Player::update() {
         }
 
         Game::island->addDeadBody(
-            controlledEntity->species, 
-            controlledEntity->type, 
+            controlledEntity->species,
+            controlledEntity->type,
             controlledEntity->name,
             position.x,
             position.y,
             hasdialog,
             controlledEntity->behavior,
             controlledEntity->inventory
-        );        
-        
+        );
+
         controlledEntity->kill();
         reset();
     }
@@ -276,7 +279,7 @@ void Player::takeControlOf(Entity* e) {
     this->controlled = true;
 
     this->hp = e->hp;
-    setControlledEntityHealthDecreasalRate();
+    setHealthDecreasalRate();
 
     this->walkSpeed = e->walkSpeed;
     playAnimation("Idle");
@@ -379,10 +382,10 @@ PlayerStructure Player::getStructure() {
 }
 
 /// TODO: define the health decreasal rate for each species
-void Player::setControlledEntityHealthDecreasalRate() {
+void Player::setHealthDecreasalRate() {
     // SPIRIT FORM OF THE PLAYER
     if (controlledEntity == nullptr) {
-        timeLeftBeforeHealthDecreasalOfControlledEntity = 450;
+        timeLeftBeforeHealthDecreasalOfControlledEntity = 900 * std::max(1, numenLevel / 2);
         return;
     }
 
@@ -412,4 +415,5 @@ void Player::reset() {
     walkSpeed = 6;
 
     hp = 1;
+    setHealthDecreasalRate();
 }

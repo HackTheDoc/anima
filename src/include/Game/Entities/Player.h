@@ -31,13 +31,13 @@ private:
 
     bool hasUnlockedPower[Power::NUMBER];
 
-    Entity *controlledEntity;
+    Entity* controlledEntity;
     int timeLeftBeforeHealthDecreasalOfControlledEntity;
-    void setControlledEntityHealthDecreasalRate();
+    void setHealthDecreasalRate();
 
-    void interactWithNPC(NPC *npc);
+    void interactWithNPC(NPC* npc);
     void searchDeadBody(DeadBody* body);
-    void resurrectDeadBody(DeadBody *body);
+    void resurrectDeadBody(DeadBody* body);
 
     // become a spirit;
     void reset();
@@ -54,7 +54,7 @@ public:
     static QuestSystem* quest;
 
     Interaction interaction;
-    NPC *interactingWith;
+    NPC* interactingWith;
 
     Player();
     ~Player();
@@ -64,8 +64,8 @@ public:
     void draw() override;
     void kill() override;
 
-    void interactWith(Entity *e);
-    void takeControlOf(Entity *e);
+    void interactWith(Entity* e);
+    void takeControlOf(Entity* e);
     void releaseControledEntity();
 
     void modifyNumenLevelBy(int ammount);

@@ -42,6 +42,13 @@ QuestTemplate Text::GetQuest(const int qid) {
     return q;
 }
 
+std::vector<std::string> Text::GetCinematic(const std::string& tag) {
+    const json raw = OpenTranslation();
+
+    const auto& data = raw["cinematics"];
+    return data[tag];
+}
+
 json Text::OpenTranslation() {
     std::string path = "./data/translations/";
 

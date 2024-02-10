@@ -10,6 +10,8 @@
 
 #include "Credits.h"
 
+#include "Cinematic.h"
+
 #include "../Game/Game.h"
 
 #include "PauseMenu.h"

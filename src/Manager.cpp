@@ -157,41 +157,28 @@ SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, TTF_Fo
     int currWidth = 0;
     std::stringstream ss;
 
-    /* char by char method
-    for (const char& c : text) {
-        int charWidth;
-        TTF_GlyphMetrics(font, c, nullptr, nullptr, nullptr, nullptr, &charWidth);
-        currWidth += charWidth;
-
-        if (currWidth > length) {
-            totalWidth = std::max(totalWidth, currWidth);
-
-            ss << '\n';
-            currWidth = charWidth;
-            totalHeight += fontHeight;
-        }
-
-        ss << c;
-    }
-    */
-
     std::stringstream rawss(text);
-    std::string w;
-    while (std::getline(rawss, w, ' ')) {
-        currWidth += spaceWidth;
-        
-        int wordWidth;
-        TTF_SizeText(font, w.c_str(), &wordWidth, nullptr);
+    std::string l;
+    while (std::getline(rawss, l, '\n')) {
+        std::stringstream lss(l);
+        std::string w;
+        while (std::getline(lss, w, ' ')) {
+            currWidth += spaceWidth;
+            
+            int wordWidth;
+            TTF_SizeText(font, w.c_str(), &wordWidth, nullptr);
 
-        if (currWidth + wordWidth > length) {
-            totalWidth = std::max(totalWidth, currWidth);
-            totalHeight += fontHeight;
-            ss << '\n';
-            currWidth = 0;
+            if (currWidth + wordWidth > length) {
+                totalWidth = std::max(totalWidth, currWidth);
+                totalHeight += fontHeight;
+                ss << '\n';
+                currWidth = 0;
+            }
+
+            ss << w << ' ';
+            currWidth += wordWidth;
         }
-
-        ss << w << ' ';
-        currWidth += wordWidth;
+        ss << '\n';
     }
 
     if (currWidth > 0) totalHeight += fontHeight;
@@ -205,7 +192,6 @@ SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, TTF_Fo
     ss.clear();
     ss.seekg(0);
 
-    std::string l;
     while(std::getline(ss, l, '\n')) {
         SDL_Surface* lSurface = TTF_RenderUTF8_Blended(font, l.c_str(), color);
         if (lSurface == nullptr) continue;
@@ -264,12 +250,12 @@ void Manager::DrawLosange(int x, int y, int hr, int vr, const SDL_Color& color) 
 }
 
 /* ---------- WINDOW STATES MANAGER ---------- */
-void Manager::addWindowState(WindowState::Type id, WindowState* ws) {
+void Manager::addWindowState(const WindowState::Type id, WindowState* ws) {
     windowStates.emplace(id, ws);
     windowStates[id]->init();
 }
 
-void Manager::removeWindowState(WindowState::Type id) {
+void Manager::removeWindowState(const WindowState::Type id) {
     if (windowStates.count(id) == 0)
         return
     
@@ -278,7 +264,7 @@ void Manager::removeWindowState(WindowState::Type id) {
     currentWindowState = previousWindowState;
 }
 
-void Manager::setCurrentWindowState(WindowState::Type id) {
+void Manager::setCurrentWindowState(const WindowState::Type id) {
     previousWindowState = currentWindowState;
     currentWindowState = id;
 }
@@ -301,6 +287,12 @@ void Manager::clearWindowStates() {
     
     previousWindowState = WindowState::Type::UNKNOWN;
     currentWindowState = WindowState::Type::UNKNOWN;
+}
+
+WindowState* Manager::getState(const WindowState::Type id) {
+    if (windowStates.count(id) == 0)
+        return nullptr;
+    return windowStates[id]; 
 }
 
 WindowState* Manager::getCurrentState() {

@@ -45,6 +45,8 @@ public:
 
     static QuestTemplate GetQuest(const int qid);
 
+    static std::vector<std::string> GetCinematic(const std::string& tag);
+
 private:
     /// @brief open the right translation file
     /// @return json structure with the translated texts

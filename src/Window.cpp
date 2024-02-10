@@ -177,7 +177,9 @@ void Window::openGame(const int wid) {
 
     manager->removeWindowState(WindowState::Type::MAIN);
     manager->addWindowState(WindowState::Type::GAME, new Game());
-    manager->setCurrentWindowState(WindowState::Type::GAME);
+
+    manager->addWindowState(WindowState::Type::CINEMATIC, new Cinematic("introduction"));
+    manager->setCurrentWindowState(WindowState::Type::CINEMATIC);
 }
 
 void Window::quitGame() {

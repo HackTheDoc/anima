@@ -98,15 +98,15 @@ public:
     /// @brief add a new window state to the manager (if not existing)
     /// @param id id of the state
     /// @param ws window state to add
-    void addWindowState(WindowState::Type id, WindowState* ws);
+    void addWindowState(const WindowState::Type id, WindowState* ws);
 
     /// @brief remove a window state from the manager
     /// @param id id of the state to remove
-    void removeWindowState(WindowState::Type id);
+    void removeWindowState(const WindowState::Type id);
     
     /// @brief set the current state of the window to a new one (that exist)
     /// @param id new current state id
-    void setCurrentWindowState(WindowState::Type id);
+    void setCurrentWindowState(const WindowState::Type id);
     
     /// @brief update the current state of the window
     void updateCurrentWindowState();
@@ -116,6 +116,8 @@ public:
     
     /// @brief clear every loaded window states
     void clearWindowStates();
+
+    WindowState* getState(const WindowState::Type id);
 
     /// @brief parse the current state
     /// @return a pointer to the current state

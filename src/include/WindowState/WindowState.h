@@ -8,6 +8,7 @@ public:
         PLAY_MENU,
         OPTIONS_MENU,
         CREDITS,
+        CINEMATIC,
         GAME,
         PAUSE_MENU,
         POWER_MENU,

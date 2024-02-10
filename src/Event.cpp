@@ -293,6 +293,9 @@ void Event::handleKeyboardInputs() {
     case WindowState::Type::CREDITS:
         handleCreditsEvents();
         break;
+    case WindowState::Type::CINEMATIC:
+        handleCinematicEvents();
+        break;
     case WindowState::Type::GAME:
         handleGameEvents();
         break;
@@ -438,6 +441,21 @@ void Event::handleCreditsEvents() {
         break;
     case SDLK_g:
         window->execute("open url github");
+        break;
+    default:
+        break;
+    }
+}
+
+void Event::handleCinematicEvents() {
+    if (e.type != SDL_KEYUP)
+        return;
+
+    switch (e.key.keysym.sym) {
+    case SDLK_SPACE:
+    case SDLK_RETURN:
+    case SDLK_ESCAPE:
+        Window::manager->setCurrentWindowState(WindowState::Type::GAME);
         break;
     default:
         break;
