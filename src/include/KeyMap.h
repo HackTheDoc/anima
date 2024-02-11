@@ -12,11 +12,15 @@ public:
     /// @brief associate a keycode to the event it must generate when pressed
     static std::map<SDL_KeyCode, Event::ID> Key;
 
-    /// @brief load the keymap
-    static void Load();
+    static void Reload();
+    
+    /// @brief import a keymap
+    /// @param rkmap 
+    static void Import(const std::map<std::string, SDL_KeyCode>& rkmap);
 
-    /// @brief save the keymap
-    static void Save();
+    /// @brief export the keymap
+    /// @return
+    static std::map<std::string, SDL_KeyCode> Export();
 
     /// @brief set a new keycode to an event id
     /// @param eid id of the evet to update

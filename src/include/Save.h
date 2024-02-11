@@ -1,7 +1,11 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+#include <map>
 #include <string>
 #include <filesystem>
+
+/// TODO: remove
 #include <nlohmann/json.hpp>
 
 namespace fs = std::filesystem;
@@ -15,10 +19,30 @@ struct PlayerStructure;
 struct Inventory;
 class Vector2D;
 
+struct ConfigStruct {
+    bool autosave;
+    bool tutorial;
+    Uint8 language;
+    Uint32 window_mode;
+    std::array<std::pair<std::string, std::string>, 4> worlds;
+    std::map<std::string, SDL_KeyCode> controls;
+};
+
 class Save {
 public:
+    /* ----- CONFIG ----- */
+    static void SaveConfig();
+    static ConfigStruct LoadConfig();
+
+    /* ----- KEYMAP ----- */
+    static void Key(const std::string& ename, const SDL_KeyCode kcode);
+
+    /* ----- GAME ----- */
+
     /// @brief autosave mode
     static bool Auto;
+
+    static void PlayTime(const int wid);
 
     /// @brief check the existance of a save
     /// @param sid id of the save
@@ -55,9 +79,14 @@ public:
     /// @param inventory 
     /// @return the structured inventory or an error if the entry json structure isn't appropriate
     static Inventory LoadInventory(json inventory);
+
+
 private:
     /// @brief path to the folder where the save are stored
     static std::string pathToSaveFolder;
+
+    /* ----- CONFIG ----- */
+    static void CreateConfig();
 
     /* ----- CREATE ----- */
     

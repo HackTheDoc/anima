@@ -1,11 +1,111 @@
 #include "include/Save.h"
+#include "include/serialization.h"
 
 #include "include/Game/Game.h"
+#include "include/KeyMap.h"
 
+#include <chrono>
 #include <fstream>
 
 bool Save::Auto = false;
 std::string Save::pathToSaveFolder = "./data/worlds/";
+
+/* ----- CONFIG ----- */
+void Save::CreateConfig() {
+    ConfigStruct config{
+    .autosave = true,
+    .tutorial = true,
+    .language = 0,
+    .window_mode = 0,
+    .worlds = {{
+        {"World 1", "00:00:00"},
+        {"World 2", "00:00:00"},
+        {"World 3", "00:00:00"},
+        {"World 4", "00:00:00"}
+    }},
+    .controls = {
+            {"body resurrection", SDLK_m},
+            {"interact", SDLK_e},
+            {"inventory", SDLK_i},
+            {"move down", SDLK_s},
+            {"move left", SDLK_q},
+            {"move right", SDLK_d},
+            {"move up", SDLK_z},
+            {"next answer", SDLK_UP},
+            {"pause", SDLK_ESCAPE},
+            {"power menu", SDLK_o},
+            {"previous answer", SDLK_DOWN},
+            {"quest menu", SDLK_l},
+            {"take control", SDLK_p},
+            {"valid dialog", SDLK_RETURN}
+        }
+    };
+
+    serialize::config(config);
+}
+
+void Save::SaveConfig() {
+    ConfigStruct config = LoadConfig();
+
+    config.autosave = Save::Auto;
+
+    config.tutorial = Tutorial::activated;
+
+    config.language = Window::language;
+
+    config.window_mode = 0;
+    if (Window::fullscreen)
+        config.window_mode = SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+    config.controls = KeyMap::Export();
+
+    serialize::config(config);
+}
+
+ConfigStruct Save::LoadConfig() {
+    if (!std::filesystem::exists("config")) CreateConfig();
+
+    ConfigStruct config = deserialize::config();
+
+    return config;
+}
+
+/* ----- KEYMAP ----- */
+
+void Save::Key(const std::string& ename, const SDL_KeyCode kcode) {
+    ConfigStruct config = LoadConfig();
+
+    config.controls[ename] = kcode;
+
+    serialize::config(config);
+}
+
+/* ----- GAME ----- */
+
+void Save::PlayTime(const int wid) {
+    std::chrono::time_point<std::chrono::system_clock> endTime = std::chrono::system_clock::now();
+    std::chrono::nanoseconds currentSessionTime = endTime - Game::StartTime;
+
+    ConfigStruct config = LoadConfig();
+
+    // parse previous chrono
+    std::string timeString = config.worlds[wid].second;
+
+    std::tm tm = {};
+    std::istringstream ss(timeString);
+    ss >> std::get_time(&tm, "%H:%M:%S");
+
+    // prepare new string
+    auto playtime = std::chrono::system_clock::from_time_t(std::mktime(&tm)) + currentSessionTime;
+    std::time_t playtime_t = std::chrono::system_clock::to_time_t(playtime);
+    std::stringstream nss;
+    nss << std::put_time(std::localtime(&playtime_t), "%H:%M:%S");
+
+    // saving it
+    config.worlds[wid].second = nss.str();
+
+    serialize::config(config);
+}
 
 bool Save::Exist(int sid) {
     fs::path path(pathToSaveFolder + std::to_string(sid));

@@ -1,5 +1,6 @@
 #include "include/UI/UIActivator.h"
 
+#include "include/Save.h"
 #include "include/Window.h"
 #include "include/Manager.h"
 
@@ -36,7 +37,7 @@ void UIActivator::update() {
             rect.y + (rect.h - value->height()) / 2
         );
 
-        Window::SaveConfig();
+        Save::SaveConfig();
     }
 }
 

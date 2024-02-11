@@ -64,21 +64,17 @@ int Window::init() {
     Manager::SetRenderDrawColor(hue::white);
 
     // load config
-    std::ifstream infile("./config.json");
-    json config;
-    infile >> config;
-    infile.close();
+    const ConfigStruct config = Save::LoadConfig();
 
-    Window::language = config["language"];
+    Window::language = (Text::Language)config.language;
 
-    Uint32 mode = config["window mode"];
-    SetWindowMode(mode);
+    SetWindowMode(config.window_mode);
 
-    Save::Auto = config["autosave"];
+    Save::Auto = config.autosave;
 
-    Tutorial::activated = config["tutorial"];
+    Tutorial::activated = config.tutorial;
 
-    KeyMap::Load();
+    KeyMap::Import(config.controls);
 
     // init components
     manager = new Manager();
@@ -193,35 +189,7 @@ void Window::quitGame() {
     if (Save::Auto && !Game::player->has_died())
         Save::Update(Game::WorldID);
 
-    // SAVE PLAY TIME
-
-    std::chrono::time_point<std::chrono::system_clock> endTime = std::chrono::system_clock::now();
-    std::chrono::nanoseconds currentSessionTime = endTime - Game::StartTime;
-
-    std::ifstream infile("./config.json");
-    json config;
-    infile >> config;
-    infile.close();
-
-    /// parse previous chrono
-    std::string timeString = config["world " + std::to_string(Game::WorldID) + " time"];
-
-    std::tm tm = {};
-    std::istringstream ss(timeString);
-    ss >> std::get_time(&tm, "%H:%M:%S");
-
-    /// prepare new string
-    auto playtime = std::chrono::system_clock::from_time_t(std::mktime(&tm)) + currentSessionTime;
-    std::time_t playtime_t = std::chrono::system_clock::to_time_t(playtime);
-    std::stringstream nss;
-    nss << std::put_time(std::localtime(&playtime_t), "%H:%M:%S");
-
-    /// saving it
-    config["world " + std::to_string(Game::WorldID) + " time"] = nss.str();
-
-    std::ofstream outfile("./config.json");
-    outfile << std::setw(2) << config << std::endl;
-    outfile.close();
+    Save::PlayTime(Game::WorldID);
 
     openMainMenu();
 }
@@ -340,7 +308,7 @@ void Window::SetWindowMode(Uint32 mode) {
     OptionsMenu* om = static_cast<OptionsMenu*>(ws);
     om->reload();
 
-    SaveConfig();
+    Save::SaveConfig();
 }
 
 void Window::SetLanguage(Text::Language lg) {
@@ -350,27 +318,5 @@ void Window::SetLanguage(Text::Language lg) {
     OptionsMenu* om = static_cast<OptionsMenu*>(ws);
     om->reload();
 
-    SaveConfig();
-}
-
-void Window::SaveConfig() {
-    std::ifstream infile("./config.json");
-    json config;
-    infile >> config;
-    infile.close();
-
-    if (Window::fullscreen)
-        config["window mode"] = SDL_WINDOW_FULLSCREEN_DESKTOP;
-    else
-        config["window mode"] = 0;
-
-    config["language"] = Window::language;
-
-    config["autosave"] = Save::Auto;
-
-    config["tutorial"] = Tutorial::activated;
-
-    std::ofstream outfile("./config.json");
-    outfile << std::setw(2) << config << std::endl;
-    outfile.close();
+    Save::SaveConfig();
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 #include <nlohmann/json.hpp>
@@ -28,7 +29,7 @@ struct QuestTemplate {
 
 class Text {
 public:
-    enum Language {
+    enum Language : Uint8 {
         ENGLISH,
         FRENCH
     };
