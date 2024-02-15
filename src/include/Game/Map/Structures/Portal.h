@@ -6,11 +6,8 @@
 #include "../../Components/Collider.h"
 #include "../../Components/Vector2D.h"
 
-struct PortalStructure {
-    Vector2D pos;
-    std::string dest;
-    Vector2D dest_pos;
-    int damage_level;
+namespace Struct {
+    struct Portal;
 };
 
 class Portal {
@@ -21,7 +18,7 @@ public:
     Portal();
     ~Portal();
 
-    void init(int x, int y, std::string dest, int destX, int destY, int dmg_lvl);
+    void init(const Struct::Portal& portal);
     void update();
     void draw();
     void destroy();
@@ -31,7 +28,7 @@ public:
 
     void use();
 
-    PortalStructure getStructure();
+    Struct::Portal getStructure();
 
 private:
     SDL_Texture* texture;

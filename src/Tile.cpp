@@ -4,6 +4,8 @@
 #include "include/Manager.h"
 
 Tile::Tile(Type t) {
+    type = t;
+
     switch (t) {
     case Tile::Type::GRASS_LEFT:
         srcRect = { 16, 96, 16, 16 };

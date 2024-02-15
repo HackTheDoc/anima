@@ -49,6 +49,7 @@ public:
         // other
         WALL
     };
+    Type type;
 
     Vector2D position;
     SDL_Rect collider;

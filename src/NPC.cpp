@@ -3,7 +3,9 @@
 #include "include/Game/Game.h"
 #include "include/Game/Components/Collision.h"
 
-NPC::NPC(std::string name, Species s, Behavior b) {
+#include "include/struct.h"
+
+NPC::NPC(const std::string& name, const Species s, const Behavior b) {
     type = Type::NON_PLAYER_CHARACTER;
     species = s;
     behavior = b;
@@ -12,7 +14,7 @@ NPC::NPC(std::string name, Species s, Behavior b) {
     dialog = nullptr;
 }
 
-NPC::NPC(std::string name, Species s, Behavior b, Inventory inv) {
+NPC::NPC(const std::string& name, const Species s, const Behavior b, const Inventory& inv) {
     type = Type::NON_PLAYER_CHARACTER;
     species = s;
     behavior = b;
@@ -43,7 +45,7 @@ void NPC::init() {
 void NPC::update() {
     if (behavior == Behavior::RANDOM_MOVEMENT)
         randomMovement();
-        
+
     Entity::update();
 }
 
@@ -84,15 +86,16 @@ void NPC::closeDialog() {
     Entity::closeIntereaction();
 }
 
-EntityStructure NPC::getStructure() {
-    return {
-        .type = type,
+Struct::Entity NPC::getStructure() {
+    const Struct::NPC npc{
         .species = species,
+        .behavior = behavior,
         .name = name,
         .hp = hp,
         .pos = position,
-        .inv = inventory,
-        .npc_hasdialog = haveDialog,
-        .behavior = behavior
+        .hasdialog = (dialog != nullptr),
+        .inventory = inventory.getStructure()
     };
+
+    return Struct::Entity{ npc };
 }

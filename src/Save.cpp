@@ -3,16 +3,18 @@
 
 #include "include/Game/Game.h"
 #include "include/KeyMap.h"
+#include "include/Window.h"
+#include "include/Manager.h"
 
 #include <chrono>
 #include <fstream>
 
 bool Save::Auto = false;
-std::string Save::pathToSaveFolder = "./data/worlds/";
+std::string Save::pathToSaveFolder = "./data/";
 
 /* ----- CONFIG ----- */
 void Save::CreateConfig() {
-    ConfigStruct config{
+    Struct::Config config{
     .autosave = true,
     .tutorial = true,
     .language = 0,
@@ -45,7 +47,7 @@ void Save::CreateConfig() {
 }
 
 void Save::SaveConfig() {
-    ConfigStruct config = LoadConfig();
+    Struct::Config config = LoadConfig();
 
     config.autosave = Save::Auto;
 
@@ -62,10 +64,10 @@ void Save::SaveConfig() {
     serialize::config(config);
 }
 
-ConfigStruct Save::LoadConfig() {
+Struct::Config Save::LoadConfig() {
     if (!std::filesystem::exists("config")) CreateConfig();
 
-    ConfigStruct config = deserialize::config();
+    Struct::Config config = deserialize::config();
 
     return config;
 }
@@ -73,7 +75,7 @@ ConfigStruct Save::LoadConfig() {
 /* ----- KEYMAP ----- */
 
 void Save::Key(const std::string& ename, const SDL_KeyCode kcode) {
-    ConfigStruct config = LoadConfig();
+    Struct::Config config = LoadConfig();
 
     config.controls[ename] = kcode;
 
@@ -86,10 +88,10 @@ void Save::PlayTime(const int wid) {
     std::chrono::time_point<std::chrono::system_clock> endTime = std::chrono::system_clock::now();
     std::chrono::nanoseconds currentSessionTime = endTime - Game::StartTime;
 
-    ConfigStruct config = LoadConfig();
+    Struct::Config config = LoadConfig();
 
     // parse previous chrono
-    std::string timeString = config.worlds[wid].second;
+    std::string timeString = config.worlds[wid-1].second;
 
     std::tm tm = {};
     std::istringstream ss(timeString);
@@ -102,24 +104,29 @@ void Save::PlayTime(const int wid) {
     nss << std::put_time(std::localtime(&playtime_t), "%H:%M:%S");
 
     // saving it
-    config.worlds[wid].second = nss.str();
+    config.worlds[wid-1].second = nss.str();
 
     serialize::config(config);
 }
 
+std::pair<std::string, std::string> Save::GetWorldInfo(const int wid) {
+    const Struct::Config config = LoadConfig();
+
+    return config.worlds[wid-1];
+}
+
 bool Save::Exist(int sid) {
-    fs::path path(pathToSaveFolder + std::to_string(sid));
+    fs::path path(pathToSaveFolder + "world-" + std::to_string(sid));
 
     return fs::exists(path);
 }
 
 bool Save::Create(int sid) {
-    if (Save::Exist(sid))
+    if (Exist(sid))
         return false;
 
-    fs::path path(pathToSaveFolder + std::to_string(sid));
-
-    fs::create_directory(path);
+    Struct::Game game;
+    game.world_id = sid;
 
     // create player
 
@@ -130,238 +137,228 @@ bool Save::Create(int sid) {
         {2260, 2232}  // top left
     };
     int i = rand() % 4;
-    CreatePlayer(path / "player.json", doll_pos[i]);
+    game.player = CreatePlayer(doll_pos[i]);
     doll_pos.erase(doll_pos.cbegin() + i);
 
     // create islands
     i = rand() % 3;
-    Vector2D dpos1 = doll_pos[i];
+    const Vector2D dpos1 = doll_pos[i];
     doll_pos.erase(doll_pos.cbegin() + i);
 
     i = rand() % 2;
-    Vector2D dpos2 = doll_pos[i];
+    const Vector2D dpos2 = doll_pos[i];
     doll_pos.erase(doll_pos.cbegin() + i);
 
-    CreateIsland_LostTemple(path / "lost-temple.json", dpos1, dpos2, doll_pos[0]);
+    const Struct::Island startingIsland = CreateIsland_LostTemple(dpos1, dpos2, doll_pos[0]);
+    game.islands[startingIsland.name] = startingIsland;
 
-    CreateIsland_0(path / "island-0.json");
-    CreateIsland_1(path / "island-1.json");
+    // test islands
+    const Struct::Island testIsland0 = CreateIsland_0();
+    game.islands[testIsland0.name] = testIsland0;
+    const Struct::Island testIsland1 = CreateIsland_1();
+    game.islands[testIsland1.name] = testIsland1;
+
+    serialize::game(game, pathToSaveFolder + "world-" + std::to_string(sid));
 
     // save world name
-    std::ifstream infile("./config.json");
-    json config;
-    infile >> config;
-    infile.close();
-
-    config["world " + std::to_string(sid) + " name"] = Game::WorldName;
-
-    std::ofstream outfile("./config.json");
-    outfile << std::setw(2) << config << std::endl;
-    outfile.close();
+    Struct::Config config = LoadConfig();
+    config.worlds[sid - 1].first = Game::WorldName;
+    serialize::config(config);
 
     return true;
 }
 
 bool Save::Erase(int sid) {
-    if (!Save::Exist(sid))
+    if (!Exist(sid))
         return false;
 
-    fs::path path(pathToSaveFolder + std::to_string(sid));
-
-    fs::remove_all(path);
+    fs::remove(pathToSaveFolder + "world-" + std::to_string(sid));
 
     // reset world name and time
-    std::ifstream infile("./config.json");
-    json config;
-    infile >> config;
-    infile.close();
+    Struct::Config config = LoadConfig();
 
-    config["world " + std::to_string(sid) + " name"] = "World " + std::to_string(sid);
-    config["world " + std::to_string(sid) + " time"] = "00:00:00";
+    config.worlds[sid - 1] = std::make_pair("World " + std::to_string(sid), "00:00:00");
 
-    std::ofstream outfile("./config.json");
-    outfile << std::setw(2) << config << std::endl;
-    outfile.close();
+    serialize::config(config);
 
     return true;
 }
 
 bool Save::Update(int sid) {
-    if (!Save::Exist(sid))
+    if (!Exist(sid))
         return false;
 
-    fs::path path(pathToSaveFolder + std::to_string(sid));
+    Struct::Game game = Load(sid);
 
-    // SAVE PLAYER
+    game.player = Game::player->getStructure();
 
-    SavePlayer(path / "player.json");
+    const std::map<std::string, Struct::Island>& islands = Game::GetExploredIslandStructures();
 
-    // SAVE ISLANDS
+    for (const auto& elt : islands)
+        game.islands[elt.first] = elt.second;
 
-    std::map<std::string, Island*> islands = Game::GetExploredIslands();
-
-    for (auto island : islands)
-        SaveIsland(island.second, path / (island.first + ".json"));
+    serialize::game(game, pathToSaveFolder + "world-" + std::to_string(sid));
 
     return true;
 }
 
-PlayerStructure Save::LoadPlayer(int sid) {
-    PlayerStructure p;
+/* ----- LOAD ----- */
 
-    std::ifstream infile(pathToSaveFolder + std::to_string(sid) + "/player.json");
-    json player;
-    infile >> player;
-    infile.close();
+Struct::Game Save::Load(const int sid) {
+    if (!Exist(sid)) Create(sid);
 
-    p.tutorial_step = player["tutorial step"];
-
-    p.name = player["name"];
-    p.hp = player["hp"];
-
-    p.numen_level = player["mental power"];
-    p.power[Power::BODY_RESURRECTION] = player["res power unlocked"];
-    p.power[Power::BODY_EXPLOSION] = player["exp power unlocked"];
-    p.power[Power::SHIELD] = player["shield power unlocked"];
-
-    p.island = player["island"];
-    p.pos.x = player["x"];
-    p.pos.y = player["y"];
-
-    p.state = player["state"];
-
-    p.curr_main_quest = player["main quest"];
-    for (const Quest::ID q : player["side quests"])
-        p.curr_other_quests.push_back(q);
-
-    auto entity = player["controlled entity"];
-    p.controlled_entity.type = entity["type"];
-
-    if (p.controlled_entity.type == Entity::Type::UNKNOWN)
-        return p;
-
-    switch (p.controlled_entity.type) {
-    case Entity::Type::PLAYER:
-        break;
-    case Entity::DOLL:
-        p.controlled_entity.pos.x = entity["x"];
-        p.controlled_entity.pos.y = entity["y"];
-        p.controlled_entity.inv = LoadInventory(entity["inventory"]);
-        break;
-    case Entity::Type::NON_PLAYER_CHARACTER:
-    default:
-        p.controlled_entity.name = entity["name"];
-        p.controlled_entity.species = entity["species"];
-        p.controlled_entity.behavior = entity["behavior"];
-        p.controlled_entity.hp = entity["hp"];
-        p.controlled_entity.npc_hasdialog = entity["dialog"];
-        p.controlled_entity.pos.x = entity["x"];
-        p.controlled_entity.pos.y = entity["y"];
-        p.controlled_entity.inv = LoadInventory(entity["inventory"]);
-        break;
-    }
-
-    return p;
+    Struct::Game game;
+    deserialize::game(game, pathToSaveFolder + "world-" + std::to_string(sid));
+    
+    return game;
 }
 
-json Save::LoadIsland(int sid, std::string name) {
-    std::ifstream infile(pathToSaveFolder + std::to_string(sid) + "/" + name + ".json");
-    json island;
-    infile >> island;
-    infile.close();
-    return island;
+Struct::Player Save::LoadPlayer() {
+    const Struct::Game game = Load(Game::WorldID);
+
+    return game.player;
 }
 
-Inventory Save::LoadInventory(json inventory) {
-    Inventory inv;
+Struct::Island Save::LoadIsland(const std::string& island_name) {
+    const Struct::Game game = Load(Game::WorldID);
 
-    inv.capacity = inventory["capacity"];
-
-    for (auto i : inventory["items"]) {
-        inv.item.push_back(Item::Create(i));
-    }
-
-    return inv;
+    return game.islands.at(island_name);
 }
 
 /* ----- CREATE ----- */
 
-void Save::CreatePlayer(fs::path path, const Vector2D& pos) {
-    json player = {
-        {"tutorial step", Tutorial::Step::OPEN_INVENTORY},
+Struct::Portal Save::CreatePortal(const int x, const int y, const std::string& dest, const int dx, const int dy, const int dmg_lvl) {
+    return {
+        .pos = {x,y},
+        .dest = dest,
+        .dest_pos = {dx,dy},
+        .damage_level = dmg_lvl
+    };
+}
 
-        {"name", "unknown"},
-        {"hp", 1},
+Struct::Map Save::CreateMap(const int width, const int height, const std::vector<std::vector<int>>& rmap) {
+    Struct::Map map;
+    map.width = width;
+    map.height = height;
 
-        {"mental power", 1}, // start with 1 mental power
-        {"res power unlocked", false},
-        {"exp power unlocked", false},
-        {"shield power unlocked", false},
+    map.tiles.resize(height);
+    for (int y = 0; y < height; y++) {
+        map.tiles[y].resize(width);
+        for (int x = 0; x < width; x++)
+            map.tiles[y][x] = (Tile::Type)rmap[y][x];
+    }
+
+    return map;
+}
+
+Struct::Item Save::CreateItem(const int x, const int y, const Item::ID id) {
+    return { .pos = {x,y}, .id = id };
+}
+
+Struct::Inventory Save::CreateInventory(const size_t capacity, std::vector<Item::ID> items) {
+    Struct::Inventory inv{ .capacity = capacity, .items = {} };
+
+    for (size_t i = 0; i < items.size(); i++)
+        inv.items.push_back(CreateItem(0, 0, items[i]));
+
+    return inv;
+}
+
+Struct::Entity Save::CreateNPC(const int x, const int y, const EntitySpecies species, const EntityBehavior behavior, const std::string& name, const Struct::Inventory& inv, const int hp, const bool hasdialog) {
+    const Struct::NPC npc{
+        .species = species,
+        .behavior = behavior,
+        .name = name,
+        .hp = hp,
+        .pos = {x,y},
+        .hasdialog = hasdialog,
+        .inventory = inv
+    };
+    return Struct::Entity{ npc };
+}
+
+Struct::Entity Save::CreateDoll(const int x, const int y, const Struct::Inventory& inv) {
+    const Struct::Doll doll{ .pos = {x,y}, .inventory = inv };
+    return Struct::Entity{ doll };
+}
+
+Struct::Entity Save::CreateDeadBody(const int x, const int y, const EntitySpecies species, const EntityType otype, const EntityBehavior obehavior, const std::string& oname, const Struct::Inventory& inv, bool ohasdialog) {
+    const Struct::DeadBody body{
+        .species = species,
+        .pos = {x,y},
+        .inventory = inv,
+        .o_type = otype,
+        .o_behavior = obehavior,
+        .o_name = oname,
+        .o_hasdialog = ohasdialog
+    };
+    return Struct::Entity{ body };
+}
+
+Struct::Player Save::CreatePlayer(const Vector2D& pos) {
+    const Struct::Player player{
+        .name = "unknown",
+        .hp = 1,
+        .numen_level = 1,
+        .power = {{false, false, false}},
+
+        .state = Player::State::FREE,
+        .tutorial_step = Tutorial::Step::OPEN_INVENTORY,
+
+        .curr_main_quest = Quest::ID::AN_INMATE,
+        .curr_other_quests = {},
 
 #ifdef DEV_MOD
-        {"island", "island-0"},
-        {"x", 384},
-        {"y", 768},
+        .curr_island_on = "test island 0",
+        .pos = {384, 768},
 #else
-        {"island", "lost-temple"},
-        {"x", pos.x},
-        {"y", pos.y},
+        .curr_island_on = "lost temple",
+        .pos = pos,
 #endif
 
-        {"state", Player::State::FREE},
-
-        {"main quest", Quest::ID::AN_INMATE}, // will be changed
-        {"side quests", json::array()},
-        {"controlled entity", CreateDoll(pos.x, 2976, CreateInventory(1))}
+        .is_controlling_an_entity = true,
+        .controlled_entity = CreateDoll(pos.x, pos.y, CreateInventory(1, {}))
     };
 
-    std::ofstream outfile(path);
-    outfile << std::setw(2) << player << std::endl;
-    outfile.close();
+    return player;
 }
 
-void Save::CreateIsland_0(fs::path path) {
-    json island = {
-        {"name", "island-0"},
-        {"width", 15},
-        {"height", 11},
-        {"tiles", {
-            {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
-            {10, 10, 10, 10,  5,  4,  4,  4,  4,  4,  4,  6, 10, 10, 10},
-            {10, 10,  5,  4, 14,  1,  1,  1,  1,  1,  1, 13,  4,  6, 10},
-            {10, 10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
-            {10,  5, 14,  1, 28,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
-            {10,  2, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
-            {10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
-            {10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
-            {10,  2,  1,  1,  1,  1,  1, 11,  7,  7,  7,  7,  7,  9, 10},
-            {10,  8,  7,  7,  7,  7,  7,  9, 10, 10, 10, 10, 10, 10, 10},
-            {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
-        }},
-        {"portals", {
-            CreatePortal(1280, 512, "island-1", 768, 896, 1)
-        }},
-        {"entities", {
-            CreateDoll(432, 544, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
-            CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown", CreateInventory(1, {Item::ID::LAPIS_MAGICIS})),
-            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1), 1)
-        }},
-        {"items", {
+Struct::Island Save::CreateIsland_0() {
+    const Struct::Island island{
+        .name = "test island 0",
+        .map = CreateMap(15, 11, {
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
+                {10, 10, 10, 10,  5,  4,  4,  4,  4,  4,  4,  6, 10, 10, 10},
+                {10, 10,  5,  4, 14,  1,  1,  1,  1,  1,  1, 13,  4,  6, 10},
+                {10, 10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
+                {10,  5, 14,  1, 28,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
+                {10,  2, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
+                {10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
+                {10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10},
+                {10,  2,  1,  1,  1,  1,  1, 11,  7,  7,  7,  7,  7,  9, 10},
+                {10,  8,  7,  7,  7,  7,  7,  9, 10, 10, 10, 10, 10, 10, 10},
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
+            }),
+        .portals = {
+            CreatePortal(1280, 512, "test island 1", 768, 896, 1)
+        },
+        .items = {
             CreateItem(1024, 512, Item::ID::LAPIS_VITAE)
-        }}
+        },
+        .entities = {
+            CreateDoll(432, 544, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
+            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1), 1),
+            CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown", CreateInventory(1, {Item::ID::LAPIS_MAGICIS})),
+        }
     };
 
-    std::ofstream outfile(path);
-    outfile << std::setw(2) << island << std::endl;
-    outfile.close();
+    return island;
 }
 
-void Save::CreateIsland_1(fs::path path) {
-    json island = {
-        {"name", "island-1"},
-        {"width", 30},
-        {"height", 20},
-        {"tiles", {
+Struct::Island Save::CreateIsland_1() {
+    return {
+        .name = "test island 1",
+        .map = CreateMap(30, 20, {
             {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  5,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  6},
             {10, 10, 10, 10, 10, 10, 10, 10, 10, 10,  5,  4, 14,  1,  1,  1,  1,  1,  1,  1,  1, 19, 18, 18, 18, 18, 20,  1,  1,  3},
             {10, 10, 10, 10, 10, 10, 10,  5,  4,  4, 14,  1,  1,  1,  1,  1,  1,  1,  1, 19, 18, 27, 15, 15, 15, 15, 26, 20,  1,  3},
@@ -382,28 +379,24 @@ void Save::CreateIsland_1(fs::path path) {
             { 2,  1,  1,  1, 22, 21, 21, 21, 23,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 11,  7,  9, 10, 10, 10, 10, 10, 10},
             { 2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 11,  7,  7,  9, 10, 10, 10, 10, 10, 10, 10, 10},
             { 8,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
-        }},
-        {"portals", {
+        }),
+        .portals = {
             CreatePortal(768, 896, "island-0", 1280, 512, 2)
-        }},
-        {"entities", {
-            CreateNPC(1024, 512, Entity::Species::HUMAN, Entity::Behavior::STATIC, "Guide", CreateInventory(0), Entity::MAX_HP, true),
-            CreateNPC(1280, 768, Entity::Species::GOBLIN, Entity::Behavior::RANDOM_MOVEMENT, "Traveler", CreateInventory(1, {Item::ID::LAPIS_MAGICIS})),
-        }},
-        {"items", json::array()}
-    };
+        },
+        .items = {
 
-    std::ofstream outfile(path);
-    outfile << std::setw(2) << island << std::endl;
-    outfile.close();
+        },
+        .entities = {
+            CreateNPC(1024, 512, Entity::Species::HUMAN, Entity::Behavior::STATIC, "Guide", CreateInventory(0), Entity::MAX_HP, true),
+            CreateNPC(1280, 768, Entity::Species::GOBLIN, Entity::Behavior::RANDOM_MOVEMENT, "Traveler", CreateInventory(1, {Item::ID::LAPIS_MAGICIS}), Entity::MAX_HP),
+        }
+    };
 }
 
-void Save::CreateIsland_LostTemple(fs::path path, const Vector2D& dpos1, const Vector2D& dpos2, const Vector2D& dpos3) {
-    json island = {
-        {"name", "lost-temple"},
-        {"width", 41},
-        {"height", 41},
-        {"tiles", {
+Struct::Island Save::CreateIsland_LostTemple(const Vector2D& dpos1, const Vector2D& dpos2, const Vector2D& dpos3) {
+    Struct::Island island{
+        .name = "lost temple",
+        .map = CreateMap(41, 41, {
           { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10},
           { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10},
           { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10},
@@ -445,15 +438,15 @@ void Save::CreateIsland_LostTemple(fs::path path, const Vector2D& dpos1, const V
           { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10},
           { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10},
           { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10}
-        }},
-        {"portals", {
+        }),
+        .portals = {
             CreatePortal(2560, 2560, "island-0", 1280, 512, 1)
-        }},
-        {"entities", json::array()},
-        {"items", json::array()}
+        },
+        .items = {},
+        .entities = {}
     };
 
-    json::array_t entities = {
+    std::vector<Struct::Entity> entities = {
         CreateDoll(dpos1.x, dpos1.y, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
         CreateDoll(dpos2.x, dpos2.y, CreateInventory(1)),
         CreateDoll(dpos3.x, dpos3.y, CreateInventory(1))
@@ -464,220 +457,19 @@ void Save::CreateIsland_LostTemple(fs::path path, const Vector2D& dpos1, const V
     while (n > 0) {
         const int x = rand() % 41;
         const int y = rand() % 41;
-        if (island["tiles"][y][x] == Tile::Type::GRASS) {
+        if (island.map.tiles[y][x] == Tile::Type::GRASS) {
             n--;
 
             if (!lapisMagicisPlaced) {
                 lapisMagicisPlaced = true;
-                entities.push_back(CreateNPC(x * 128, y * 128, Entity::Species::GOBLIN, Entity::Behavior::RANDOM_MOVEMENT, "fairy", CreateInventory(1, { Item::ID::LAPIS_MAGICIS })));
+                entities.push_back(CreateNPC(x * 128, y * 128, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "fairy", CreateInventory(1, { Item::ID::LAPIS_MAGICIS }), 1));
             }
             else
-                entities.push_back(CreateNPC(x * 128, y * 128, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "fairy", CreateInventory(1)));
+                entities.push_back(CreateNPC(x * 128, y * 128, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "fairy", CreateInventory(1), 1));
         }
     }
 
-    island["entities"] = entities;
+    island.entities = entities;
 
-    std::ofstream outfile(path);
-    outfile << std::setw(2) << island << std::endl;
-    outfile.close();
-}
-
-/* ----- SAVE ----- */
-
-void Save::SavePlayer(fs::path path) {
-    std::ifstream infile(path);
-    json data;
-    infile >> data;
-    infile.close();
-
-    PlayerStructure player = Game::player->getStructure();
-
-    data["tutorial step"] = player.tutorial_step;
-
-    data["name"] = player.name;
-    data["hp"] = player.hp;
-
-    data["mental power"] = player.numen_level;
-    data["res power unlocked"] = player.power[Power::BODY_RESURRECTION];
-    data["exp power unlocked"] = player.power[Power::BODY_EXPLOSION];
-    data["shield power unlocked"] = player.power[Power::SHIELD];
-
-    data["island"] = player.island;
-    data["x"] = player.pos.x;
-    data["y"] = player.pos.y;
-
-    data["state"] = player.state;
-
-    data["main quest"] = player.curr_main_quest;
-    data["side quests"] = player.curr_other_quests;
-
-    switch (player.controlled_entity.type)
-    {
-    case Entity::Type::PLAYER:
-        break;
-    case Entity::Type::NON_PLAYER_CHARACTER:
-        data["controlled entity"] = OrganizeNPC(player.controlled_entity);
-        break;
-    case Entity::Type::DOLL:
-        data["controlled entity"] = OrganizeDoll(player.controlled_entity);
-        break;
-    default:
-        data["controlled entity"] = CreateNoone();
-        break;
-    }
-
-    std::ofstream outfile(path);
-    outfile << std::setw(2) << data << std::endl;
-    outfile.close();
-}
-
-void Save::SaveIsland(Island* island, fs::path path) {
-    std::ifstream infile(path);
-    json data;
-    infile >> data;
-    infile.close();
-
-    std::vector<PortalStructure> pdata = island->getPortals();
-    std::vector<json> portals;
-    for (PortalStructure pd : pdata)
-        portals.push_back(CreatePortal(pd.pos.x, pd.pos.y, pd.dest, pd.dest_pos.x, pd.dest_pos.y, pd.damage_level));
-    data["portals"] = portals;
-
-    std::vector<EntityStructure> edata = island->getEntities();
-    std::vector<json> entities;
-    for (EntityStructure ed : edata)
-    {
-        json e;
-        switch (ed.type)
-        {
-        case Entity::Type::NON_PLAYER_CHARACTER:
-            e = OrganizeNPC(ed);
-            break;
-        case Entity::Type::DOLL:
-            e = OrganizeDoll(ed);
-            break;
-        case Entity::Type::DEAD_BODY:
-            e = OrganizeDeadBody(ed);
-            break;
-        default:
-            break;
-        }
-        entities.push_back(e);
-    }
-    data["entities"] = entities;
-
-    std::vector<std::pair<Vector2D, Item::ID>> idata = island->getItems();
-    std::vector<json> items;
-    for (std::pair<Vector2D, Item::ID> i : idata)
-        items.push_back(OrganizeItem(i));
-    data["items"] = items;
-
-    std::ofstream outfile(path);
-    outfile << std::setw(2) << data << std::endl;
-    outfile.close();
-}
-
-/* ----- STRUCTURE CREATION ----- */
-
-json Save::CreateInventory(const int capacity, std::vector<int> items) {
-    return {
-        {"capacity", capacity},
-        {"items", items}
-    };
-}
-
-json Save::CreateItem(const int x, const int y, const int id) {
-    return {
-        {"x", x},
-        {"y", y},
-        {"id", id}
-    };
-}
-
-json Save::CreatePortal(const int xp, const int yp, const std::string& dest, const int xd, const int yd, const int damage_level) {
-    return {
-        {"x", xp},
-        {"y", yp},
-        {"destination", dest},
-        {"destinationX", xd},
-        {"destinationY", yd},
-#ifdef DEV_MOD
-        {"damage level", 0}
-#else
-        { "damage level", damage_level }
-#endif
-    };
-}
-
-json Save::CreateNoone() {
-    return {
-        {"type", Entity::Type::UNKNOWN},
-        {"name", "noone"},
-        {"inventory", CreateInventory(0)}
-    };
-}
-
-json Save::CreateNPC(const int x, const int y, const int species, const int behavior, const std::string& name, const json& inventory, const int hp, const bool hasdialog) {
-    return {
-        {"type", Entity::Type::NON_PLAYER_CHARACTER},
-        {"species", species},
-        {"behavior", behavior},
-        {"name", name},
-        {"hp", hp},
-        {"x", x},
-        {"y", y},
-        {"dialog", hasdialog},
-        {"inventory", inventory}
-    };
-}
-
-json Save::CreateDoll(const int x, const int y, const json& inv) {
-    return {
-        {"type", Entity::Type::DOLL},
-        {"x", x},
-        {"y", y},
-        {"inventory", inv}
-    };
-}
-
-json Save::CreateDeadBody(const int x, const int y, const int species, const int otype, const int obehavior, const std::string& oname, const json& oinv, const bool ohasdialog) {
-    return {
-        {"type", Entity::Type::DEAD_BODY},
-        {"owner type", otype},
-        {"species", species},
-        {"behavior", obehavior},
-        {"name", oname},
-        {"x", x},
-        {"y", y},
-        {"inventory", oinv},
-        {"dialog", ohasdialog}
-    };
-}
-
-/* ----- STRUCTURE ORGANIZATION ----- */
-
-json Save::OrganizeInventory(Inventory inventory) {
-    std::vector<int> items;
-
-    for (Item* i : inventory.item)
-        items.push_back(i->id);
-
-    return CreateInventory(inventory.capacity, items);
-}
-
-json Save::OrganizeItem(std::pair<Vector2D, int> i) {
-    return CreateItem(i.first.x, i.first.y, i.second);
-}
-
-json Save::OrganizeNPC(EntityStructure npcs) {
-    return CreateNPC(npcs.pos.x, npcs.pos.y, npcs.species, npcs.behavior, npcs.name, OrganizeInventory(npcs.inv), npcs.hp, npcs.npc_hasdialog);
-}
-
-json Save::OrganizeDoll(EntityStructure dolls) {
-    return CreateDoll(dolls.pos.x, dolls.pos.y, OrganizeInventory(dolls.inv));
-}
-
-json Save::OrganizeDeadBody(EntityStructure s) {
-    return CreateDeadBody(s.pos.x, s.pos.y, s.species, s.type2, s.behavior, s.name, OrganizeInventory(s.inv), s.npc_hasdialog);
+    return island;
 }

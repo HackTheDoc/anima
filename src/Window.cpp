@@ -64,7 +64,7 @@ int Window::init() {
     Manager::SetRenderDrawColor(hue::white);
 
     // load config
-    const ConfigStruct config = Save::LoadConfig();
+    const Struct::Config config = Save::LoadConfig();
 
     Window::language = (Text::Language)config.language;
 

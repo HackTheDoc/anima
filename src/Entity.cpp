@@ -15,7 +15,6 @@ Entity::Entity() {
 
     hp = MAX_HP;
     numenLevel = INT8_MAX;
-    controlled = false;
 
     inventory.capacity = 0;
 }
@@ -24,6 +23,7 @@ Entity::~Entity() {}
 
 void Entity::init() {
     immortal = false;
+    controlled = false;
 
     sprite = nullptr;
     collider = nullptr;
@@ -155,10 +155,6 @@ bool Entity::addItemToInventory(Item* item) {
 
 bool Entity::has_died() {
     return hp == 0;
-}
-
-EntityStructure Entity::getStructure() {
-    return { type, Entity::Type::UNKNOWN, species, name, hp, position, inventory, false };
 }
 
 /// @TODO: deceide the value for each species...

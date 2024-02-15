@@ -5,6 +5,10 @@
 
 #include "../Components/Collider.h"
 
+namespace Struct {
+    struct Item;
+};
+
 class Item {
 public:
     enum ID {
@@ -24,6 +28,7 @@ public:
 
     Item();
     ~Item();
+
     virtual bool use();
     virtual void read();
 
@@ -32,6 +37,8 @@ public:
     std::string to_string();
 
     static Item *Create(Item::ID it);
+
+    Struct::Item getStructure();
 
 protected:
     SDL_Rect icon;

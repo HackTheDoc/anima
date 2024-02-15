@@ -16,56 +16,45 @@ Island::Island(const std::string& name)
 Island::~Island() {}
 
 void Island::init() {
-    nlohmann::json data = Save::LoadIsland(Game::WorldID, name);
-
-    name = data["name"];
+    const Struct::Island data = Save::LoadIsland(name);
 
     // LOADING MAP
-    map->init(data["width"], data["height"]);
-    const auto& tile = data["tiles"];
-    for (int y = 0; y < map->getHeight(); y++)
-        for (int x = 0; x < map->getWidth(); x++)
-            map->setTile(x, y, tile[y][x]);
+    map->init(data.map);
 
     // LOADING PORTALS
-    for (const auto& portal : data["portals"]) {
-        addPortal(
-            portal["x"],
-            portal["y"],
-            portal["destination"],
-            portal["destinationX"],
-            portal["destinationY"],
-            portal["damage level"]);
+    for (const Struct::Portal& portal : data.portals) {
+        Portal* p = new Portal();
+        p->init(portal);
+        portals.push_back(p);
     }
 
     // LOADING ITEMS
-    for (const auto& item : data["items"]) {
-        addItem(
-            item["x"],
-            item["y"],
-            item["id"]);
+    for (const Struct::Item& item : data.items) {
+        Item* i = Item::Create(item.id);
+        i->collider->place(item.pos);
+        items.push_back(i);
     }
 
     // LOADING ENTITIES
-    for (const auto& entity : data["entities"]) {
-        Entity::Type t = entity["type"];
-        switch (t) {
-        case Entity::Type::PLAYER:
-            Game::player->setPosition(entity["x"], entity["y"]);
-            break;
-        case Entity::Type::NON_PLAYER_CHARACTER:
-            addNPC(entity["species"], entity["name"], entity["hp"], entity["x"], entity["y"], entity["dialog"], entity["behavior"], Save::LoadInventory(entity["inventory"]));
-            break;
-        case Entity::Type::DOLL:
-            addDoll(entity["x"], entity["y"], Save::LoadInventory(entity["inventory"]));
-            break;
-        case Entity::DEAD_BODY:
-            addDeadBody(entity["species"], entity["owner type"], entity["name"], entity["x"], entity["y"], entity["dialog"], entity["behavior"], Save::LoadInventory(entity["inventory"]));
-            break;
-        default:
-            break;
+    struct Visitor {
+        Island* island;
+
+        void operator()(const Struct::NPC& data) {
+            island->addNPC(data.pos, data.species, data.behavior, data.name, data.hp, data.hasdialog, data.inventory);
         }
-    }
+
+        void operator()(const Struct::Doll& data) {
+            island->addDoll(data.pos, data.inventory);
+        }
+
+        void operator()(const Struct::DeadBody& data) {
+            island->addDeadBody(data.species, data.pos, data.inventory, data.o_type, data.o_name, data.o_hasdialog, data.o_behavior);
+        }
+    };
+    Visitor visitor{this};
+
+    for (const auto& entity : data.entities)
+        std::visit(visitor, entity.e);
 }
 
 void Island::update() {
@@ -122,82 +111,57 @@ std::string Island::getName() {
     return name;
 }
 
-void Island::addPortal(const int x, const int y, const std::string& dest, const int destX, const int destY, const int damage_lvl) {
-    Portal* p = new Portal();
-    p->init(
-        x,
-        y,
-        dest,
-        destX + (Tile::SIZE - Game::player->collider->rect.w) / 2,
-        destY + (Tile::SIZE - Game::player->collider->rect.h) / 2,
-        damage_lvl
-    );
-    portals.push_back(p);
-}
-
-void Island::addItem(const int x, const int y, const Item::ID id) {
-    Item* i = Item::Create(id);
-
-    if (i == nullptr)
-        return;
-
-    i->collider->place(x, y);
-
-    items.push_back(i);
-}
-
 void Island::addItem(const Vector2D& pos, Item* i) {
     i->collider->position = pos;
     items.push_back(i);
 }
 
-void Island::addNPC(const Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool hasDialog, const Entity::Behavior behavior) {
-    NPC* npc = new NPC(name, species, behavior);
-    npc->init();
-    npc->setPosition(x, y);
-    npc->haveDialog = hasDialog;
-    npc->hp = hp;
-    addEntity(npc);
-}
-
-void Island::addNPC(const Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool hasDialog, const Entity::Behavior behavior, const Inventory& inv) {
+void Island::addNPC(const Vector2D& pos, const Entity::Species species, const Entity::Behavior behavior, const std::string& name, const int hp, const bool hasdialog, const Inventory& inv) {
     NPC* npc = new NPC(name, species, behavior, inv);
     npc->init();
-    npc->setPosition(x, y);
-    npc->haveDialog = hasDialog;
+    npc->haveDialog = hasdialog;
     npc->hp = hp;
+    npc->setPosition(pos);
     addEntity(npc);
 }
 
-void Island::addDoll(const int x, const int y, const Inventory& inv) {
+void Island::addDoll(const Vector2D& pos, const Inventory& inv) {
     Doll* doll = new Doll(inv);
     doll->init();
-    doll->setPosition(x, y);
+    doll->setPosition(pos);
     addEntity(doll);
 }
 
-void Island::addDeadBody(const Entity::Species species, const Entity::Type type, const std::string& name, const int x, const int y, const bool haveDialog, const Entity::Behavior behavior, const Inventory& inv) {
-    DeadBody* b = new DeadBody(species);
-    b->init();
-    b->ownerType = type;
-    b->name = name;
-    b->setPosition(x, y);
-    b->ownerHasDialog = haveDialog;
+void Island::addDeadBody(const Entity::Species species, const Vector2D& pos, const Inventory& inv, const Entity::Type otype, const std::string& oname, const bool ohasDialog, const Entity::Behavior obehavior) {
+    DeadBody* body = new DeadBody(species);
+    body->init();
+    body->ownerType = otype;
+    body->name = oname;
+    body->setPosition(pos);
+    body->ownerHasDialog = ohasDialog;
 
     /// WARNING: may change
-    switch (type) {
+    switch (otype) {
     case Entity::Type::NON_PLAYER_CHARACTER:
-        b->numenLevel = 1;
-        b->behavior = behavior;
+        body->numenLevel = 1;
+        body->behavior = obehavior;
         break;
     default:
-        b->numenLevel = INT32_MAX;
+        body->numenLevel = INT32_MAX;
         break;
     }
 
-    b->inventory = inv;
+    body->inventory = inv;
+    addEntity(body);
+            
+}
 
-    entities.push_back(b);
+void Island::addEntity(Entity* e) {
+    entities.push_back(e);
+}
+
+void Island::removeEntity(Entity* e) {
+    entities.erase(std::remove(entities.begin(), entities.end(), e), entities.end());
 }
 
 void Island::updateFreeState() {
@@ -262,49 +226,39 @@ void Island::updateInDollState() {
     }
 }
 
-void Island::addEntity(Entity* e) {
-    entities.push_back(e);
-}
+Struct::Island Island::getStructure() {
+    Struct::Island island;
+    island.name = name;
 
-void Island::removeEntity(Entity* e) {
-    entities.erase(std::remove(entities.begin(), entities.end(), e), entities.end());
-}
-
-std::vector<PortalStructure> Island::getPortals() {
-    std::vector<PortalStructure> pstructures;
-    for (auto p : portals)
-        pstructures.push_back(p->getStructure());
-
-    return pstructures;
-}
-
-std::vector<EntityStructure> Island::getEntities() {
-    std::vector<EntityStructure> estructures;
-    for (auto e : entities) {
-        switch (e->type) {
+    island.map = map->getStructure();
+    
+    island.portals.resize(portals.size());
+    for (size_t i = 0; i < portals.size(); i++)
+        island.portals[i] = portals[i]->getStructure();
+    
+    island.items.resize(items.size());
+    for (size_t i = 0; i < items.size(); i++)
+        island.items[i] = items[i]->getStructure();
+    
+    island.entities.resize(entities.size());
+    for (size_t i = 0; i < entities.size(); i++) {
+        switch (entities[i]->type) {
         case Entity::Type::NON_PLAYER_CHARACTER:
-            estructures.push_back(static_cast<NPC*>(e)->getStructure());
+            if (NPC* npc = dynamic_cast<NPC*>(entities[i]))
+                island.entities[i] = npc->getStructure();
             break;
         case Entity::Type::DOLL:
-            estructures.push_back(static_cast<Doll*>(e)->getStructure());
+            if (Doll* doll = dynamic_cast<Doll*>(entities[i]))
+                island.entities[i] = doll->getStructure();
             break;
         case Entity::Type::DEAD_BODY:
-            estructures.push_back(static_cast<DeadBody*>(e)->getStructure());
-        case Entity::Type::PLAYER:
-        case Entity::Type::UNKNOWN:
+            if (DeadBody* body = dynamic_cast<DeadBody*>(entities[i]))
+                island.entities[i] = body->getStructure();
+            break;
         default:
             break;
         }
     }
 
-    return estructures;
-}
-
-std::vector<std::pair<Vector2D, Item::ID>> Island::getItems() {
-    std::vector<std::pair<Vector2D, Item::ID>> is;
-
-    for (auto i : items)
-        is.push_back(std::make_pair(i->collider->position, i->id));
-
-    return is;
+    return island;
 }

@@ -20,8 +20,8 @@ Player::Player() {
 Player::~Player() {}
 
 void Player::init() {
-    PlayerStructure data = Save::LoadPlayer(Game::WorldID);
-
+    Struct::Player data = Save::LoadPlayer();
+    
     Entity::init();
 
     DEFAULT_SPRITE = new Sprite(this);
@@ -62,41 +62,53 @@ void Player::init() {
     interaction = Interaction::NONE;
     interactingWith = nullptr;
 
-    if (data.controlled_entity.type == Entity::Type::NON_PLAYER_CHARACTER) {
-        NPC* npc = new NPC(data.controlled_entity.name, data.controlled_entity.species, data.controlled_entity.behavior, data.controlled_entity.inv);
-        npc->init();
-        npc->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
-        npc->haveDialog = data.controlled_entity.npc_hasdialog;
-        npc->hp = data.controlled_entity.hp;
+    if (data.is_controlling_an_entity) {
+        struct Visitor {
+            Player* player;
 
-        this->sprite = npc->sprite;
-        this->sprite->linkTo(this);
+            void operator()(const Struct::NPC& data) const {
+                NPC* npc = new NPC(data.name, data.species, data.behavior, data.inventory);
+                npc->init();
+                npc->setPosition(data.pos.x, data.pos.y);
+                npc->haveDialog = data.hasdialog;
+                npc->hp = data.hp;
 
-        this->controlledEntity = npc;
-        npc->controlled = true;
-        this->controlled = true;
+                player->sprite = npc->sprite;
+                player->sprite->linkTo(player);
 
-        this->walkSpeed = npc->walkSpeed;
+                player->setControlledEntity(npc);
+                npc->controlled = true;
+                player->controlled = true;
+
+                player->walkSpeed = npc->walkSpeed;
+            }
+
+            void operator()(const Struct::Doll& data) const {
+                Doll* doll = new Doll(data.inventory);
+                doll->init();
+                doll->setPosition(data.pos.x, data.pos.y);
+
+                player->sprite = doll->sprite;
+                player->sprite->linkTo(player);
+
+                player->setControlledEntity(doll);
+                doll->controlled = true;
+                player->controlled = true;
+
+                player->walkSpeed = doll->walkSpeed;
+            }
+
+            void operator()(const Struct::DeadBody& data) const {}
+        };
+
+        Visitor visitor{ this };
+        std::visit(visitor, data.controlled_entity.e);
     }
-
-    else if (data.controlled_entity.type == Entity::Type::DOLL) {
-        Doll* doll = new Doll(data.controlled_entity.inv);
-        doll->init();
-        doll->setPosition(data.controlled_entity.pos.x, data.controlled_entity.pos.y);
-
-        this->sprite = doll->sprite;
-        this->sprite->linkTo(this);
-
-        this->controlledEntity = doll;
-        doll->controlled = true;
-        this->controlled = true;
-
-        this->walkSpeed = doll->walkSpeed;
-    }
-
     else controlledEntity = nullptr;
 
     setHealthDecreasalRate();
+
+    Game::LoadIsland(data.curr_island_on);
 }
 
 void Player::update() {
@@ -134,13 +146,12 @@ void Player::update() {
 
         Game::island->addDeadBody(
             controlledEntity->species,
+            position,
+            controlledEntity->inventory,
             controlledEntity->type,
             controlledEntity->name,
-            position.x,
-            position.y,
             hasdialog,
-            controlledEntity->behavior,
-            controlledEntity->inventory
+            controlledEntity->behavior
         );
 
         controlledEntity->kill();
@@ -250,7 +261,15 @@ void Player::resurrectDeadBody(DeadBody* body) {
 
     switch (body->ownerType) {
     case Entity::Type::NON_PLAYER_CHARACTER:
-        Game::island->addNPC(body->species, body->name, Entity::MAX_HP, body->position.x, body->position.y, body->ownerHasDialog, body->behavior, body->inventory);
+        Game::island->addNPC(
+            body->position,
+            body->species,
+            body->behavior,
+            body->name,
+            Entity::MAX_HP,
+            body->ownerHasDialog, 
+            body->inventory
+        );
         break;
     default:
         break;
@@ -336,42 +355,41 @@ Inventory* Player::parseInventory(const bool display_err_msg) {
     else return &controlledEntity->inventory;
 }
 
+void Player::setControlledEntity(Entity* e) {
+    controlledEntity = e;
+}
+
 Entity* Player::parseControlledEntity() {
     return controlledEntity;
 }
 
-PlayerStructure Player::getStructure() {
-    EntityStructure e;
-    e.type = Entity::Type::UNKNOWN;
-    e.name = "noone";
-
-    PlayerStructure structure;
-
-    structure.tutorial_step = Tutorial::current;
+Struct::Player Player::getStructure() {
+    Struct::Player structure;
 
     structure.name = name;
     structure.hp = hp;
-
     structure.numen_level = numenLevel;
-    structure.power[Power::BODY_CONTROL] = hasUnlockedPower[Power::BODY_CONTROL];
     structure.power[Power::BODY_RESURRECTION] = hasUnlockedPower[Power::BODY_RESURRECTION];
     structure.power[Power::BODY_EXPLOSION] = hasUnlockedPower[Power::BODY_EXPLOSION];
     structure.power[Power::SHIELD] = hasUnlockedPower[Power::SHIELD];
 
-    structure.island = Game::island->getName();
-
-    structure.pos = position;
-
-    structure.controlled_entity = e;
 
     if (state == State::IN_DIALOG)
         structure.state = State::FREE;
+    else structure.state = state;
+
+    structure.tutorial_step = Tutorial::current;
+
+    structure.curr_island_on = Game::island->getName();
+    structure.pos = position;
 
     structure.curr_main_quest = quest->main.id;
     for (Quest q : quest->others)
         structure.curr_other_quests.push_back(q.id);
 
+    structure.is_controlling_an_entity = false;
     if (controlledEntity != nullptr) {
+        structure.is_controlling_an_entity = true;
         switch (controlledEntity->type) {
         case Entity::Type::NON_PLAYER_CHARACTER:
             structure.controlled_entity = static_cast<NPC*>(controlledEntity)->getStructure();
@@ -382,7 +400,6 @@ PlayerStructure Player::getStructure() {
         case Entity::Type::PLAYER:
         case Entity::Type::UNKNOWN:
         default:
-            structure.controlled_entity.type = Entity::Type::UNKNOWN;
             break;
         }
     }

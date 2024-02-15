@@ -31,10 +31,6 @@ void Game::init() {
     
     ui->init();
 
-    PlayerStructure ps = Save::LoadPlayer(Game::WorldID);
-
-    LoadIsland(ps.island);
-
     Game::StartTime = std::chrono::system_clock::now();
 }
 
@@ -99,6 +95,11 @@ void Game::LoadIsland(std::string name) {
     }
 }
 
-std::map<std::string, Island*> Game::GetExploredIslands() {
-    return exploredIslands;
+std::map<std::string, Struct::Island> Game::GetExploredIslandStructures() {
+    std::map<std::string, Struct::Island> islands;
+
+    for(const auto& elt : exploredIslands)
+        islands[elt.first] = elt.second->getStructure();
+    
+    return islands;
 }

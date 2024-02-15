@@ -6,7 +6,9 @@
 #include "../Components/EntityDetector.h"
 #include "../Components/Inventory.h"
 
-struct EntityStructure;
+namespace Struct {
+    struct Entity;
+};
 
 class Entity {
 public:
@@ -80,27 +82,8 @@ public:
 
     bool has_died();
 
-    EntityStructure getStructure();
-
     static int GetMentalPower(Entity::Species species);
 
 protected:
     void randomMovement();
-};
-
-struct EntityStructure {
-    Entity::Type type{Entity::Type::UNKNOWN};
-    Entity::Type type2{Entity::Type::UNKNOWN};
-
-    Entity::Species species{Entity::Species::HUMAN};
-
-    std::string name{"unknown"};
-    int hp{0};
-
-    Vector2D pos{0,0};
-
-    Inventory inv{0,{}};
-
-    bool npc_hasdialog{ false };
-    Entity::Behavior behavior{ Entity::Behavior::STATIC };
 };

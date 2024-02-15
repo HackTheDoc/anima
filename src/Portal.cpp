@@ -17,11 +17,13 @@ Portal::Portal() {
 
 Portal::~Portal() {}
 
-void Portal::init(int x, int y, std::string dest, int destX, int destY, int dmg_lvl) {
-    position = Vector2D(x, y);
+void Portal::init(const Struct::Portal& portal) {
+    position = portal.pos;
 
-    this->dest = dest;
-    destPos = Vector2D(destX, destY);
+    dest = portal.dest;
+    destPos = portal.dest_pos;
+    destPos.x += (Tile::SIZE - Game::player->collider->rect.w) / 2;
+    destPos.y += (Tile::SIZE - Game::player->collider->rect.h) / 2;
 
     texture = Window::manager->getTexture("ground");
     srcRect = { 272, 32, 16, 16 };
@@ -31,7 +33,7 @@ void Portal::init(int x, int y, std::string dest, int destX, int destY, int dmg_
     collider->rect.w = destRect.w;
     collider->rect.h = destRect.h;
 
-    damage_level = dmg_lvl;
+    damage_level = portal.damage_level;
 }
 
 void Portal::update() {
@@ -81,7 +83,7 @@ void Portal::use() {
     if (Game::player->parseControlledEntity() == nullptr) {
         UI::AddPopUp("ONLY LIVING ENTITIES MAY USE A PORTAL");
         return;
-    } 
+    }
 
     Game::LoadIsland(dest);
     Game::player->resetMovement();
@@ -92,14 +94,14 @@ void Portal::use() {
         Save::Update(Game::WorldID);
 }
 
-PortalStructure Portal::getStructure() {
+Struct::Portal Portal::getStructure() {
     return {
          .pos = position,
          .dest = dest,
          .dest_pos = {
              destPos.x - (Tile::SIZE - Game::player->collider->rect.w) / 2,
              destPos.y - (Tile::SIZE - Game::player->collider->rect.h) / 2
-             },
+            },
          .damage_level = damage_level
     };
 }

@@ -1,11 +1,13 @@
 #include "include/Game/Entities/Doll.h"
 
+#include "include/struct.h"
+
 Doll::Doll() {
     type = Type::DOLL;
     inventory.capacity = 1;
 }
 
-Doll::Doll(Inventory inv) {
+Doll::Doll(const Inventory& inv) {
     type = Type::DOLL;
     inventory = inv;
 }
@@ -30,10 +32,10 @@ void Doll::init() {
     numenLevel = 0;
 }
 
-EntityStructure Doll::getStructure() {
-    EntityStructure s;
-    s.type = Entity::Type::DOLL;
-    s.pos = position;
-    s.inv = inventory;
-    return s;
+Struct::Entity Doll::getStructure() {
+    const Struct::Doll doll{
+        .pos = position,
+        .inventory = inventory.getStructure()
+    };
+    return Struct::Entity{ doll };
 }

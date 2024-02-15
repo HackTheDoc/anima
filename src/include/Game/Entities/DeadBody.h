@@ -7,10 +7,10 @@ public:
     Entity::Type ownerType;
     bool ownerHasDialog;
 
-    DeadBody(Entity::Species species);
+    DeadBody(const Entity::Species species);
     ~DeadBody();
 
     void init() override;
 
-    EntityStructure getStructure();
+    Struct::Entity getStructure();
 };

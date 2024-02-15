@@ -6,7 +6,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
@@ -32,15 +31,9 @@ UIGameSaveButton::UIGameSaveButton(std::string sname, int sid, UIButton::ID id, 
         return;
     }
 
-    std::ifstream infile("./config.json");
-    json config;
-    infile >> config;
-    infile.close();
+    std::pair<std::string, std::string> winfo = Save::GetWorldInfo(sid);
 
-    std::string wname = config["world "+std::to_string(sid)+" name"];
-    std::string wtime = config["world "+std::to_string(sid)+" time"];
-
-    info = new UITextBox(wname+" ("+wtime+")", "default", hue::white); 
+    info = new UITextBox(winfo.first+" ("+winfo.second+")", "default", hue::white); 
 
     place(0, 0);
 }

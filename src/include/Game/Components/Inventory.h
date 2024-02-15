@@ -4,9 +4,17 @@
 
 #include "../Items/Items.h"
 
+namespace Struct {
+    struct Inventory;
+};
+
 struct Inventory {
-    unsigned int capacity{0};
-    std::vector<Item*> item{};
+    unsigned int capacity;
+    std::vector<Item*> item;
+
+    Inventory();
+    Inventory(const Struct::Inventory& inv);
+    Struct::Inventory getStructure();
 
     bool is_full();
     bool is_empty();

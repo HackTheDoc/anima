@@ -5,10 +5,10 @@
 class Doll : public Entity  {
 public:
     Doll();
-    Doll(Inventory inv);
+    Doll(const Inventory& inv);
     ~Doll();
 
     void init() override;
 
-    EntityStructure getStructure();
+    Struct::Entity getStructure();
 };

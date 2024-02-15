@@ -8,8 +8,8 @@ public:
     Dialog* dialog;
     bool haveDialog;
     
-    NPC(std::string name, Species s, Behavior b);
-    NPC(std::string name, Species s, Behavior b, Inventory inv);
+    NPC(const std::string& name, const Species s, const Behavior b);
+    NPC(const std::string& name, const Species s, const Behavior b, const Inventory& inv);
     ~NPC();
 
     void init() override;
@@ -22,5 +22,5 @@ public:
     void startDialog();
     void closeDialog();
 
-    EntityStructure getStructure();
+    Struct::Entity getStructure();
 };

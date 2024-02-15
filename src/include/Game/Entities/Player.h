@@ -21,7 +21,9 @@ enum Power {
     NUMBER // just to count
 };
 
-struct PlayerStructure;
+namespace Struct {
+    struct Player;
+};
 
 class Player : public Entity {
 private:
@@ -74,26 +76,8 @@ public:
     bool haveUnlockedPower(Power pid);
 
     Inventory* parseInventory(const bool display_err_msg = false);
+    void setControlledEntity(Entity* e);
     Entity* parseControlledEntity();
 
-    PlayerStructure getStructure();
-};
-
-struct PlayerStructure {
-    std::string name;
-    int hp;
-    int numen_level;
-    bool power[Power::NUMBER];
-
-    Player::State state;
-
-    int tutorial_step;
-
-    Quest::ID curr_main_quest;
-    std::vector<Quest::ID> curr_other_quests;
-
-    std::string island;
-    Vector2D pos;
-
-    EntityStructure controlled_entity;
+    Struct::Player getStructure();
 };

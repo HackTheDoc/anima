@@ -14,6 +14,10 @@
 
 #include "Tutorial.h"
 
+namespace Struct {
+    struct Island;
+};
+
 class Game : public WindowState {
 public:
     static std::chrono::time_point<std::chrono::system_clock> StartTime;
@@ -34,7 +38,7 @@ public:
 
     static void LoadIsland(std::string name);
 
-    static std::map<std::string, Island*> GetExploredIslands();
+    static std::map<std::string, Struct::Island> GetExploredIslandStructures();
 
 private:
     static std::map<std::string, Island*> exploredIslands;

@@ -1,5 +1,32 @@
 #include "include/Game/Components/Inventory.h"
 
+#include "include/struct.h"
+
+Inventory::Inventory() {
+    capacity = 0;
+    item = {};
+}
+
+Inventory::Inventory(const Struct::Inventory& inv) {
+    capacity = inv.capacity;
+
+    for (const auto& id : inv.items) {
+        Item* i = Item::Create(id.id);
+        i->collider->place(id.pos);
+        item.push_back(i);
+    }
+}
+
+Struct::Inventory Inventory::getStructure() {
+    Struct::Inventory inv;
+    inv.capacity = capacity;
+
+    for (const auto& i : item) 
+        inv.items.push_back(i->getStructure());
+    
+    return inv;
+}
+
 bool Inventory::is_full() {
     return item.size() == capacity;
 }

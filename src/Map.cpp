@@ -3,18 +3,21 @@
 #include "include/Game/Game.h"
 #include "include/Game/Components/Collision.h"
 
+#include "include/struct.h"
+
 Map::Map() {}
 
 Map::~Map() {}
 
-void Map::init(int w, int h) {
-    width = w;
-    height = h;
+void Map::init(const Struct::Map& map) {
+    width = map.width;
+    height = map.height;
 
-    for (int y = 0; y < h; y++) {
-        tiles.push_back({});
-        for (int x = 0; x < w; x++) {
-            tiles[y].push_back(nullptr);
+    tiles.resize(height);
+    for (int y = 0; y < height; y++) {
+        tiles[y].resize(width);
+        for (int x = 0; x < width; x++) {
+            setTile(x, y, map.tiles[y][x]);
         }
     }
 }
@@ -77,4 +80,19 @@ void Map::setTile(int x, int y, Tile::Type type) {
     t->init(x, y);
 
     tiles[y][x] = t;
+}
+
+Struct::Map Map::getStructure() {
+    Struct::Map map;
+    map.width = width;
+    map.height = height;
+    
+    map.tiles.resize(height);
+    for (int y = 0; y < height; y++) {
+        map.tiles[y].resize(width);
+        for (int x = 0; x < width; x++)
+            map.tiles[y][x] = tiles[y][x]->type;
+    }
+
+    return map;
 }

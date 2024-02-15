@@ -5,7 +5,7 @@
 std::map<SDL_KeyCode, Event::ID> KeyMap::Key = {};
 
 void KeyMap::Reload() {
-    const ConfigStruct config = Save::LoadConfig();
+    const Struct::Config config = Save::LoadConfig();
     Import(config.controls);
 };
 

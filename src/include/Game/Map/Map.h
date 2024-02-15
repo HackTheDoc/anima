@@ -5,6 +5,10 @@
 
 #include "Tile.h"
 
+namespace Struct {
+    struct Map;
+};
+
 class Map {
 private:
     std::vector<std::vector<Tile*>> tiles;
@@ -14,7 +18,7 @@ public:
     Map();
     ~Map();
 
-    void init(int w, int h);
+    void init(const Struct::Map& map);
     void update();
     void render();
     void destroy();
@@ -25,4 +29,6 @@ public:
     Tile* getTile(int x, int y);
     Tile* getTileAt(Vector2D p);
     void setTile(int x, int y, Tile::Type type);
+
+    Struct::Map getStructure();
 };

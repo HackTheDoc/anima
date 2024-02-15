@@ -1,6 +1,8 @@
 #include "include/Game/Entities/DeadBody.h"
 
-DeadBody::DeadBody(Entity::Species species) {
+#include "include/struct.h"
+
+DeadBody::DeadBody(const Entity::Species species) {
     type = Entity::Type::DEAD_BODY;
     ownerType = Type::UNKNOWN;
     this->species = species;
@@ -21,15 +23,15 @@ void DeadBody::init() {
     walkSpeed = 0;
 }
 
-EntityStructure DeadBody::getStructure() {
-    return {
-        .type = type,
-        .type2 = ownerType,
+Struct::Entity DeadBody::getStructure() {
+    const Struct::DeadBody body{
         .species = species,
-        .name = name,
-        .pos = position,
-        .inv = inventory,
-        .npc_hasdialog = ownerHasDialog,
-        .behavior = behavior
+        .pos=position,
+        .inventory=inventory.getStructure(),
+        .o_type=ownerType,
+        .o_behavior=behavior,
+        .o_name=name,
+        .o_hasdialog=ownerHasDialog
     };
+    return Struct::Entity{body};
 }

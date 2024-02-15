@@ -6,7 +6,11 @@
 #include "Entities/Entities.h"
 
 #include "Map/Map.h"
-#include "Map/Structures/Portal.h"
+#include "Map/Structures/Structures.h"
+
+namespace Struct {
+    struct Island;
+};
 
 class Island {
 public:
@@ -23,20 +27,15 @@ public:
     void getSize(int* w, int* h);
     std::string getName();
 
-    void addPortal(const int x, const int y, const std::string& dest, const int destX, const int destY, const int damage_lvl);
-    void addItem(const int x, const int y, const Item::ID id);
     void addItem(const Vector2D& pos, Item* i);
-    void addNPC(Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool haveDialog, const Entity::Behavior behavior);
-    void addNPC(Entity::Species species, const std::string& name, const int hp, const int x, const int y, const bool haveDialog, const Entity::Behavior behavior, const Inventory& inv);
-    void addDoll(const int x, const int y, const Inventory& inv);
-    void addDeadBody(const Entity::Species species, const Entity::Type type, const std::string& name, const int x, const int y, const bool haveDialog, const Entity::Behavior behavior, const Inventory& inv);
-    
-    void removeEntity(Entity* e);
-    void addEntity(Entity* e);
 
-    std::vector<PortalStructure> getPortals();
-    std::vector<EntityStructure> getEntities();
-    std::vector<std::pair<Vector2D, Item::ID>> getItems();
+    void addNPC(const Vector2D& pos, const Entity::Species species, const Entity::Behavior behavior, const std::string& name, const int hp, const bool hasdialog, const Inventory& inv);
+    void addDoll(const Vector2D& pos, const Inventory& inv);
+    void addDeadBody(const Entity::Species species, const Vector2D& pos, const Inventory& inv, const Entity::Type otype, const std::string& oname, const bool ohasDialog, const Entity::Behavior obehavior);
+    void addEntity(Entity* e);
+    void removeEntity(Entity* e);
+
+    Struct::Island getStructure();
 
 private:
     std::string name;

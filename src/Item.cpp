@@ -4,6 +4,8 @@
 #include "include/Manager.h"
 #include "include/Game/Map/Tile.h"
 
+#include "include/struct.h"
+
 #include <iostream>
 
 Item::Item() {
@@ -58,4 +60,11 @@ Item *Item::Create(Item::ID it) {
     default:
         return new Item();
     }
+}
+
+Struct::Item Item::getStructure() {
+    return {
+        .pos = collider->position,
+        .id = id
+    };
 }
