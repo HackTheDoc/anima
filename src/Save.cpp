@@ -348,6 +348,7 @@ Struct::Island Save::CreateIsland_0() {
         .entities = {
             CreateDoll(432, 544, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
             CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1), 1),
+            CreateNPC(768, 896, Entity::Species::HUMAN, Entity::Behavior::STATIC, "Guide", CreateInventory(0), Entity::MAX_HP, true),
             CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown", CreateInventory(1, {Item::ID::LAPIS_MAGICIS})),
         }
     };

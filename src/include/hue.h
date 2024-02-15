@@ -19,6 +19,9 @@ namespace hue {
 
     const SDL_Color cinematic_background    = {  26,  26,  26, 255 };
 
+    const SDL_Color font                    = { 255, 255, 255, 255 };
+    const SDL_Color text_box                = {  26,  26,  26, 216 };
+    const SDL_Color border                  = { 255, 255, 255, 255 };
 
     const SDL_Color portal_off              = { 255, 127, 127, 255 };
     const SDL_Color ui_background           = {  61,  60,  58, 255 };

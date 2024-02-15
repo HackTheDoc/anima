@@ -4,22 +4,13 @@
 #include "include/Manager.h"
 
 UIDialogBox::UIDialogBox(std::string ownerName, std::string text) {
-    box = Window::manager->getTexture("textbox");
-    SDL_QueryTexture(box, NULL, NULL, &boxRect.w, &boxRect.h);
-    boxRect.x = boxRect.y = 0;
-
-    float scale = (float)Window::screen.w / (float)boxRect.w;
-    if (scale <= 1)
-        scale = 1.;
-
-    rect = {0, 0, 0, 0};
-    rect.w = boxRect.w * scale;
-    rect.h = boxRect.h * scale;
+    rect.w = 15 * Window::screen.w / 16;
+    rect.h = rect.w / 5;
 
     owner = Manager::GenerateText(
         (ownerName + " :").c_str(),
         Window::manager->getFont("default bold"),
-        hue::white
+        hue::font
     );
     SDL_QueryTexture(owner, NULL, NULL, &ownerRect.w, &ownerRect.h);
     
@@ -29,17 +20,18 @@ UIDialogBox::UIDialogBox(std::string ownerName, std::string text) {
 UIDialogBox::~UIDialogBox() {}
 
 void UIDialogBox::draw() {
-    Manager::Draw(box, &boxRect, &rect);
+    Manager::DrawFilledRect(&rect, hue::text_box);
 
     Manager::Draw(owner, nullptr, &ownerRect);
 
     if (!haveContent) return;
     
     Manager::Draw(content, nullptr, &contentRect);
+
+    Manager::DrawRect(&rect, hue::border);
 }
 
 void UIDialogBox::destroy() {
-    box = nullptr;
     SDL_DestroyTexture(owner);
     SDL_DestroyTexture(content);
 }
@@ -51,24 +43,17 @@ void UIDialogBox::setText(std::string text) {
         return;
     }
     haveContent = true;
-    content = Manager::GenerateText(text.c_str(), Window::manager->getFont("default"), hue::white, rect.w - 2*26);
+    content = Manager::GenerateText(text.c_str(), Window::manager->getFont("default"), hue::font, rect.w - 2*26);
     SDL_QueryTexture(content, NULL, NULL, &contentRect.w, &contentRect.h);
 }
 
-void UIDialogBox::placeBottom(int x) {
-    if (x == -1) 
-        x = (Window::screen.w - rect.w) / 2;
+void UIDialogBox::place() {
+    rect.x = (Window::screen.w - rect.w) / 2;
+    rect.y = Window::screen.h - rect.h - rect.x / 2;
 
-    place(x, Window::screen.h - rect.h - 4*(Window::fullscreen+1));
-}
+    ownerRect.x = rect.x + 26*(Window::fullscreen+1);
+    ownerRect.y = rect.y + 8*(Window::fullscreen+1);
 
-void UIDialogBox::place(int x, int y) {
-    rect.x = x;
-    rect.y = y;
-
-    ownerRect.x = x + 26*(Window::fullscreen+1);
-    ownerRect.y = y + 8*(Window::fullscreen+1);
-
-    contentRect.x = x + 26*(Window::fullscreen+1);
+    contentRect.x = rect.x + 26*(Window::fullscreen+1);
     contentRect.y = ownerRect.y + ownerRect.h;
 }

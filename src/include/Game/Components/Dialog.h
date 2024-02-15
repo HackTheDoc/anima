@@ -33,15 +33,15 @@ struct Answer {
 
 class Dialog : public UIElement {
 public:
-    Dialog(NPC* master, std::string id);
+    Dialog(NPC* master, const std::string& id);
     ~Dialog();
 
     void draw() override;
     void destroy() override;
 
     void loadData();
-    void setTextBox(std::string text);
-    void addAnswer(std::string text, Answer::Type result, std::string id, int y);
+    void setTextBox(const std::string& text);
+    void addAnswer(const std::string& text, const Answer::Type result, const std::string& id, const int y, const int leftSpand);
     void validateAnswer();
     void moveCursorUp();
     void moveCursorDown();

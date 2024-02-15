@@ -93,7 +93,7 @@ Struct::Entity NPC::getStructure() {
         .name = name,
         .hp = hp,
         .pos = position,
-        .hasdialog = (dialog != nullptr),
+        .hasdialog = haveDialog,
         .inventory = inventory.getStructure()
     };
 

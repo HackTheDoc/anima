@@ -16,11 +16,12 @@ public:
     /// @brief place at a precise position
     /// @param x x pos in pixels
     /// @param y y pos in pixels
-    void place(int x, int y);
+    void place(const int x, const int y);
 
     /// @brief place on the left side of the window
     /// @param y y pos in pixels (default: -1 => centered)
-    void placeLeft(int y = -1);
+    /// @param span distance from the left border of the window
+    void placeLeft(int y = -1, const int span = 8);
 
     /// @brief place on the bottom side of the window
     /// @param x x pos in pixels (default: -1 => centered)

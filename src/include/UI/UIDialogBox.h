@@ -13,12 +13,10 @@ public:
     void destroy() override;
 
     void setText(std::string text);
-    void place(int x, int y);
-    void placeBottom(int x = -1);
+    void place();
 
 private:
-    SDL_Texture* box;
-    SDL_Rect boxRect;
+    SDL_Rect box;
 
     SDL_Texture* owner;
     SDL_Rect ownerRect;

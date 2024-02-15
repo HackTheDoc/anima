@@ -153,10 +153,10 @@ void Island::addDeadBody(const Entity::Species species, const Vector2D& pos, con
 
     body->inventory = inv;
     addEntity(body);
-            
 }
 
 void Island::addEntity(Entity* e) {
+    e->update();
     entities.push_back(e);
 }
 

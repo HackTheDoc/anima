@@ -114,6 +114,8 @@ void Player::init() {
 void Player::update() {
     Entity::update();
 
+    if (state == State::IN_DIALOG) return;
+
     if (controlledEntity == nullptr) {
         timeLeftBeforeHealthDecreasalOfControlledEntity--;
         std::cout << timeLeftBeforeHealthDecreasalOfControlledEntity << std::endl;
@@ -123,8 +125,7 @@ void Player::update() {
         return;
     }
 
-    if (controlledEntity->immortal)
-        return;
+    if (controlledEntity->immortal) return;
 
     timeLeftBeforeHealthDecreasalOfControlledEntity--;
 
@@ -187,9 +188,10 @@ void Player::kill() {
 void Player::interactWith(Entity* e) {
     switch (e->type) {
     case Entity::Type::NON_PLAYER_CHARACTER:
-        if (NPC* npc = dynamic_cast<NPC*>(e))
-            if (npc->haveDialog)
-                Game::ui->useHint(" - Talk", e);
+        if (controlled)
+            if (NPC* npc = dynamic_cast<NPC*>(e))
+                if (npc->haveDialog)
+                    Game::ui->useHint(" - Talk", e);
         break;
     case Entity::Type::DEAD_BODY:
         if (controlled)
@@ -202,6 +204,7 @@ void Player::interactWith(Entity* e) {
 
     switch (interaction) {
     case Interaction::USE:
+        if (!controlled) return;
         if (NPC* npc = dynamic_cast<NPC*>(e))
             interactWithNPC(npc);
         if (DeadBody* body = dynamic_cast<DeadBody*>(e))

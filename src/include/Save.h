@@ -2,12 +2,7 @@
 
 #include <filesystem>
 
-/// TODO: remove
-#include <nlohmann/json.hpp>
-
 namespace fs = std::filesystem;
-
-using json = nlohmann::json;
 
 #include "struct.h"
 

@@ -1,12 +1,9 @@
 #include "include/Game/Components/Dialog.h"
 
-#include <nlohmann/json.hpp>
-#include <fstream>
-
 #include "include/Game/Game.h"
 #include "include/Game/Entities/NPC.h"
 
-Dialog::Dialog(NPC* master, std::string id) {
+Dialog::Dialog(NPC* master, const std::string& id) {
     this->master = master;
     this->id = id;
     currentAnswer = 0;
@@ -45,20 +42,21 @@ void Dialog::loadData() {
             a.text,
             (Answer::Type)a.result,
             a.id,
-            y - a.ypos
+            y - a.ypos,
+            x
         );
     }
 }
 
-void Dialog::setTextBox(std::string text) {
+void Dialog::setTextBox(const std::string& text) {
     box = new UIDialogBox(master->name, text);
-    box->placeBottom();
+    box->place();
 }
 
-void Dialog::addAnswer(std::string text, Answer::Type result, std::string id, int y) {
+void Dialog::addAnswer(const std::string& text, const Answer::Type result, const std::string& id, const int y, const int leftSpan) {
     Answer* a = new Answer(text, result, id);
-    a->label[Answer::State::UNSELECTED]->placeLeft(y);
-    a->label[Answer::State::SELECTED]->placeLeft(y);
+    a->label[Answer::State::UNSELECTED]->placeLeft(y, leftSpan);
+    a->label[Answer::State::SELECTED]->placeLeft(y, leftSpan);
     answers.push_back(a);
 }
 

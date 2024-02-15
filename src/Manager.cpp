@@ -23,7 +23,6 @@ Manager::Manager() {
     textures["dead body"] = LoadTexture("./assets/sprites/Dead Body.png");
 
     // UI
-    textures["textbox"] = LoadTexture("./assets/UI/textbox.png");
 
     // Items
     textures["items"] = LoadTexture("./assets/items.png");

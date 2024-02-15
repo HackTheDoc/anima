@@ -10,15 +10,15 @@ void UIElement::update() {}
 
 void UIElement::destroy() {}
 
-void UIElement::place(int x, int y) {
+void UIElement::place(const int x, const int y) {
     rect.x = x;
     rect.y = y;
 }
 
-void UIElement::placeLeft(int y) {
+void UIElement::placeLeft(int y, const int span) {
     if (y == -1) y = (Window::screen.h - rect.h) / 2;
 
-    place(Window::screen.w - rect.w - 8, y);
+    place(Window::screen.w - rect.w - span, y);
 }
 
 void UIElement::placeBottom(int x) {
