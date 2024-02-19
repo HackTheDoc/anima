@@ -93,4 +93,10 @@ private:
     static Struct::Island CreateIsland_1();
 
     static Struct::Island CreateIsland_LostTemple(const Vector2D& dpos1, const Vector2D& dpos2, const Vector2D& dpos3);
+
+    static Struct::Island CreateIsland_CianVillage1();
+
+    static Struct::Island CreateIsland_CianVillage2();
+
+    static Struct::Island CreateIsland_AndrastesTemple();
 };
