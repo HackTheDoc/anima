@@ -94,6 +94,8 @@ void Game::LoadIsland(const std::string& name) {
         exploredIslands[name] = island;
     }
 
+    UI::AddPopUp(name, false);
+
 #ifdef DEV_MOD
     std::cout << "loaded island " << name << std::endl;
 #endif

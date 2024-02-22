@@ -17,12 +17,13 @@ void UIPopUp::addBlur() {
     haveBlur = true;
 }
 
-void UIPopUp::addLabel(std::string t) {
-    lbl = new UILabel(
-        Text::Get(t).c_str(),
-        "big",
-        hue::black
-    );
+void UIPopUp::addLabel(const std::string& t) {
+    addDirectLabel(Text::Get(t));
+}
+
+void UIPopUp::addDirectLabel(const std::string& t) {
+    lbl = new UILabel(t, "big", hue::black);
+    
     rect = {
         (Window::screen.w - lbl->width()) / 2,
         Window::screen.h - lbl->height() - 16*(Window::fullscreen+1),

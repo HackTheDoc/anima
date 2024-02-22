@@ -46,9 +46,6 @@ void UI::init() {
     UIHint* useTeleporter = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Use Teleporter"), "small");
     add(" - Use Teleporter", useTeleporter);
 
-    UIHint* enter = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Enter"), "small");
-    add(" - Enter", enter);
-
     UIHint* talk = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Talk"), "default");
     add(" - Talk", talk);
 
@@ -151,8 +148,11 @@ void UI::hideHint(const std::string& hint) {
     currentHint = "NONE";
 }
 
-void UI::AddPopUp(const std::string& text) {
+void UI::AddPopUp(const std::string& text, const bool translate) {
     UIPopUp* p = new UIPopUp();
-    p->addLabel(text);
+
+    if (translate) p->addLabel(text);
+    else p->addDirectLabel(text);
+    
     popups_queue.push(p);
 }

@@ -12,7 +12,10 @@ public:
     ~UIPopUp();
 
     void addBlur();
-    void addLabel(std::string t);
+    // void with translation
+    void addLabel(const std::string& t);
+    // no translation
+    void addDirectLabel(const std::string& t);
 
     void draw(int offset);
     void destroy() override;

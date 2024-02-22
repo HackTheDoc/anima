@@ -42,5 +42,5 @@ public:
     void useHint(const std::string& hint, Collider* c);
     void hideHint(const std::string& hint);
 
-    static void AddPopUp(const std::string& text);
+    static void AddPopUp(const std::string& text, const bool translate = true);
 };

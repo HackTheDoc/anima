@@ -219,11 +219,7 @@ void Island::updateFreeState() {
     for (const auto& d : doors) {
         d->update();
 
-        if (Collision::AABB(Game::player->detector, d->collider))
-            Game::ui->useHint(" - Enter", d);
-        else Game::ui->hideHint(" - Enter");
-
-        if (Collision::AABB(Game::player->collider, d->collider) && Game::player->interaction == Interaction::USE)
+        if (Collision::AABB(Game::player->collider, d->collider))
             d->use();
     }
 

@@ -20,7 +20,7 @@ Player::Player() {
 Player::~Player() {}
 
 void Player::init() {
-    Struct::Player data = Save::LoadPlayer();
+    const Struct::Player data = Save::LoadPlayer();
     
     Entity::init();
 
