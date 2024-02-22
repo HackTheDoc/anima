@@ -116,9 +116,13 @@ void Player::update() {
 
     if (state == State::IN_DIALOG) return;
 
+#ifdef DEV_MOD
+    return;
+#endif
+
     if (controlledEntity == nullptr) {
         timeLeftBeforeHealthDecreasalOfControlledEntity--;
-        std::cout << timeLeftBeforeHealthDecreasalOfControlledEntity << std::endl;
+        
         if (timeLeftBeforeHealthDecreasalOfControlledEntity > 0)
             return;
         hp = 0;
@@ -414,7 +418,6 @@ Struct::Player Player::getStructure() {
 void Player::setHealthDecreasalRate() {
     // SPIRIT FORM OF THE PLAYER
     if (controlledEntity == nullptr) {
-        std::cout << "aa" << std::endl;
         timeLeftBeforeHealthDecreasalOfControlledEntity = 900 * std::max(1, numenLevel / 2);
         return;
     }

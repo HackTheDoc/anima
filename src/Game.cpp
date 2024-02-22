@@ -83,7 +83,7 @@ void Game::clean() {
     ui->destroy();
 }
 
-void Game::LoadIsland(std::string name) {
+void Game::LoadIsland(const std::string& name) {
     if (island != nullptr && island->getName() == name) return;
 
     if (exploredIslands.count(name))
@@ -93,6 +93,10 @@ void Game::LoadIsland(std::string name) {
         island->init();
         exploredIslands[name] = island;
     }
+
+#ifdef DEV_MOD
+    std::cout << "loaded island " << name << std::endl;
+#endif
 }
 
 std::map<std::string, Struct::Island> Game::GetExploredIslandStructures() {

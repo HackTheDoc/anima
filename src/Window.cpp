@@ -61,7 +61,7 @@ int Window::init() {
         return -3;
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    Manager::SetRenderDrawColor(hue::white);
+    Manager::SetRenderDrawColor(hue::black);
 
     // load config
     const Struct::Config config = Save::LoadConfig();

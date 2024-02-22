@@ -36,7 +36,7 @@ public:
     void render() override;
     void clean() override;
 
-    static void LoadIsland(std::string name);
+    static void LoadIsland(const std::string& name);
 
     static std::map<std::string, Struct::Island> GetExploredIslandStructures();
 

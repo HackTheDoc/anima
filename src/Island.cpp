@@ -11,7 +11,9 @@
 
 Island::Island(const std::string& name)
     : name(name)
-    { map = new Map(); }
+{
+    map = new Map();
+}
 
 Island::~Island() {}
 
@@ -20,12 +22,19 @@ void Island::init() {
 
     // LOADING MAP
     map->init(data.map);
-
-    // LOADING PORTALS
-    for (const Struct::Portal& portal : data.portals) {
-        Portal* p = new Portal();
-        p->init(portal);
-        portals.push_back(p);
+    
+    // LOADING TELEPORTERS
+    for (const Struct::Teleporter& teleporter : data.portals) {
+        if (teleporter.is_door) {
+            Door* d = new Door();
+            d->init(teleporter);
+            doors.push_back(d);
+        }
+        else {
+            Portal* p = new Portal();
+            p->init(teleporter);
+            portals.push_back(p);
+        }
     }
 
     // LOADING ITEMS
@@ -51,7 +60,7 @@ void Island::init() {
             island->addDeadBody(data.species, data.pos, data.inventory, data.o_type, data.o_name, data.o_hasdialog, data.o_behavior);
         }
     };
-    Visitor visitor{this};
+    Visitor visitor{ this };
 
     for (const auto& entity : data.entities)
         std::visit(visitor, entity.e);
@@ -75,6 +84,10 @@ void Island::render() {
         p->draw();
     }
 
+    for (const auto& d : doors) {
+        d->draw();
+    }
+
     for (const auto& i : items) {
         i->drawIconAt(i->collider->rect);
         i->collider->draw();
@@ -89,8 +102,15 @@ void Island::render() {
 void Island::destroy() {
     for (const auto& p : portals) {
         p->destroy();
+        delete p;
     }
     portals.clear();
+    
+    for (const auto& d : doors) {
+        d->destroy();
+        delete d;
+    }
+    doors.clear();
 
     for (const auto& e : entities) {
         e->kill();
@@ -179,10 +199,10 @@ void Island::updateFreeState() {
 
     for (const auto& p : portals) {
         p->update();
-            
+
         if (Collision::AABB(Game::player->detector, p->collider)) {
             if (p->isRepaired()) {
-                Game::ui->hideHint(" - Repair");
+                Game::ui->useHint(" - Use Teleporter", p);
             }
             else
             {
@@ -194,6 +214,17 @@ void Island::updateFreeState() {
 
         if (Collision::AABB(Game::player->collider, p->collider) && Game::player->interaction == Interaction::USE)
             p->use();
+    }
+
+    for (const auto& d : doors) {
+        d->update();
+
+        if (Collision::AABB(Game::player->detector, d->collider))
+            Game::ui->useHint(" - Enter", d);
+        else Game::ui->hideHint(" - Enter");
+
+        if (Collision::AABB(Game::player->collider, d->collider) && Game::player->interaction == Interaction::USE)
+            d->use();
     }
 
     for (const auto& i : items) {
@@ -231,15 +262,22 @@ Struct::Island Island::getStructure() {
     island.name = name;
 
     island.map = map->getStructure();
-    
-    island.portals.resize(portals.size());
-    for (size_t i = 0; i < portals.size(); i++)
+
+    island.portals.resize(portals.size() + doors.size());
+    size_t i = 0;
+    while (i < portals.size()) {
         island.portals[i] = portals[i]->getStructure();
-    
+        i++;
+    }
+    while (i < portals.size() + doors.size()) {
+        island.portals[i] = doors[i-portals.size()]->getStructure();
+        i++;
+    }
+
     island.items.resize(items.size());
     for (size_t i = 0; i < items.size(); i++)
         island.items[i] = items[i]->getStructure();
-    
+
     island.entities.resize(entities.size());
     for (size_t i = 0; i < entities.size(); i++) {
         switch (entities[i]->type) {

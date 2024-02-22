@@ -14,15 +14,15 @@ UI::~UI() {
     elements.clear();
 }
 
-void UI::add(std::string tag, UIElement* element) {
+void UI::add(const std::string& tag, UIElement* element) {
     elements.emplace(tag, element);
 }
 
-void UI::add(std::string tag, UIHint* element) {
+void UI::add(const std::string& tag, UIHint* element) {
     hints.emplace(tag, element);
 }
 
-void UI::remove(std::string tag) {
+void UI::remove(const std::string& tag) {
     elements.erase(tag);
 }
 
@@ -42,6 +42,12 @@ void UI::init() {
 
     UIHint* repair = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Repair"), "small");
     add(" - Repair", repair);
+
+    UIHint* useTeleporter = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Use Teleporter"), "small");
+    add(" - Use Teleporter", useTeleporter);
+
+    UIHint* enter = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Enter"), "small");
+    add(" - Enter", enter);
 
     UIHint* talk = new UIHint(to_string(Event::ID::INTERACT) + Text::Get(" - Talk"), "default");
     add(" - Talk", talk);
@@ -101,29 +107,45 @@ void UI::destroy() {
     }
 }
 
-void UI::useHint(std::string hint) {
+void UI::useHint(const std::string& hint) {
+    if (currentHint == hint) return;
+    
     currentHint = hint;
 }
 
-void UI::useHint(std::string hint, Portal* p) {
+void UI::useHint(const std::string& hint, Portal* p) {
+    if (currentHint == hint) return;
+
     currentHint = hint;
     if (currentHint != "NONE")
         hints[currentHint]->place(p);
 }
 
-void UI::useHint(std::string hint, Entity* e) {
+void UI::useHint(const std::string& hint, Door* d) {
+    if (currentHint == hint) return;
+    
+    currentHint = hint;
+    if (currentHint != "NONE")
+        hints[currentHint]->place(d);
+}
+
+void UI::useHint(const std::string& hint, Entity* e) {
+    if (currentHint == hint) return;
+    
     currentHint = hint;
     if (currentHint != "NONE")
         hints[currentHint]->place(e);
 }
 
-void UI::useHint(std::string hint, Collider* c) {
+void UI::useHint(const std::string& hint, Collider* c) {
+    if (currentHint == hint) return;
+    
     currentHint = hint;
     if (currentHint != "NONE")
         hints[currentHint]->place(c);
 }
 
-void UI::hideHint(std::string hint) {
+void UI::hideHint(const std::string& hint) {
     if (currentHint != hint)
         return;
     currentHint = "NONE";

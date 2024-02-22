@@ -10,31 +10,26 @@ namespace Struct {
     struct Teleporter;
 };
 
-class Portal {
+class Door {
 public:
     Collider* collider;
     Vector2D position;
 
-    Portal();
-    ~Portal();
+    Door();
+    ~Door();
 
-    void init(const Struct::Teleporter& portal);
+    void init(const Struct::Teleporter& door);
     void update();
     void draw();
     void destroy();
-
-    bool isRepaired();
-    void repair();
-
+    
     void use();
 
     Struct::Teleporter getStructure();
 
 private:
     SDL_Rect destRect;
-
+    
     std::string dest;
     Vector2D destPos;
-
-    int damage_level;
 };

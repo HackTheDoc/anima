@@ -9,24 +9,21 @@
 Portal::Portal() {
     damage_level = 0;
     collider = nullptr;
-    texture = nullptr;
     dest = "";
-    srcRect = destRect = { 0,0,Tile::SIZE,Tile::SIZE };
+    destRect = { 0,0,Tile::SIZE,Tile::SIZE };
+    position.Zero();
     destPos.Zero();
 }
 
 Portal::~Portal() {}
 
-void Portal::init(const Struct::Portal& portal) {
+void Portal::init(const Struct::Teleporter& portal) {
     position = portal.pos;
 
     dest = portal.dest;
     destPos = portal.dest_pos;
     destPos.x += (Tile::SIZE - Game::player->collider->rect.w) / 2;
     destPos.y += (Tile::SIZE - Game::player->collider->rect.h) / 2;
-
-    texture = Window::manager->getTexture("ground");
-    srcRect = { 272, 32, 16, 16 };
 
     collider = new Collider();
     collider->place(position);
@@ -44,14 +41,15 @@ void Portal::update() {
 }
 
 void Portal::draw() {
-    Manager::Draw(texture, &srcRect, &destRect);
     if (!isRepaired()) Manager::DrawFilledRect(&destRect, hue::portal_off);
+    else Manager::DrawFilledRect(&destRect, hue::portal_on);
 
     collider->draw();
 }
 
 void Portal::destroy() {
-    texture = nullptr;
+    delete collider;
+    collider = nullptr;
 }
 
 bool Portal::isRepaired() {
@@ -85,16 +83,21 @@ void Portal::use() {
         return;
     }
 
-    Game::LoadIsland(dest);
     Game::player->resetMovement();
     Game::player->interaction = Interaction::NONE;
+
+    Game::LoadIsland(dest);
     Game::player->setPosition(destPos);
+
+#ifdef DEV_MOD
+    std::cout << "player placed at " << destPos << std::endl;
+#endif
 
     if (Save::Auto)
         Save::Update(Game::WorldID);
 }
 
-Struct::Portal Portal::getStructure() {
+Struct::Teleporter Portal::getStructure() {
     return {
          .pos = position,
          .dest = dest,

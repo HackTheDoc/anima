@@ -152,6 +152,19 @@ bool Save::Create(int sid) {
     const Struct::Island startingIsland = CreateIsland_LostTemple(dpos1, dpos2, doll_pos[0]);
     game.islands[startingIsland.name] = startingIsland;
 
+    const Struct::Island cianVillage1 = CreateIsland_CianVillage1();
+    game.islands[cianVillage1.name] = cianVillage1;
+
+    const Struct::Island cianVillage2 = CreateIsland_CianVillage2();
+    game.islands[cianVillage2.name] = cianVillage2;
+    const Struct::Island cianVillage2House1 = CreateIsland_CianVillage2House1();
+    game.islands[cianVillage2House1.name] = cianVillage2House1;
+    const Struct::Island cianVillage2House2 = CreateIsland_CianVillage2House2();
+    game.islands[cianVillage2House2.name] = cianVillage2House2;
+
+    const Struct::Island andrastesTemple = CreateIsland_AndrastesTemple();
+    game.islands[andrastesTemple.name] = andrastesTemple;
+
     // test islands
     const Struct::Island testIsland0 = CreateIsland_0();
     game.islands[testIsland0.name] = testIsland0;
@@ -227,12 +240,27 @@ Struct::Island Save::LoadIsland(const std::string& island_name) {
 
 /* ----- CREATE ----- */
 
-Struct::Portal Save::CreatePortal(const int x, const int y, const std::string& dest, const int dx, const int dy, const int dmg_lvl) {
+Struct::Teleporter Save::CreatePortal(const int x, const int y, const std::string& dest, const int dx, const int dy, const int dmg_lvl) {
     return {
         .pos = {x,y},
         .dest = dest,
         .dest_pos = {dx,dy},
-        .damage_level = dmg_lvl
+#ifdef DEV_MOD
+        .damage_level = 0,
+#else
+        .damage_level = dmg_lvl,
+#endif
+        .is_door = false
+    };
+}
+
+Struct::Teleporter Save::CreateDoor(const int x, const int y, const std::string& dest, const int dx, const int dy) {
+    return {
+        .pos = {x,y},
+        .dest = dest,
+        .dest_pos = {dx,dy},
+        .damage_level = 0,
+        .is_door = true
     };
 }
 
@@ -274,6 +302,7 @@ Struct::Entity Save::CreateNPC(const int x, const int y, const EntitySpecies spe
         .hasdialog = hasdialog,
         .inventory = inv
     };
+    
     return Struct::Entity{ npc };
 }
 
@@ -340,15 +369,15 @@ Struct::Island Save::CreateIsland_0() {
                 {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
             }),
         .portals = {
-            CreatePortal(1280, 512, "test island 1", 768, 896, 1)
+            CreatePortal(1280, 512, "test island 1", 768, 896, 1),
+            CreatePortal(1280, 640, "lost temple", 2560, 2560, 0)
         },
         .items = {
             CreateItem(1024, 512, Item::ID::LAPIS_VITAE)
         },
         .entities = {
             CreateDoll(432, 544, CreateInventory(1, {Item::ID::LAPIS_VITAE})),
-            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::RANDOM_MOVEMENT, "Fairy", CreateInventory(1), 1),
-            CreateNPC(768, 896, Entity::Species::HUMAN, Entity::Behavior::STATIC, "Guide", CreateInventory(0), Entity::MAX_HP, true),
+            CreateNPC(768, 896, Entity::Species::FAIRIES, Entity::Behavior::STATIC, "Fairy", CreateInventory(1), 1),
             CreateDeadBody(1024, 384, Entity::Species::GOBLIN, Entity::Type::NON_PLAYER_CHARACTER, Entity::Behavior::STATIC, "unknown", CreateInventory(1, {Item::ID::LAPIS_MAGICIS})),
         }
     };
@@ -382,7 +411,7 @@ Struct::Island Save::CreateIsland_1() {
             { 8,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
         }),
         .portals = {
-            CreatePortal(768, 896, "island-0", 1280, 512, 2)
+            CreatePortal(768, 896, "test island 0", 1280, 512, 2)
         },
         .items = {
 
@@ -441,7 +470,7 @@ Struct::Island Save::CreateIsland_LostTemple(const Vector2D& dpos1, const Vector
           { 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10}
         }),
         .portals = {
-            CreatePortal(2560, 2560, "cian village 1", 7808, 1920, 1)
+            CreatePortal(2560, 2560, "cian village 1", 2432, 1792, 1)
         },
         .items = {},
         .entities = {}
@@ -508,8 +537,8 @@ Struct::Island Save::CreateIsland_CianVillage1() {
             {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
         }),
         .portals = {
-            CreatePortal(3584, 896, "cian village 2", 2304, 7040, 0),
-            CreatePortal(7808, 1920, "lost temple", 2560, 2560, 0)
+            CreatePortal(2432, 1792, "lost temple", 2560, 2560, 0),     
+            CreatePortal(1024, 896, "cian 2 house 1", 640, 512, 0),
         },
         .items = {},
         .entities = {}
@@ -532,7 +561,7 @@ Struct::Island Save::CreateIsland_CianVillage2() {
             {10, 10, 10, 10, 10, 10, 10, 10, 10,  5,  4, 14,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  4,  4,  6, 10, 10, 10, 10, 10, 10, 10, 10},
             {10, 10, 10, 10, 10, 10, 10, 10,  5, 14,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  4,  4,  6, 10, 10, 10, 10, 10},
             {10, 10, 10, 10, 10, 10, 10,  5, 14,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  4,  6, 10, 10, 10},
-            {10, 10, 10, 10, 10, 10, 10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  6, 10, 10},
+            {10, 10, 10, 10, 10, 10, 10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28,  1, 28, 28,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  6, 10, 10},
             {10, 10, 10, 10, 10, 10,  5, 14,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10},
             {10, 10, 10, 10, 10, 10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10},
             {10, 10, 10, 10, 10, 10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10},
@@ -567,7 +596,7 @@ Struct::Island Save::CreateIsland_CianVillage2() {
             {10, 10, 10,  2,  1,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
             {10, 10, 10,  8, 12,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
             {10, 10, 10, 10,  2,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
-            {10, 10, 10, 10,  2,  1,  1,  1, 28, 28, 28, 28, 28, 28, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
+            {10, 10, 10, 10,  2,  1,  1,  1, 28, 28, 28, 28, 28,  1, 28, 28, 28,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
             {10, 10, 10, 10,  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
             {10, 10, 10, 10,  8, 12,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
             {10, 10, 10, 10, 10,  8,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
@@ -580,8 +609,54 @@ Struct::Island Save::CreateIsland_CianVillage2() {
             {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
         }),
         .portals = {
-            CreatePortal(2304, 7040, "cian village 1", 3584, 896, 0),
-            CreatePortal(2048, 7040, "andraste's temple", 3712, 3840, 0),
+            CreateDoor(1664, 6016, "cian 2 house 1", 640, 896),
+            CreateDoor(3968, 1536, "cian 2 house 2", 640, 896)
+        },
+        .items = {},
+        .entities = {}
+    };
+}
+
+Struct::Island Save::CreateIsland_CianVillage2House1() {
+    return {
+        .name = "cian 2 house 1",
+        .map = CreateMap(11, 9, {
+            {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28, 28, 28, 28, 28,  1, 28, 28, 28, 28, 28},
+        }),
+        .portals = {
+            CreateDoor(640, 1024, "cian village 2", 1664, 6144),
+            CreatePortal(640, 512, "cian village 1", 1024, 896, 0)
+        },
+        .items = {},
+        .entities = {}
+    };
+}
+
+Struct::Island Save::CreateIsland_CianVillage2House2() {
+    return {
+        .name = "cian 2 house 2",
+        .map = CreateMap(11, 9, {
+            {28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28,  1,  1,  1,  1,  1,  1,  1,  1,  1, 28},
+            {28, 28, 28, 28, 28,  1, 28, 28, 28, 28, 28},
+        }),
+        .portals = {
+            CreateDoor(640, 1024, "cian village 2", 3968, 1664),
+            CreatePortal(640, 512, "andraste's temple", 3584, 3840, 0)
         },
         .items = {},
         .entities = {}
@@ -631,9 +706,21 @@ Struct::Island Save::CreateIsland_AndrastesTemple() {
             {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
         }),
         .portals = {
-            CreatePortal(3712, 3840, "cian village 2", 2048, 7040, 0),
+            CreatePortal(3584, 3840, "cian 2 house 2", 640, 512, 0),
         },
         .items = {},
         .entities = {}
     };
 }
+
+/*
+Struct::Island Save::CreateIsland_Name() {
+    return {
+        .name = "Name",
+        .map = CreateMap(0,0, {}),
+        .portals = {},
+        .items = {},
+        .entities = {}
+    };
+}
+*/

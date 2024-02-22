@@ -25,11 +25,12 @@ namespace Struct {
         std::map<std::string, SDL_KeyCode> controls;
     };
 
-    struct Portal {
+    struct Teleporter {
         Vector2D pos;
         std::string dest;
         Vector2D dest_pos;
         int damage_level;
+        bool is_door{false};
     };
 
     struct Map {
@@ -88,7 +89,7 @@ namespace Struct {
     struct Island {
         std::string name;
         Map map;
-        std::vector<Portal> portals;
+        std::vector<Teleporter> portals;
         std::vector<Item> items;
         std::vector<Entity> entities;
     };

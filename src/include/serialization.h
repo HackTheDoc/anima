@@ -25,7 +25,7 @@ namespace serialize {
 
     void string(std::ofstream& outfile, const std::string& s);
 
-    void portal(std::ofstream& outfile, const Struct::Portal& portal);
+    void teleporter(std::ofstream& outfile, const Struct::Teleporter& teleporter);
     void imap(std::ofstream& outfile, const Struct::Map& map);
 
     void item(std::ofstream& outfile, const Struct::Item& item);
@@ -66,7 +66,7 @@ namespace deserialize {
 
     void inventory(std::ifstream& infile, Inventory& inv);
 
-    void portal(std::ifstream& infile, Struct::Portal& portal);
+    void teleporter(std::ifstream& infile, Struct::Teleporter& teleporter);
 
     void item(std::ifstream& infile, Struct::Item& item);
 

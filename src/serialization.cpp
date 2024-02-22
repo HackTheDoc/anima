@@ -52,11 +52,12 @@ namespace serialize {
         outfile.write(s.data(), size);
     }
 
-    void portal(std::ofstream& outfile, const Struct::Portal& portal) {
-        vector2D(outfile, portal.pos);
-        string(outfile, portal.dest);
-        vector2D(outfile, portal.dest_pos);
-        var(outfile, portal.damage_level);
+    void teleporter(std::ofstream& outfile, const Struct::Teleporter& teleporter) {
+        vector2D(outfile, teleporter.pos);
+        string(outfile, teleporter.dest);
+        vector2D(outfile, teleporter.dest_pos);
+        var(outfile, teleporter.damage_level);
+        var(outfile, teleporter.is_door);
     }
 
     void imap(std::ofstream& outfile, const Struct::Map& map) {
@@ -99,14 +100,14 @@ namespace serialize {
 
     void doll(std::ofstream& outfile, const Struct::Doll& doll) {
         var(outfile, Entity::Type::DOLL);
-        
+
         vector2D(outfile, doll.pos);
         inventory(outfile, doll.inventory);
     }
 
     void dead_body(std::ofstream& outfile, const Struct::DeadBody& body) {
         var(outfile, Entity::Type::DEAD_BODY);
-        
+
         var(outfile, body.species);
         vector2D(outfile, body.pos);
         inventory(outfile, body.inventory);
@@ -144,7 +145,7 @@ namespace serialize {
         size_t psize = island.portals.size();
         var(outfile, psize);
         for (const auto& p : island.portals)
-            portal(outfile, p);
+            teleporter(outfile, p);
 
         size_t isize = island.items.size();
         var(outfile, isize);
@@ -269,11 +270,12 @@ namespace deserialize {
         infile.read(&s[0], size);
     }
 
-    void portal(std::ifstream& infile, Struct::Portal& portal) {
-        vector2D(infile, portal.pos);
-        string(infile, portal.dest);
-        vector2D(infile, portal.dest_pos);
-        var(infile, portal.damage_level);
+    void teleporter(std::ifstream& infile, Struct::Teleporter& teleporter) {
+        vector2D(infile, teleporter.pos);
+        string(infile, teleporter.dest);
+        vector2D(infile, teleporter.dest_pos);
+        var(infile, teleporter.damage_level);
+        var(infile, teleporter.is_door);
     }
 
     void imap(std::ifstream& infile, Struct::Map& map) {
@@ -362,7 +364,7 @@ namespace deserialize {
             }
         };
 
-        Visitor visitor{infile};
+        Visitor visitor{ infile };
         std::visit(visitor, entity.e);
     }
 
@@ -374,7 +376,7 @@ namespace deserialize {
         var(infile, psize);
         island.portals.resize(psize);
         for (size_t i = 0; i < psize; i++)
-            portal(infile, island.portals[i]);
+            teleporter(infile, island.portals[i]);
 
         size_t isize;
         var(infile, isize);
@@ -421,7 +423,7 @@ namespace deserialize {
         for (size_t i = 0; i < size; ++i) {
             std::string key;
             string(infile, key);
-        
+
             game.islands[key] = Struct::Island{};
             island(infile, game.islands[key]);
         }

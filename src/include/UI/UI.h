@@ -10,6 +10,7 @@
 class UIHint;
 
 class Portal;
+class Door;
 class Entity;
 class Collider;
 
@@ -25,20 +26,21 @@ public:
     UI();
     ~UI();
 
-    void add(std::string tag, UIElement* element);
-    void add(std::string tag, UIHint* element);
-    void remove(std::string tag);
+    void add(const std::string& tag, UIElement* element);
+    void add(const std::string& tag, UIHint* element);
+    void remove(const std::string& tag);
 
     void init();
     void update();
     void display();
     void destroy();
 
-    void useHint(std::string hint);
-    void useHint(std::string hint, Portal* p);
-    void useHint(std::string hint, Entity* e);
-    void useHint(std::string hint, Collider* c);
-    void hideHint(std::string hint);
+    void useHint(const std::string& hint);
+    void useHint(const std::string& hint, Portal* p);
+    void useHint(const std::string& hint, Door* p);
+    void useHint(const std::string& hint, Entity* e);
+    void useHint(const std::string& hint, Collider* c);
+    void hideHint(const std::string& hint);
 
     static void AddPopUp(const std::string& text);
 };

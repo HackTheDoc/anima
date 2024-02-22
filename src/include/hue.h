@@ -23,7 +23,12 @@ namespace hue {
     const SDL_Color text_box                = {  26,  26,  26, 216 };
     const SDL_Color border                  = { 255, 255, 255, 255 };
 
-    const SDL_Color portal_off              = { 255, 127, 127, 255 };
+    const SDL_Color portal_on               = {  77, 166, 255, 255 };
+    const SDL_Color portal_off              = {   0,  89, 179, 255 };
+    const SDL_Color door_open               = { 172,  57,  57, 255 };
+    const SDL_Color door_closed             = {  96,  32,  32, 255 };
+
+
     const SDL_Color ui_background           = {  61,  60,  58, 255 };
     const SDL_Color placeholder_text        = { 191, 191, 191, 218 };
 }
