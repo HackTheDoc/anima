@@ -21,7 +21,6 @@ namespace Struct {
         bool tutorial;
         Uint8 language;
         Uint32 window_mode;
-        std::array<std::pair<std::string, std::string>, 4> worlds;
         std::map<std::string, SDL_KeyCode> controls;
     };
 
@@ -116,6 +115,7 @@ namespace Struct {
 
     struct Game {
         int world_id;
+        Statistics stats;
         Player player;
         std::map<std::string, Island> islands;
     };

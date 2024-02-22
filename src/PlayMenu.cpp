@@ -158,7 +158,7 @@ void PlayMenu::CloseWorldNameInput() {
 
 void PlayMenu::ValidWorldName() {
     if (worldNameInput->input.empty())
-        Game::WorldName = "Adocia";
+        Game::stats.worldName = "Adocia";
     else
-        Game::WorldName = worldNameInput->input;
+        Game::stats.worldName = worldNameInput->input;
 }

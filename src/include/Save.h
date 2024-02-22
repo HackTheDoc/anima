@@ -34,26 +34,28 @@ public:
     /// @brief check the existance of a save
     /// @param sid id of the save
     /// @return true if the save exist else false
-    static bool Exist(int sid);
+    static bool Exist(const int sid);
 
     /// @brief create a new save
     /// @param sid id of the save
     /// @return true if the save has been created else false
-    static bool Create(int sid);
+    static bool Create(const int sid);
 
     /// @brief erase an existing save
     /// @param sid id of the save
     /// @return true if the save has been erased else false
-    static bool Erase(int sid);
+    static bool Erase(const int sid);
 
     /// @brief update a save files
     /// @param sid id of the save
     /// @return true if the save has been updated else false
-    static bool Update(int sid);
+    static bool Update(const int sid);
 
     /* ----- LOAD ----- */
 
-    static Struct::Game Load(int sid);
+    static Struct::Game Load(const int sid);
+
+    static Statistics LoadStats();
 
     static Struct::Player LoadPlayer();
 

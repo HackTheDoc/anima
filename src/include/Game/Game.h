@@ -14,6 +14,8 @@
 
 #include "Tutorial.h"
 
+#include "Statistics.h"
+
 namespace Struct {
     struct Island;
 };
@@ -22,7 +24,7 @@ class Game : public WindowState {
 public:
     static std::chrono::time_point<std::chrono::system_clock> StartTime;
     static int WorldID;
-    static std::string WorldName;
+    static Statistics stats;
     static UI* ui;
     static Island* island;
     static SDL_Rect camera;

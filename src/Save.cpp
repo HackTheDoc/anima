@@ -19,12 +19,6 @@ void Save::CreateConfig() {
     .tutorial = true,
     .language = 0,
     .window_mode = 0,
-    .worlds = {{
-        {"World 1", "00:00:00"},
-        {"World 2", "00:00:00"},
-        {"World 3", "00:00:00"},
-        {"World 4", "00:00:00"}
-    }},
     .controls = {
             {"body resurrection", SDLK_m},
             {"interact", SDLK_e},
@@ -85,16 +79,15 @@ void Save::Key(const std::string& ename, const SDL_KeyCode kcode) {
 /* ----- GAME ----- */
 
 void Save::PlayTime(const int wid) {
+
     std::chrono::time_point<std::chrono::system_clock> endTime = std::chrono::system_clock::now();
     std::chrono::nanoseconds currentSessionTime = endTime - Game::StartTime;
 
-    Struct::Config config = LoadConfig();
-
     // parse previous chrono
-    std::string timeString = config.worlds[wid - 1].second;
+    Struct::Game game = Load(wid);
 
     std::tm tm = {};
-    std::istringstream ss(timeString);
+    std::istringstream ss(game.stats.playTime);
     ss >> std::get_time(&tm, "%H:%M:%S");
 
     // prepare new string
@@ -104,29 +97,31 @@ void Save::PlayTime(const int wid) {
     nss << std::put_time(std::localtime(&playtime_t), "%H:%M:%S");
 
     // saving it
-    config.worlds[wid - 1].second = nss.str();
+    game.stats.playTime = nss.str();
+    Game::stats.playTime = nss.str();
 
-    serialize::config(config);
+    serialize::game(game, pathToSaveFolder + "world-" + std::to_string(wid));
 }
 
 std::pair<std::string, std::string> Save::GetWorldInfo(const int wid) {
-    const Struct::Config config = LoadConfig();
+    const Struct::Game game = Load(wid);
 
-    return config.worlds[wid - 1];
+    return std::make_pair(game.stats.worldName, game.stats.playTime);
 }
 
-bool Save::Exist(int sid) {
+bool Save::Exist(const int sid) {
     fs::path path(pathToSaveFolder + "world-" + std::to_string(sid));
 
     return fs::exists(path);
 }
 
-bool Save::Create(int sid) {
+bool Save::Create(const int sid) {
     if (Exist(sid))
         return false;
 
     Struct::Game game;
     game.world_id = sid;
+    game.stats.worldName = Game::stats.worldName;
 
     // create player
 
@@ -173,35 +168,29 @@ bool Save::Create(int sid) {
 
     serialize::game(game, pathToSaveFolder + "world-" + std::to_string(sid));
 
-    // save world name
-    Struct::Config config = LoadConfig();
-    config.worlds[sid - 1].first = Game::WorldName;
-    serialize::config(config);
-
     return true;
 }
 
-bool Save::Erase(int sid) {
+bool Save::Erase(const int sid) {
     if (!Exist(sid))
         return false;
 
     fs::remove(pathToSaveFolder + "world-" + std::to_string(sid));
 
-    // reset world name and time
-    Struct::Config config = LoadConfig();
-
-    config.worlds[sid - 1] = std::make_pair("World " + std::to_string(sid), "00:00:00");
-
-    serialize::config(config);
-
     return true;
 }
 
-bool Save::Update(int sid) {
+bool Save::Update(const int sid) {
     if (!Exist(sid))
         return false;
 
+#ifdef DEV_MOD
+    Game::stats.print();
+#endif
+
     Struct::Game game = Load(sid);
+
+    game.stats = Game::stats;
 
     game.player = Game::player->getStructure();
 
@@ -222,8 +211,14 @@ Struct::Game Save::Load(const int sid) {
 
     Struct::Game game;
     deserialize::game(game, pathToSaveFolder + "world-" + std::to_string(sid));
-
+    game.stats.print();
     return game;
+}
+
+Statistics Save::LoadStats() {
+    const Struct::Game game = Load(Game::WorldID);
+
+    return game.stats;
 }
 
 Struct::Player Save::LoadPlayer() {

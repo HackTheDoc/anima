@@ -41,6 +41,8 @@ namespace serialize {
 
     void player(std::ofstream& outfile, const Struct::Player& player);
 
+    void stats(std::ofstream& outfile, const Statistics& stats);
+    
     void game(const Struct::Game& game, fs::path path);
 
     void config(const Struct::Config& config);
@@ -78,6 +80,8 @@ namespace deserialize {
     void island(std::ifstream& infile, Struct::Island& island);
 
     void player(std::ifstream& infile, Struct::Player& player);
+
+    void stats(std::ifstream& infile, Statistics& stats);
 
     void game(Struct::Game& game, fs::path path);
 

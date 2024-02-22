@@ -21,7 +21,7 @@ Player::~Player() {}
 
 void Player::init() {
     const Struct::Player data = Save::LoadPlayer();
-    
+
     Entity::init();
 
     DEFAULT_SPRITE = new Sprite(this);
@@ -122,7 +122,7 @@ void Player::update() {
 
     if (controlledEntity == nullptr) {
         timeLeftBeforeHealthDecreasalOfControlledEntity--;
-        
+
         if (timeLeftBeforeHealthDecreasalOfControlledEntity > 0)
             return;
         hp = 0;
@@ -142,6 +142,7 @@ void Player::update() {
     // if the controlled entity is dead
     if (controlledEntity->hp <= 0) {
         UI::AddPopUp("YOUR BODY DIED");
+        Game::stats.entityKilled();
 
         bool hasdialog = false;
         if (controlledEntity->type == Entity::Type::NON_PLAYER_CHARACTER) {
@@ -274,7 +275,7 @@ void Player::resurrectDeadBody(DeadBody* body) {
             body->behavior,
             body->name,
             Entity::MAX_HP,
-            body->ownerHasDialog, 
+            body->ownerHasDialog,
             body->inventory
         );
         break;
@@ -283,6 +284,8 @@ void Player::resurrectDeadBody(DeadBody* body) {
     }
 
     modifyNumenLevelBy(-3);
+
+    Game::stats.entityResurrected();
 }
 
 void Player::takeControlOf(Entity* e) {
@@ -341,6 +344,7 @@ void Player::modifyNumenLevelBy(int ammount) {
 
 void Player::unlockPower(Power pid) {
     hasUnlockedPower[pid] = true;
+    Game::stats.powers[pid] = true;
     modifyNumenLevelBy(-5);
 }
 
@@ -379,7 +383,6 @@ Struct::Player Player::getStructure() {
     structure.power[Power::BODY_RESURRECTION] = hasUnlockedPower[Power::BODY_RESURRECTION];
     structure.power[Power::BODY_EXPLOSION] = hasUnlockedPower[Power::BODY_EXPLOSION];
     structure.power[Power::SHIELD] = hasUnlockedPower[Power::SHIELD];
-
 
     if (state == State::IN_DIALOG)
         structure.state = State::FREE;

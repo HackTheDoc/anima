@@ -5,7 +5,7 @@
 std::chrono::time_point<std::chrono::system_clock> Game::StartTime;
 
 int Game::WorldID = 1;
-std::string Game::WorldName = "World 0";
+Statistics Game::stats;
 
 UI* Game::ui = nullptr;
 
@@ -26,6 +26,8 @@ void Game::init() {
     exploredIslands.clear();
 
     camera = Window::screen;
+
+    stats = Save::LoadStats();
     
     player->init();
     
@@ -48,7 +50,7 @@ void Game::update() {
 
     ui->update();
 
-    // camerapp
+    // camera
     int mapWidth, mapHeight;
     island->getSize(&mapWidth, &mapHeight);
 
@@ -67,6 +69,9 @@ void Game::update() {
         camera.x = player->position.x - (player->collider->rect.w + camera.w) / 2;
     if (mapHeight < camera.h)
         camera.y = player->position.y - (player->collider->rect.h + camera.h) / 2;
+
+    // statistics
+    stats.update();
 }
 
 void Game::render() {

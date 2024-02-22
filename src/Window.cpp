@@ -190,7 +190,7 @@ void Window::quitGame() {
         Save::Update(Game::WorldID);
 
     Save::PlayTime(Game::WorldID);
-
+    
     openMainMenu();
 }
 

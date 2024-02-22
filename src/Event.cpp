@@ -210,7 +210,7 @@ void Event::handleButtonClick(const UIButton::ID id) {
         break;
     case UIButton::ID::LOAD_SAVE:
         if (PlayMenu::IsSelectionActived()) {
-            if (!Save::Exist(PlayMenu::Selection) && Game::WorldName == "World 0")
+            if (!Save::Exist(PlayMenu::Selection))
                 PlayMenu::OpenWorldNameInput();
             else
                 window->openGame(PlayMenu::Selection);

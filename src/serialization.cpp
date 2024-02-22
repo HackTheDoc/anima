@@ -176,10 +176,27 @@ namespace serialize {
             entity(outfile, player.controlled_entity);
     }
 
+    void stats(std::ofstream& outfile, const Statistics& stats) {
+        string(outfile, stats.worldName);
+        string(outfile, stats.playTime);
+
+        var(outfile, stats.attributs);
+        
+        var(outfile, stats.numenLevel);
+        for (const auto& p : stats.powers)
+            var(outfile, p);
+        
+        var(outfile, stats.killedEntityCounter);
+        var(outfile, stats.resurrectedEntityCounter);
+    }
+
     void game(const Struct::Game& game, fs::path path) {
         std::ofstream outfile(path, std::ios::binary);
 
         var(outfile, game.world_id);
+
+        stats(outfile, game.stats);
+
         player(outfile, game.player);
 
         size_t size = game.islands.size();
@@ -200,10 +217,6 @@ namespace serialize {
 
         var(outfile, config.language);
         var(outfile, config.window_mode);
-
-
-        for (const auto& p : config.worlds)
-            pair(outfile, p);
 
         map(outfile, config.controls);
 
@@ -412,10 +425,27 @@ namespace deserialize {
             entity(infile, player.controlled_entity);
     }
 
+    void stats(std::ifstream& infile, Statistics& stats) {
+        string(infile, stats.worldName);
+        string(infile, stats.playTime);
+
+        var(infile, stats.attributs);
+        
+        var(infile, stats.numenLevel);
+        for (auto& p : stats.powers)
+            var(infile, p);
+        
+        var(infile, stats.killedEntityCounter);
+        var(infile, stats.resurrectedEntityCounter);
+    }
+
     void game(Struct::Game& game, fs::path path) {
         std::ifstream infile(path, std::ios::binary);
 
         var(infile, game.world_id);
+
+        stats(infile, game.stats);
+
         player(infile, game.player);
 
         size_t size;
@@ -441,9 +471,6 @@ namespace deserialize {
 
         var(infile, cstruct.language);
         var(infile, cstruct.window_mode);
-
-        for (auto& p : cstruct.worlds)
-            pair(infile, p);
 
         map(infile, cstruct.controls);
 
