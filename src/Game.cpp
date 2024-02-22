@@ -72,6 +72,7 @@ void Game::update() {
 
     // statistics
     stats.update();
+    player->quest->update();
 }
 
 void Game::render() {

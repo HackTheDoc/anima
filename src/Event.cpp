@@ -604,11 +604,6 @@ void Event::handleFreeState() {
     }
 
     if (e.type == SDL_KEYUP) {
-#ifdef DEV_MOD
-        if (e.key.keysym.sym == SDLK_k && SDL_GetModState() & KMOD_CTRL)
-            Player::quest->main.finish();
-#endif
-
         switch (KeyMap::Key[k]) {
         case Event::ID::MOVE_UP:
         case Event::ID::MOVE_DOWN:

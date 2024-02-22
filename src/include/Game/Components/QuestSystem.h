@@ -16,8 +16,8 @@ struct Quest {
     Quest();
     Quest(const ID id);
 
-    void finish();
-    void isFinished();
+    void try_finish();
+    bool is_finished();
     std::optional<ID> next();
 };
 
@@ -32,4 +32,6 @@ public:
     ~QuestSystem();
 
     void addQuest(const Quest::ID t);
+
+    void update();
 };
