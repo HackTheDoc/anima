@@ -227,6 +227,11 @@ void Window::loadLastGameSave() {
     openGame(wid);
 }
 
+void Window::openIdentityMenu() {
+    manager->addWindowState(WindowState::Type::IDENTITY_MENU, new IdentityMenu());
+    manager->setCurrentWindowState(WindowState::Type::IDENTITY_MENU);
+}
+
 void Window::resumeGame() {
     manager->removeWindowState(manager->getCurrentStateID());
 

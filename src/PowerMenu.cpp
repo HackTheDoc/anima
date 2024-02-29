@@ -16,7 +16,7 @@ void PowerMenu::init() {
         "big"
     );
 
-    title = new UILabel(Text::Get("Benedictions"), "h3", hue::white);
+    title = new UILabel(Text::Get("Benedictions"), "h3", hue::font);
 
     int w = 224 + 112 * Window::fullscreen;
     int h = 64  + 32  * Window::fullscreen;
@@ -71,7 +71,7 @@ void PowerMenu::render() {
     power[Power::BODY_EXPLOSION]->draw();
     power[Power::SHIELD]->draw();
 
-   Manager::DrawRect(&container, hue::white);
+   Manager::DrawRect(&container, hue::border);
 }
 
 void PowerMenu::update() {

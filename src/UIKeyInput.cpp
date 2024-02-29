@@ -26,8 +26,8 @@ void UIKeyInput::draw() {
         rect.y,
         rect.x + 2 * rect.w / 3,
         rect.y + rect.h,
-        hue::white);
-    Manager::DrawRect(&rect, hue::white);
+        hue::border);
+    Manager::DrawRect(&rect, hue::border);
 }
 
 void UIKeyInput::update() {
@@ -42,7 +42,7 @@ void UIKeyInput::update() {
             key = Manager::GenerateText(
                 "...",
                 Window::manager->getFont("default"),
-                hue::white);
+                hue::font);
             SDL_QueryTexture(key, NULL, NULL, &keyRect.w, &keyRect.h);
             place(rect.x, rect.y);
         }
@@ -114,6 +114,9 @@ void UIKeyInput::setTitle() {
     case Event::ID::OPEN_QUEST_MENU:
         t = Text::Get("Quests");
         break;
+    case Event::ID::OPEN_IDENTITY_MENU:
+        t = Text::Get("Identity");
+        break;
     case Event::ID::MOVE_UP:
         t = Text::Get("Move Up");
         break;
@@ -153,7 +156,7 @@ void UIKeyInput::setTitle() {
     title = Manager::GenerateText(
         t.c_str(),
         Window::manager->getFont("default"),
-        hue::white,
+        hue::font,
         2 * rect.w / 3
     );
     SDL_QueryTexture(title, NULL, NULL, &titleRect.w, &titleRect.h);
@@ -167,7 +170,7 @@ void UIKeyInput::setKey() {
     key = Manager::GenerateText(
         t.c_str(),
         Window::manager->getFont("default"),
-        hue::white,
+        hue::font,
         rect.w / 3
     );
     SDL_QueryTexture(key, NULL, NULL, &keyRect.w, &keyRect.h);

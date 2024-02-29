@@ -12,9 +12,9 @@ InventoryMenu::InventoryMenu(Inventory* inv) {
 InventoryMenu::~InventoryMenu() {}
 
 void InventoryMenu::init() {
-    title = new UILabel(Text::Get("Inventory"), "h3", hue::white);
-    usage = new UILabel(Text::Get("LEFT click to use\nRIGHT click to drop"), "small", hue::white);
-    itemDescription = new UITextBox("item", "default", hue::white);
+    title = new UILabel(Text::Get("Inventory"), "h3", hue::font);
+    usage = new UILabel(Text::Get("LEFT click to use\nRIGHT click to drop"), "small", hue::font);
+    itemDescription = new UITextBox("item", "default", hue::font);
 
     container.w = 3 * Window::screen.w / 5;
     container.h = 3 * Window::screen.h / 5;
@@ -56,7 +56,7 @@ void InventoryMenu::update() {
         if (i >= inventory->item.size())
             continue;
         if (SDL_PointInRect(&m, &itemRect[i])) {
-            itemDescription->setText(inventory->item[i]->to_string(), "default", hue::white, 3 * container.w / 4);
+            itemDescription->setText(inventory->item[i]->to_string(), "default", hue::font, 3 * container.w / 4);
             itemDescription->place(m.x, m.y);
 
             if (Window::event.mouseClickLeft()) {
@@ -82,10 +82,10 @@ void InventoryMenu::render() {
         if (i < s)
             inventory->item[i]->drawIconAt(itemRect[i]);
 
-        Manager::DrawRect(&itemRect[i], hue::white);
+        Manager::DrawRect(&itemRect[i], hue::border);
     }
 
-    Manager::DrawRect(&container, hue::white);
+    Manager::DrawRect(&container, hue::border);
 
     usage->draw();
 
@@ -108,7 +108,7 @@ void InventoryMenu::prepareSize1() {
         title->y() + title->height() + (h - i) / 2,
         i,
         i
-        });
+    });
 }
 
 void InventoryMenu::prepareSize2() {
@@ -120,14 +120,14 @@ void InventoryMenu::prepareSize2() {
         title->y() + title->height() + (h - i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         title->y() + title->height() + (h - i) / 2,
         i,
         i
-        });
+    });
 }
 
 void InventoryMenu::prepareSize4() {
@@ -139,28 +139,28 @@ void InventoryMenu::prepareSize4() {
         container.y + (h - i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + (h - i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-        });
+    });
 }
 
 void InventoryMenu::prepareSize6() {
@@ -172,40 +172,40 @@ void InventoryMenu::prepareSize6() {
         container.y + (h - i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + (h - i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (container.w - i) / 2,
         container.y + (h - i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (container.w - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-        });
+    });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-        });
+    });
 }

@@ -24,7 +24,7 @@ void PlayMenu::init()
     background = new GifTexture("./assets/animations/main menu", 3, 200, Window::screen);
 
     /* ----- LABELS ----- */
-    title = new UILabel(Text::Get("Select a world:"), "h2", hue::white, 2 * Window::screen.w / 3);
+    title = new UILabel(Text::Get("Select a world:"), "h2", hue::font, 2 * Window::screen.w / 3);
     title->place(
         8 * (Window::fullscreen + 1),
         8 * (Window::fullscreen + 1));
@@ -33,41 +33,41 @@ void PlayMenu::init()
     int containerWidth = 2 * Window::screen.w / 3;
     int offsetY = (Window::screen.h + title->y() + title->height()) / 2 - 16 * (Window::fullscreen + 1);
 
-    loadButton = new UIButton(Text::Get("LOAD"), UIButton::ID::LOAD_SAVE, "h4", hue::white);
+    loadButton = new UIButton(Text::Get("LOAD"), UIButton::ID::LOAD_SAVE, "h4", hue::font);
     loadButton->place(
         containerWidth - loadButton->width() - 96 * (Window::fullscreen + 1),
         offsetY - loadButton->height() - 8 * (Window::fullscreen + 1)
     );
 
-    eraseButton = new UIButton(Text::Get("ERASE"), UIButton::ID::ERASE_SAVE, "h4", hue::white);
+    eraseButton = new UIButton(Text::Get("ERASE"), UIButton::ID::ERASE_SAVE, "h4", hue::font);
     eraseButton->place(
         containerWidth - eraseButton->width() - 96 * (Window::fullscreen + 1),
         offsetY + 8 * (Window::fullscreen + 1)
     );
 
-    button[1] = new UIGameSaveButton(Text::Get("World 2"), 2, UIButton::ID::SELECT_SAVE_2, "h4", hue::white);
+    button[1] = new UIGameSaveButton(Text::Get("World 2"), 2, UIButton::ID::SELECT_SAVE_2, "h4", hue::font);
     button[1]->place(
         8 * (Window::fullscreen + 1),
         offsetY - button[1]->height() - 8 * (Window::fullscreen + 1)
     );
 
-    button[0] = new UIGameSaveButton(Text::Get("World 1"), 1, UIButton::ID::SELECT_SAVE_1, "h4", hue::white);
+    button[0] = new UIGameSaveButton(Text::Get("World 1"), 1, UIButton::ID::SELECT_SAVE_1, "h4", hue::font);
     button[0]->place(
         8 * (Window::fullscreen + 1),
         offsetY - button[1]->height() - button[0]->height() - 24 * (Window::fullscreen + 1));
 
-    button[2] = new UIGameSaveButton(Text::Get("World 3"), 3, UIButton::ID::SELECT_SAVE_3, "h4", hue::white);
+    button[2] = new UIGameSaveButton(Text::Get("World 3"), 3, UIButton::ID::SELECT_SAVE_3, "h4", hue::font);
     button[2]->place(
         8 * (Window::fullscreen + 1),
         offsetY + 8 * (Window::fullscreen + 1)
     );
 
-    button[3] = new UIGameSaveButton(Text::Get("World 4"), 4, UIButton::ID::SELECT_SAVE_4, "h4", hue::white);
+    button[3] = new UIGameSaveButton(Text::Get("World 4"), 4, UIButton::ID::SELECT_SAVE_4, "h4", hue::font);
     button[3]->place(
         8 * (Window::fullscreen + 1),
         offsetY + button[3]->height() + 24 * (Window::fullscreen + 1));
 
-    quitButton = new UIButton("X", UIButton::ID::QUIT_PLAY_MENU, "h3", hue::white);
+    quitButton = new UIButton("X", UIButton::ID::QUIT_PLAY_MENU, "h3", hue::font);
     quitButton->place(
         Window::screen.w - quitButton->width() - 8 * (Window::fullscreen + 1),
         8 * (Window::fullscreen + 1));

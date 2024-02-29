@@ -62,6 +62,7 @@ public:
     void openQuestMenu();
     void openDeathMenu();
     void loadLastGameSave();
+    void openIdentityMenu();
 
     void resumeGame();
 

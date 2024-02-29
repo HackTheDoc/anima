@@ -9,11 +9,11 @@ PauseMenu::~PauseMenu() {}
 
 void PauseMenu::init() {
     // create elements
-    label = new UILabel("PAUSE", "h1", hue::white);
+    label = new UILabel("PAUSE", "h1", hue::font);
 
-    button[SAVE] = new UIDoubleCursorButton(Text::Get("SAVE"), UIButton::ID::SAVE_GAME, "h3", hue::white);
-    button[RESUME] = new UIDoubleCursorButton(Text::Get("RESUME"), UIButton::ID::RESUME_GAME, "h3", hue::white);
-    button[QUIT] = new UIDoubleCursorButton(Text::Get("QUIT"), UIButton::ID::QUIT_GAME, "h3", hue::white);
+    button[SAVE] = new UIDoubleCursorButton(Text::Get("SAVE"), UIButton::ID::SAVE_GAME, "h3", hue::font);
+    button[RESUME] = new UIDoubleCursorButton(Text::Get("RESUME"), UIButton::ID::RESUME_GAME, "h3", hue::font);
+    button[QUIT] = new UIDoubleCursorButton(Text::Get("QUIT"), UIButton::ID::QUIT_GAME, "h3", hue::font);
     
     // create container
     int mw = std::max(std::max(label->width(), button[SAVE]->width()), std::max(button[RESUME]->width(), button[QUIT]->width()));
@@ -64,8 +64,7 @@ void PauseMenu::render() {
 
     label->draw();
 
-    /// TODO: switch to another color & DrawBorder function
-    Manager::DrawRect(&container, hue::white); 
+    Manager::DrawRect(&container, hue::border); 
 }
 
 void PauseMenu::clean() {

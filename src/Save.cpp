@@ -32,6 +32,7 @@ void Save::CreateConfig() {
             {"power menu", SDLK_o},
             {"previous answer", SDLK_DOWN},
             {"quest menu", SDLK_l},
+            {"identity menu", SDLK_k},
             {"take control", SDLK_p},
             {"valid dialog", SDLK_RETURN}
         }

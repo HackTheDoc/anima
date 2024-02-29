@@ -21,6 +21,7 @@ public:
         OPEN_INVENTORY,
         OPEN_QUEST_MENU,
         OPEN_PLAYER_DEATH_MENU,
+        OPEN_IDENTITY_MENU,
 
         // FREE
         MOVE_UP,
@@ -89,6 +90,7 @@ private:
     void handleInventoryMenuEvents();
     void handleQuestMenuEvents();
     void handleDeathMenuEvents();
+    void handleIdentityMenuEvents();
 
     /// @brief handle free state authorized events
     void handleFreeState();

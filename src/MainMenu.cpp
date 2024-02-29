@@ -13,10 +13,10 @@ void MainMenu::init() {
 
     /* ----- LABELS ----- */
 
-    label[TITLE] = new UILabel(Window::title, "h1", hue::white);
+    label[TITLE] = new UILabel(Window::title, "h1", hue::font);
     label[TITLE]->place(8*(Window::fullscreen+1), 0);
 
-    label[VERSION] = new UILabel("v0.1", "default", hue::white);
+    label[VERSION] = new UILabel("v0.1", "default", hue::font);
     label[VERSION]->place(
         Window::screen.w - label[VERSION]->width() - 8*(Window::fullscreen+1),
         8*(Window::fullscreen+1)
@@ -26,25 +26,25 @@ void MainMenu::init() {
     int offsetY = (Window::screen.h + label[TITLE]->height()) / 2;
 
 
-    button[OPTIONS] = new UILeftCursorButton(Text::Get("Options"), UIButton::ID::OPTIONS, "h3", hue::white);
+    button[OPTIONS] = new UILeftCursorButton(Text::Get("Options"), UIButton::ID::OPTIONS, "h3", hue::font);
     button[OPTIONS]->place(
         16*(Window::fullscreen+1),
         offsetY - button[OPTIONS]->height() - 8*(Window::fullscreen+1)
     );
 
-    button[PLAY] = new UILeftCursorButton(Text::Get("Play"), UIButton::ID::PLAY, "h3", hue::white);
+    button[PLAY] = new UILeftCursorButton(Text::Get("Play"), UIButton::ID::PLAY, "h3", hue::font);
     button[PLAY]->place(
         16*(Window::fullscreen+1),
         offsetY - button[OPTIONS]->height() - button[PLAY]->height() - 24*(Window::fullscreen+1)
     );
 
-    button[CREDITS] = new UILeftCursorButton(Text::Get("Credits"), UIButton::ID::CREDITS, "h3", hue::white);
+    button[CREDITS] = new UILeftCursorButton(Text::Get("Credits"), UIButton::ID::CREDITS, "h3", hue::font);
     button[CREDITS]->place(
         16*(Window::fullscreen+1),
         offsetY + 8*(Window::fullscreen+1)
     );
 
-    button[QUIT] = new UILeftCursorButton(Text::Get("Quit"), UIButton::ID::QUIT, "h3", hue::white);
+    button[QUIT] = new UILeftCursorButton(Text::Get("Quit"), UIButton::ID::QUIT, "h3", hue::font);
     button[QUIT]->place(
         16*(Window::fullscreen+1),
         offsetY + button[CREDITS]->height() + 24*(Window::fullscreen+1)

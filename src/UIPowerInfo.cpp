@@ -59,9 +59,9 @@ UIPowerInfo::UIPowerInfo(Power pid, int w, int h, std::string font) {
         break;
     }
 
-    title = new UILabel(t.c_str(), font, hue::white, rect.w);
+    title = new UILabel(t.c_str(), font, hue::font, rect.w);
 
-    description = new UITextBox(d, "default", hue::white, rect.w * 2);
+    description = new UITextBox(d, "default", hue::font, rect.w * 2);
 
     place(0, 0);
 }
@@ -71,7 +71,7 @@ UIPowerInfo::~UIPowerInfo() {}
 void UIPowerInfo::draw() {
     title->draw();
 
-    Manager::DrawRect(&rect, hue::white);
+    Manager::DrawRect(&rect, hue::border);
 
     SDL_Point m;
     SDL_GetMouseState(&m.x, &m.y);
@@ -99,20 +99,20 @@ void UIPowerInfo::update() {
 
     switch (pid) {
     case Power::BODY_CONTROL:
-        title->setText("IMPERIUM", font, hue::white, rect.w);
-        description->setText(Text::Get("Allow one to take control of another's body."), font, hue::white, rect.w * 2);
+        title->setText("IMPERIUM", font, hue::font, rect.w);
+        description->setText(Text::Get("Allow one to take control of another's body."), font, hue::font, rect.w * 2);
         break;
     case Power::BODY_RESURRECTION:
-        title->setText("RESURECTIO", font, hue::white, rect.w);
-        description->setText(Text::Get("Consume 3 Numen tokens to resurrect a corpse."), font, hue::white, rect.w * 2);
+        title->setText("RESURECTIO", font, hue::font, rect.w);
+        description->setText(Text::Get("Consume 3 Numen tokens to resurrect a corpse."), font, hue::font, rect.w * 2);
         break;
     case Power::BODY_EXPLOSION:
-        title->setText("CREPITUS", font, hue::white, rect.w);
-        description->setText(Text::Get("Make the body you are controlling go KABOOM for 2 Numen tokens only!"), font, hue::white, rect.w * 2);
+        title->setText("CREPITUS", font, hue::font, rect.w);
+        description->setText(Text::Get("Make the body you are controlling go KABOOM for 2 Numen tokens only!"), font, hue::font, rect.w * 2);
         break;
     case Power::SHIELD:
-        title->setText("SCUTUM", font, hue::white, rect.w);
-        description->setText(Text::Get("Create a shield arround yourself by consuming 5 Numen tokens."), font, hue::white, rect.w * 2);
+        title->setText("SCUTUM", font, hue::font, rect.w);
+        description->setText(Text::Get("Create a shield arround yourself by consuming 5 Numen tokens."), font, hue::font, rect.w * 2);
         break;
     default:
         break;

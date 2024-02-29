@@ -8,13 +8,13 @@ UIInputField::UIInputField(std::string title_text, std::string placeholder_text,
     inputLengthMax = max;
     actived = false;
 
-    title = new UILabel(title_text, "h2", hue::white);
+    title = new UILabel(title_text, "h2", hue::font);
 
     placeholder = new UILabel(placeholder_text, "h4", hue::placeholder_text);
 
-    text = new UILabel("", "h4", hue::white);
+    text = new UILabel("", "h4", hue::font);
 
-    btn = new UIButton(Text::Get("Valid"), id, "h3", hue::white);
+    btn = new UIButton(Text::Get("Valid"), id, "h3", hue::font);
 
     int cw, ch;
     TTF_SizeUTF8(Window::manager->getFont("h4"), "W", &cw, &ch);
@@ -46,7 +46,7 @@ void UIInputField::update() {
             input.pop_back();
         }
 
-        text->setText(input, "h4", hue::white);
+        text->setText(input, "h4", hue::font);
         text->place(
             inputRect.x + 2*(Window::fullscreen),
             inputRect.y + (inputRect.h - text->height()) / 2
@@ -70,11 +70,11 @@ void UIInputField::draw() {
     else
         text->draw();
     
-    Manager::DrawRect(&inputRect, hue::white);
+    Manager::DrawRect(&inputRect, hue::border);
 
     btn->draw();
 
-    Manager::DrawRect(&rect, hue::white);
+    Manager::DrawRect(&rect, hue::border);
 }
 
 void UIInputField::destroy() {

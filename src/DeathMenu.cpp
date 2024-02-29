@@ -8,9 +8,9 @@ DeathMenu::DeathMenu() {}
 DeathMenu::~DeathMenu() {}
 
 void DeathMenu::init() {
-    title = new UILabel("YOU HAVE DIED", "h1", hue::white);
-    btn_load = new UIDoubleCursorButton("LOAD LAST SAVE", UIButton::ID::LOAD_LAST_SAVE, "h3", hue::white);
-    btn_quit = new UIDoubleCursorButton("QUIT GAME", UIButton::ID::QUIT_GAME, "h3", hue::white);
+    title = new UILabel("YOU HAVE DIED", "h1", hue::font);
+    btn_load = new UIDoubleCursorButton("LOAD LAST SAVE", UIButton::ID::LOAD_LAST_SAVE, "h3", hue::font);
+    btn_quit = new UIDoubleCursorButton("QUIT GAME", UIButton::ID::QUIT_GAME, "h3", hue::font);
 
     const int yoff = 3* Window::screen.h / 4;
     title->place(

@@ -15,11 +15,12 @@ void KeyMap::Import(const std::map<std::string, SDL_KeyCode>& rkmap) {
         {rkmap.at("power menu")        , Event::ID::OPEN_POWER_MENU    },
         {rkmap.at("inventory")         , Event::ID::OPEN_INVENTORY     },
         {rkmap.at("quest menu")        , Event::ID::OPEN_QUEST_MENU    },
+        {rkmap.at("identity menu")     , Event::ID::OPEN_IDENTITY_MENU },
 
         {rkmap.at("move up")           , Event::ID::MOVE_UP            },
         {rkmap.at("move down")         , Event::ID::MOVE_DOWN          },
         {rkmap.at("move left")         , Event::ID::MOVE_LEFT          },
-        {rkmap.at("move right")        , Event::ID::MOVE_RIGHT},
+        {rkmap.at("move right")        , Event::ID::MOVE_RIGHT         },
 
         {rkmap.at("interact")          , Event::ID::INTERACT           },
         {rkmap.at("take control")      , Event::ID::BODY_CONTROL       },
@@ -82,6 +83,8 @@ std::string KeyMap::EventName(Event::ID eid) {
         return "inventory";
     case Event::ID::OPEN_QUEST_MENU:
         return "quest menu";
+    case Event::ID::OPEN_IDENTITY_MENU:
+        return "identity menu";
     case Event::ID::MOVE_UP:
         return "move up";
     case Event::ID::MOVE_DOWN:

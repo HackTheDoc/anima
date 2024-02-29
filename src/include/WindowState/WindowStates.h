@@ -23,3 +23,5 @@
 #include "QuestMenu.h"
 
 #include "DeathMenu.h"
+
+#include "IdentityMenu.h"

@@ -9,9 +9,9 @@ UINumenLevel::UINumenLevel(int x, int y, int w, int h, std::string font) {
 
     this->font = font;
 
-    lbl = new UILabel("0", font, hue::white);
+    lbl = new UILabel("0", font, hue::font);
 
-    doc = new UILabel(Text::Get("Numen tokens"), font, hue::white);
+    doc = new UILabel(Text::Get("Numen tokens"), font, hue::font);
     docRect.w = doc->width() + 8*(Window::fullscreen+1);
     docRect.h = doc->height() + 8*(Window::fullscreen+1);
 }
@@ -21,7 +21,7 @@ UINumenLevel::~UINumenLevel() {}
 void UINumenLevel::draw() {
     lbl->draw();
 
-    Manager::DrawLosange(rect.x, rect.y, rect.w, rect.h, hue::white);
+    Manager::DrawLosange(rect.x, rect.y, rect.w, rect.h, hue::border);
 
     int x, y;
     SDL_GetMouseState(&x, &y);
@@ -32,12 +32,12 @@ void UINumenLevel::draw() {
         docRect.y = y - 4*(Window::fullscreen+1);
         Manager::DrawFilledRect(&docRect, hue::ui_background);
         doc->draw();
-        Manager::DrawRect(&docRect, hue::white);
+        Manager::DrawRect(&docRect, hue::border);
     }
 }
 
 void UINumenLevel::update() {
-    lbl->setText(std::to_string(Game::player->numenLevel), font, hue::white);
+    lbl->setText(std::to_string(Game::player->numenLevel), font, hue::font);
     lbl->place(
         rect.x - lbl->width() / 2,
         rect.y - lbl->height() / 2

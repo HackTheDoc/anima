@@ -17,7 +17,7 @@ void QuestMenu::init() {
     container.w = 4 * Window::screen.w / 5;
     container.x = (Window::screen.w - container.w) / 2;
 
-    title = new UILabel(Text::Get("Quests"), "h3", hue::white);
+    title = new UILabel(Text::Get("Quests"), "h3", hue::font);
     title->place(
         container.x + (container.w - title->width()) / 2,
         container.y + 8*(Window::fullscreen+1)
@@ -26,8 +26,8 @@ void QuestMenu::init() {
     const int mlength = container.w-8*(Window::fullscreen+1);
 
     QuestTemplate mqt = Text::GetQuest(Player::quest->main.id);
-    mainqt = new UILabel(mqt.title, "h4", hue::white, mlength);
-    mainqc = new UILabel(mqt.content, "big", hue::white, mlength, true);
+    mainqt = new UILabel(mqt.title, "h4", hue::font, mlength);
+    mainqc = new UILabel(mqt.content, "big", hue::font, mlength, true);
 
     const int yoff = (container.h + title->y() + title->height() + 4*(Window::fullscreen+1)) / 2;
     const int h = mainqt->height() + mainqc->height() + 4*(Window::fullscreen+1);
@@ -58,13 +58,13 @@ void QuestMenu::render() {
         title->y() + title->height() + 4*(Window::fullscreen+1),
         container.x + container.w,
         title->y() + title->height() + 4*(Window::fullscreen+1),
-        hue::white
+        hue::border
     );
 
     mainqt->draw();
     mainqc->draw();
 
-    Manager::DrawRect(&container, hue::white);
+    Manager::DrawRect(&container, hue::border);
 }
 
 void QuestMenu::clean() {

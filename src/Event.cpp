@@ -314,6 +314,9 @@ void Event::handleKeyboardInputs() {
     case WindowState::Type::DEATH_MENU:
         handleDeathMenuEvents();
         break;
+    case WindowState::Type::IDENTITY_MENU:
+        handleIdentityMenuEvents();
+        break;
     case WindowState::Type::UNKNOWN:
     default:
         break;
@@ -354,6 +357,9 @@ void Event::raise(const Event::ID id) {
         break;
     case OPEN_PLAYER_DEATH_MENU:
         window->openDeathMenu();
+        break;
+    case OPEN_IDENTITY_MENU:
+        window->openIdentityMenu();
         break;
     default:
         break;
@@ -451,8 +457,7 @@ void Event::handleCreditsEvents() {
 }
 
 void Event::handleCinematicEvents() {
-    if (e.type != SDL_KEYUP)
-        return;
+    if (e.type != SDL_KEYUP) return;
 
     switch (e.key.keysym.sym) {
     case SDLK_SPACE:
@@ -482,13 +487,13 @@ void Event::handlePauseMenuEvents() {
     if (e.type != SDL_KEYUP)
         return;
 
-    SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
+    const SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
     if (KeyMap::Key[k] == Event::ID::PAUSE) {
         window->resumeGame();
         return;
     }
 
-    switch (e.key.keysym.sym) {
+    switch (k) {
     case SDLK_q:
         if (SDL_GetModState() & KMOD_CTRL)
             window->quitGame();
@@ -506,36 +511,27 @@ void Event::handlePauseMenuEvents() {
 }
 
 void Event::handlePowerMenuEvents() {
-    if (e.type != SDL_KEYUP)
-        return;
+    if (e.type != SDL_KEYUP) return;
 
-    SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
-    if (KeyMap::Key[k] == Event::ID::OPEN_POWER_MENU) {
+    const SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
+    if (KeyMap::Key[k] == Event::ID::OPEN_POWER_MENU)
         window->resumeGame();
-        return;
-    }
 }
 
 void Event::handleInventoryMenuEvents() {
-    if (e.type != SDL_KEYUP)
-        return;
+    if (e.type != SDL_KEYUP) return;
 
-    SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
-    if (KeyMap::Key[k] == Event::ID::OPEN_INVENTORY) {
+    const SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
+    if (KeyMap::Key[k] == Event::ID::OPEN_INVENTORY)
         window->resumeGame();
-        return;
-    }
 }
 
 void Event::handleQuestMenuEvents() {
-    if (e.type != SDL_KEYUP)
-        return;
+    if (e.type != SDL_KEYUP) return;
 
-    SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
-    if (KeyMap::Key[k] == Event::ID::OPEN_QUEST_MENU) {
+    const SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
+    if (KeyMap::Key[k] == Event::ID::OPEN_QUEST_MENU)
         window->resumeGame();
-        return;
-    }
 }
 
 void Event::handleDeathMenuEvents() {
@@ -554,6 +550,14 @@ void Event::handleDeathMenuEvents() {
     default:
         break;
     }
+}
+
+void Event::handleIdentityMenuEvents() {
+    if (e.type != SDL_KEYUP) return;
+
+    const SDL_KeyCode k = SDL_KeyCode(e.key.keysym.sym);
+    if (KeyMap::Key[k] == Event::ID::OPEN_IDENTITY_MENU)
+        window->resumeGame();
 }
 
 void Event::handleFreeState() {

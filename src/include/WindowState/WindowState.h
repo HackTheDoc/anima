@@ -14,7 +14,8 @@ public:
         POWER_MENU,
         INVENTORY_MENU,
         QUEST_MENU,
-        DEATH_MENU
+        DEATH_MENU,
+        IDENTITY_MENU
     };
 
     WindowState() {}
