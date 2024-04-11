@@ -1,7 +1,6 @@
 #include "include/Game/Items/Items.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 #include "include/Game/Map/Tile.h"
 
 #include "include/struct.h"
@@ -12,7 +11,7 @@ Item::Item() {
     id = Item::ID::UNKNOWN;
     name = description = "";
     price = 0;
-    icon = {0, 0, 32, 32};
+    icon = { 0, 0, 32, 32 };
     collider = new Collider(Tile::SIZE, Tile::SIZE);
 }
 
@@ -29,7 +28,7 @@ void Item::read() {
     std::cout << "      price : " << price << std::endl;
 }
 
-void Item::drawIconAt(SDL_Rect rect) {
+void Item::drawIconAt(const SDL_Rect& rect) {
     SDL_Texture* t = Window::manager->getTexture("items");
 
     int ratio = std::min(std::max(1, rect.w / icon.w), std::max(1, rect.h / icon.h));
@@ -41,13 +40,13 @@ void Item::drawIconAt(SDL_Rect rect) {
     r.y = rect.y + (rect.h - r.h) / 2;
 
     Manager::Draw(t, &icon, &r);
-} 
-
-std::string Item::to_string() {
-    return name+" ("+std::to_string(price)+"G)\n"+description;
 }
 
-Item *Item::Create(Item::ID it) {
+std::string Item::to_string() {
+    return name + " (" + std::to_string(price) + "G)\n" + description;
+}
+
+Item* Item::Create(const Item::ID it) {
     switch (it) {
     case Item::ID::LAPIS_MAGICIS:
         return new LapisMagicis();

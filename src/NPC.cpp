@@ -49,7 +49,7 @@ void NPC::update() {
     Entity::update();
 }
 
-void NPC::setDialog(std::string id) {
+void NPC::setDialog(const std::string& id) {
     if (dialog != nullptr) {
         dialog->destroy();
         Game::ui->remove("dialog");
@@ -58,7 +58,7 @@ void NPC::setDialog(std::string id) {
     Game::ui->add("dialog", dialog);
 }
 
-void NPC::updateDialogSelectedAnswer(int i) {
+void NPC::updateDialogSelectedAnswer(const int i) {
     if (dialog == nullptr) return;
 
     if (i > 0) dialog->moveCursorUp();

@@ -2,8 +2,6 @@
 
 #include <SDL2/SDL.h>
 
-#include "../../Window.h"
-
 #include "../Components/Vector2D.h"
 
 class Tile {
@@ -58,12 +56,12 @@ public:
     Tile(Type t = Type::GRASS);
     ~Tile();
 
-    virtual void init(int x = 0, int y = 0);
+    virtual void init(const int x = 0, const int y = 0);
     void update();
     void draw();
     void destroy();
 
-    void place(int x, int y);
+    void place(const int x, const int y);
 
 protected:
     SDL_Texture* texture;

@@ -3,9 +3,8 @@
 #include "include/Game/Game.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 
-#include "include/WindowState/PlayMenu.h"
+#include "include/WindowStates/PlayMenu.h"
 
 #include "include/Save.h"
 #include "include/KeyMap.h"
@@ -16,158 +15,108 @@ std::string to_string(const Event::ID eid) {
     switch (KeyMap::GetKeyCode(eid)) {
     case SDLK_a:
         return "A";
-        break;
     case SDLK_b:
         return "B";
-        break;
     case SDLK_c:
         return "C";
-        break;
     case SDLK_d:
         return "D";
-        break;
     case SDLK_e:
         return "E";
-        break;
     case SDLK_f:
         return "F";
-        break;
     case SDLK_g:
         return "G";
-        break;
     case SDLK_h:
         return "H";
-        break;
     case SDLK_i:
         return "I";
-        break;
     case SDLK_j:
         return "J";
-        break;
     case SDLK_k:
         return "K";
-        break;
     case SDLK_l:
         return "L";
-        break;
     case SDLK_m:
         return "M";
-        break;
     case SDLK_n:
         return "N";
-        break;
     case SDLK_o:
         return "O";
-        break;
     case SDLK_p:
         return "P";
-        break;
     case SDLK_q:
         return "Q";
-        break;
     case SDLK_r:
         return "R";
-        break;
     case SDLK_s:
         return "S";
-        break;
     case SDLK_t:
         return "T";
-        break;
     case SDLK_u:
         return "U";
-        break;
     case SDLK_v:
         return "V";
-        break;
     case SDLK_w:
         return "W";
-        break;
     case SDLK_x:
         return "X";
-        break;
     case SDLK_y:
         return "Y";
-        break;
     case SDLK_z:
         return "Z";
-        break;
 
     case SDLK_UP:
         return Text::Get("UP");
-        break;
     case SDLK_DOWN:
         return Text::Get("DOWN");
-        break;
     case SDLK_LEFT:
         return Text::Get("LEFT");
-        break;
     case SDLK_RIGHT:
         return Text::Get("RIGHT");
-        break;
 
     case SDLK_RALT:
     case SDLK_LALT:
         return "ALT";
-        break;
     case SDLK_ESCAPE:
         return "ESC";
-        break;
     case SDLK_RETURN:
         return Text::Get("ENTER");
-        break;
     case SDLK_RCTRL:
         return "RCTRL";
-        break;
     case SDLK_LCTRL:
         return "LCTRL";
-        break;
     case SDLK_RSHIFT:
         return "RSHIFT";
-        break;
     case SDLK_LSHIFT:
         return "LSHIFT";
-        break;
     case SDLK_CAPSLOCK:
         return "CAPS";
-        break;
     case SDLK_TAB:
         return "TAB";
-        break;
 
     case SDLK_0:
         return "0";
-        break;
     case SDLK_1:
         return "1";
-        break;
     case SDLK_2:
         return "2";
-        break;
     case SDLK_3:
         return "3";
-        break;
     case SDLK_4:
         return "4";
-        break;
     case SDLK_5:
         return "5";
-        break;
     case SDLK_6:
         return "6";
-        break;
     case SDLK_7:
         return "7";
-        break;
     case SDLK_8:
         return "8";
-        break;
     case SDLK_9:
         return "9";
-        break;
     default:
         return "";
-        break;
     }
 }
 
@@ -177,109 +126,6 @@ Event::~Event() {}
 
 void Event::linkTo(Window* w) {
     window = w;
-}
-
-void Event::handleButtonClick(const UIButton::ID id) {
-    switch (id) {
-        /* ----- MAIN MENU BUTTONS ----- */
-    case UIButton::ID::QUIT:
-        Window::isRunning = false;
-        break;
-    case UIButton::ID::PLAY:
-        window->openPlayMenu();
-        break;
-    case UIButton::ID::OPTIONS:
-        window->openOptionsMenu();
-        break;
-    case UIButton::ID::CREDITS:
-        window->openCredits();
-        break;
-
-        /* ----- PLAY MENU BUTTONS ----- */
-    case UIButton::ID::SELECT_SAVE_1:
-        PlayMenu::Selection = 1;
-        break;
-    case UIButton::ID::SELECT_SAVE_2:
-        PlayMenu::Selection = 2;
-        break;
-    case UIButton::ID::SELECT_SAVE_3:
-        PlayMenu::Selection = 3;
-        break;
-    case UIButton::ID::SELECT_SAVE_4:
-        PlayMenu::Selection = 4;
-        break;
-    case UIButton::ID::LOAD_SAVE:
-        if (PlayMenu::IsSelectionActived()) {
-            if (!Save::Exist(PlayMenu::Selection))
-                PlayMenu::OpenWorldNameInput();
-            else
-                window->openGame(PlayMenu::Selection);
-        }
-        break;
-    case UIButton::ID::ERASE_SAVE:
-        if (PlayMenu::IsSelectionActived())
-            PlayMenu::RemoveInfos(PlayMenu::Selection);
-        Save::Erase(PlayMenu::Selection);
-        break;
-    case UIButton::ID::QUIT_PLAY_MENU:
-        window->openMainMenu();
-        break;
-    case UIButton::QUIT_WORLD_NAME_INPUT:
-        PlayMenu::CloseWorldNameInput();
-        break;
-    case UIButton::ID::VALID_WORLD_NAME_INPUT:
-        PlayMenu::ValidWorldName();
-        window->openGame(PlayMenu::Selection);
-        break;
-
-        /* ----- PAUSE MENU BUTTONS ----- */
-    case UIButton::ID::RESUME_GAME:
-        window->resumeGame();
-        break;
-    case UIButton::ID::SAVE_GAME:
-        Save::Update(Game::WorldID);
-        break;
-    case UIButton::ID::QUIT_GAME:
-        window->quitGame();
-        break;
-
-        /* ----- OPTIONS MENU BUTTONS ----- */
-    case UIButton::ID::QUIT_SETTINGS:
-        window->openMainMenu();
-        break;
-    case UIButton::ID::GENERAL_SETTINGS:
-        window->openGeneralOptions();
-        break;
-    case UIButton::ID::CONTROLS_SETTINGS:
-        window->openControlsOptions();
-        break;
-
-        /* ----- CREDITS BUTTONS ----- */
-    case UIButton::ID::QUIT_CREDITS:
-        window->openMainMenu();
-        break;
-
-        /* ----- DEATH MENU BUTTONS ----- */
-    case UIButton::ID::LOAD_LAST_SAVE:
-        window->loadLastGameSave();
-        break;
-
-    default:
-        break;
-    }
-}
-
-void Event::handleSelection(const UIChoice::ID id) {
-    switch (id) {
-    case UIChoice::LG_ENGLISH:
-        Window::SetLanguage(Text::Language::ENGLISH);
-        break;
-    case UIChoice::LG_FRENCH:
-        Window::SetLanguage(Text::Language::FRENCH);
-        break;
-    default:
-        break;
-    }
 }
 
 void Event::handleKeyboardInputs() {
@@ -340,26 +186,103 @@ bool Event::raised(const Event::ID id) {
 
 void Event::raise(const Event::ID id) {
     switch (id) {
+    case SET_LANGUAGE_TO_ENGLISH:
+        Window::SetLanguage(Language::ENGLISH);
+        break;
+    case SET_LANGUAGE_TO_FRENCH:
+        Window::SetLanguage(Language::FRENCH);
+        break;
+    case SET_WINDOW_TO_FULLSCREEN:
+        Window::SetWindowMode(SDL_WINDOW_FULLSCREEN_DESKTOP);
+        break;
+    case SET_WINDOW_TO_DEFAULT:
+        Window::SetWindowMode(0);
+        break;
+    case QUIT:
+        Window::isRunning = false;
+        break;
+    case OPEN_MAIN_MENU:
+        window->openMainMenu();
+        break;
+    case OPEN_OPTIONS:
+        window->openOptionsMenu();
+        break;
+    case OPEN_GENERAL_SETTINGS:
+        window->openGeneralOptions();
+        break;
+    case OPEN_CONTROLS_SETTINGS:
+        window->openControlsOptions();
+        break;
+    case OPEN_CREDITS:
+        window->openCredits();
+        break;
+    case OPEN_PLAY_MENU:
+        window->openPlayMenu();
+        break;
+    case LOAD_SAVE:
+        if (PlayMenu::IsSelectionActived()) {
+            if (!Save::Exist(PlayMenu::Selection))
+                PlayMenu::OpenWorldNameInput();
+            else
+                window->openGame(PlayMenu::Selection);
+        }
+        break;
+    case ERASE_SAVE:
+        if (PlayMenu::IsSelectionActived())
+            PlayMenu::RemoveInfos(PlayMenu::Selection);
+        Save::Erase(PlayMenu::Selection);
+        break;
+    case SELECT_SAVE_1:
+        PlayMenu::Selection = 1;
+        break;
+    case SELECT_SAVE_2:
+        PlayMenu::Selection = 2;
+        break;
+    case SELECT_SAVE_3:
+        PlayMenu::Selection = 3;
+        break;
+    case SELECT_SAVE_4:
+        PlayMenu::Selection = 4;
+        break;
+    case VALID_WORLD_NAME_INPUT:
+        PlayMenu::ValidWorldName();
+        window->openGame(PlayMenu::Selection);
+        break;
+    case QUIT_INPUT_FIELD:
+        PlayMenu::CloseWorldNameInput();
+        break;
+    case QUIT_GAME:
+        window->quitGame();
+        break;
+    case SAVE_GAME:
+        Save::Update(Game::WorldID);
+        break;
+    case LOAD_LAST_SAVE:
+        window->loadLastGameSave();
+        break;
+    case RESUME_GAME:
+        window->resumeGame();
+        break;
     case PAUSE:
         window->pauseGame();
-        break;
-    case OPEN_POWER_MENU:
-        Tutorial::Complete(Tutorial::Step::OPEN_BENEDICTIONS);
-        window->openPowerMenu();
         break;
     case OPEN_INVENTORY:
         Tutorial::Complete(Tutorial::Step::OPEN_INVENTORY);
         window->openInventory(Game::player->parseInventory(true));
         break;
+    case OPEN_POWER_MENU:
+        Tutorial::Complete(Tutorial::Step::OPEN_BENEDICTIONS);
+        window->openPowerMenu();
+        break;
     case OPEN_QUEST_MENU:
         Tutorial::Complete(Tutorial::Step::OPEN_QUESTS);
         window->openQuestMenu();
         break;
-    case OPEN_PLAYER_DEATH_MENU:
-        window->openDeathMenu();
-        break;
     case OPEN_IDENTITY_MENU:
         window->openIdentityMenu();
+        break;
+    case OPEN_PLAYER_DEATH_MENU:
+        window->openDeathMenu();
         break;
     default:
         break;
@@ -415,20 +338,6 @@ void Event::handleOptionsMenuEvents() {
     case SDLK_q:
         window->openMainMenu();
         break;
-#ifdef DEV_MOD
-    case SDLK_g:
-        window->openGeneralOptions();
-        break;
-    case SDLK_c:
-        window->openControlsOptions();
-        break;
-    case SDLK_w:
-        window->execute("next window mode");
-        break;
-    case SDLK_l:
-        window->execute("next language");
-        break;
-#endif
     default:
         break;
     }
@@ -441,15 +350,6 @@ void Event::handleCreditsEvents() {
     switch (e.key.keysym.sym) {
     case SDLK_q:
         window->openMainMenu();
-        break;
-    case SDLK_d:
-        window->execute("open url discord");
-        break;
-    case SDLK_t:
-        window->execute("open url twitter");
-        break;
-    case SDLK_g:
-        window->execute("open url github");
         break;
     default:
         break;

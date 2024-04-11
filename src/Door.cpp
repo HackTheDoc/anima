@@ -6,10 +6,10 @@
 
 Door::Door() {
     collider = nullptr;
-    destRect = {0,0, Tile::SIZE, Tile::SIZE};
+    destRect = { 0,0, Tile::SIZE, Tile::SIZE };
 
     position.Zero();
-    
+
     dest = "";
     destPos.Zero();
 }

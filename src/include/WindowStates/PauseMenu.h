@@ -4,21 +4,22 @@
 
 #include "../UI/UIElements.h"
 
-class PowerMenu : public WindowState {
+class PauseMenu : public WindowState {
 public:
-    PowerMenu();
-    ~PowerMenu();
+    PauseMenu();
+    ~PauseMenu();
 
     void init() override;
-    void render() override;
     void update() override;
+    void render() override;
     void clean() override;
 
 private:
     SDL_Rect container;
+
+    UILabel* lbl_title;
     
-    UILabel* title;
-    UINumenLevel* numenCounter;
-    UIPowerInfo* power[Power::NUMBER];
+    UIButton* btn_resume;
+    UIButton* btn_save;
+    UIButton* btn_quit;
 };
- 

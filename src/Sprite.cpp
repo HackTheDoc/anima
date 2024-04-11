@@ -1,6 +1,6 @@
 #include "include/Game/Components/Sprite.h"
 
-#include "include/Manager.h"
+#include "include/Window.h"
 #include "include/Game/Game.h"
 
 Sprite::Sprite(Entity* o) {
@@ -12,7 +12,7 @@ Sprite::Sprite(Entity* o) {
 
 Sprite::~Sprite() {}
 
-void Sprite::init(std::string tag, int numberOfAnimations) {
+void Sprite::init(const std::string& tag, const int numberOfAnimations) {
     srcRect.x = 0;
     srcRect.y = 0;
     srcRect.w = 32;
@@ -82,11 +82,10 @@ void Sprite::init(std::string tag, int numberOfAnimations) {
     play("Idle");
 }
 
-void Sprite::init(int species, int numberOfAnimations) {
+void Sprite::init(const int species, const int numberOfAnimations) {
     std::string tag;
 
-    switch (species)
-    {
+    switch (species) {
     case Entity::Species::FAIRIES:
         tag = "fairy";
         break;
@@ -121,11 +120,11 @@ void Sprite::destroy() {
     texture = nullptr;
 }
 
-void Sprite::setSprite(std::string tag) {
+void Sprite::setSprite(const std::string& tag) {
     texture = Window::manager->getTexture(tag);
 }
 
-void Sprite::play(std::string animationName) {
+void Sprite::play(const std::string& animationName) {
     if (!animated) return;
 
     currentAnimation = animationName;
@@ -138,7 +137,7 @@ void Sprite::linkTo(Entity* o) {
     owner = o;
 }
 
-void Sprite::useFrame(int y, int x) {
+void Sprite::useFrame(const int y, const int x) {
     srcRect.x = srcRect.w * x;
     srcRect.y = srcRect.h * y;
 }

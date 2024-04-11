@@ -1,25 +1,27 @@
 #include "include/UI/UIKeyInput.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 #include "include/KeyMap.h"
 
 int UIKeyInput::Height = 0;
 
-UIKeyInput::UIKeyInput(Event::ID eid) {
+UIKeyInput::UIKeyInput(const Event::ID eid) {
     this->eid = eid;
 
-    rect = {0, 0, Window::screen.w / 4 + 64 * (Window::fullscreen + 1), UIKeyInput::Height};
+    rect = { 0, 0, Window::screen.w / 4 + 64 * (Window::fullscreen + 1), UIKeyInput::Height };
 
+    lbl_title = new UILabel();
     setTitle();
+
+    lbl_key = new UILabel();
     setKey();
 }
 
 UIKeyInput::~UIKeyInput() {}
 
 void UIKeyInput::draw() {
-    Manager::Draw(title, nullptr, &titleRect);
-    Manager::Draw(key, nullptr, &keyRect);
+    lbl_title->draw();
+    lbl_key->draw();
 
     Manager::DrawLine(
         rect.x + 2 * rect.w / 3,
@@ -34,52 +36,38 @@ void UIKeyInput::update() {
     SDL_Point m;
     SDL_GetMouseState(&m.x, &m.y);
 
-    if (Window::event.mouseClickLeft())
-    {
-        if (SDL_PointInRect(&m, &rect))
-        {
+    if (Window::event.mouseClickLeft()) {
+        if (SDL_PointInRect(&m, &rect)) {
             actived = true;
-            key = Manager::GenerateText(
-                "...",
-                Window::manager->getFont("default"),
-                hue::font);
-            SDL_QueryTexture(key, NULL, NULL, &keyRect.w, &keyRect.h);
+            lbl_key->setText("...", "default", hue::font);
             place(rect.x, rect.y);
         }
-        else
-        {
+        else {
             actived = false;
             setKey();
         }
     }
 
-    if (actived && Window::event.e.type == SDL_KEYUP)
-    {
+    if (actived && Window::event.e.type == SDL_KEYUP) {
         SDL_KeyCode kcode = SDL_KeyCode(Window::event.e.key.keysym.sym);
 
         bool success = KeyMap::Set(eid, kcode);
 
-        if (success)
-        {
+        if (success) {
             this->eid = KeyMap::Key[kcode];
-
             actived = false;
-
             setKey();
         }
     }
 }
 
 void UIKeyInput::destroy() {
-    SDL_DestroyTexture(title);
-    title = nullptr;
-
-    SDL_DestroyTexture(key);
-    key = nullptr;
+    lbl_title->destroy();
+    lbl_key->destroy();
 }
 
 void UIKeyInput::reload() {
-    rect = {0, 0, Window::screen.w / 4 + 64 * (Window::fullscreen + 1), UIKeyInput::Height};
+    rect = { 0, 0, Window::screen.w / 4 + 64 * (Window::fullscreen + 1), UIKeyInput::Height };
 
     destroy();
     setTitle();
@@ -90,18 +78,21 @@ void UIKeyInput::place(int x, int y) {
     rect.x = x;
     rect.y = y;
 
-    titleRect.x = x + (2 * rect.w / 3 - titleRect.w) / 2;
-    titleRect.y = y + (rect.h - titleRect.h) / 2 + 8 * (Window::fullscreen + 1);
+    lbl_title->place(
+        x + (2 * rect.w / 3 - lbl_title->width()) / 2,
+        y + (rect.h - lbl_title->height()) / 2 + 8 * (Window::fullscreen + 1)
+    );
 
-    keyRect.x = x + 2 * rect.w / 3 + (rect.w / 3 - keyRect.w) / 2;
-    keyRect.y = y + (rect.h - keyRect.h) / 2 + 8 * (Window::fullscreen + 1);
+    lbl_key->place(
+        x + 2 * rect.w / 3 + (rect.w / 3 - lbl_key->width()) / 2,
+        y + (rect.h - lbl_key->height()) / 2 + 8 * (Window::fullscreen + 1)
+    );
 }
 
 void UIKeyInput::setTitle() {
     std::string t;
 
-    switch (eid)
-    {
+    switch (eid) {
     case Event::ID::PAUSE:
         t = Text::Get("Pause");
         break;
@@ -153,29 +144,15 @@ void UIKeyInput::setTitle() {
         break;
     }
 
-    title = Manager::GenerateText(
-        t.c_str(),
-        Window::manager->getFont("default"),
-        hue::font,
-        2 * rect.w / 3
-    );
-    SDL_QueryTexture(title, NULL, NULL, &titleRect.w, &titleRect.h);
+    lbl_title->setText(t, "default", hue::font, 2 * rect.w / 3);
 }
 
 void UIKeyInput::setKey() {
     std::string t = to_string(eid);
-    if (t == "")
-        t = "...";
+    if (t == "") t = "...";
 
-    key = Manager::GenerateText(
-        t.c_str(),
-        Window::manager->getFont("default"),
-        hue::font,
-        rect.w / 3
-    );
-    SDL_QueryTexture(key, NULL, NULL, &keyRect.w, &keyRect.h);
+    lbl_key->setText(t, "default", hue::font, rect.w / 3);
     place(rect.x, rect.y);
 
-    if (t == "...")
-        actived = true;
+    if (t == "...") actived = true;
 }

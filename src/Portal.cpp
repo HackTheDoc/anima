@@ -1,7 +1,6 @@
 #include "include/Game/Map/Structures/Portal.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 #include "include/Save.h"
 
 #include "include/Game/Game.h"
@@ -10,7 +9,7 @@ Portal::Portal() {
     damage_level = 0;
     collider = nullptr;
     dest = "";
-    destRect = { 0,0,Tile::SIZE,Tile::SIZE };
+    destRect = { 0, 0, Tile::SIZE, Tile::SIZE };
     position.Zero();
     destPos.Zero();
 }
@@ -66,7 +65,7 @@ void Portal::repair() {
         return;
     }
 
-    if (!inv->try_consume(Item::ID::LAPIS_MAGICIS)) {
+    if (!inv->tryConsume(Item::ID::LAPIS_MAGICIS)) {
         UI::AddPopUp("YOU NEED A LAPIS MAGICIS");
         return;
     }

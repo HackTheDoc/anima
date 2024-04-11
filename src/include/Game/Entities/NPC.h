@@ -15,8 +15,8 @@ public:
     void init() override;
     void update() override;
 
-    void setDialog(std::string id);
-    void updateDialogSelectedAnswer(int i);
+    void setDialog(const std::string& id);
+    void updateDialogSelectedAnswer(const int i);
     void validateDialog();
 
     void startDialog();

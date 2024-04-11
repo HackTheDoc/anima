@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-#include <string>
 #include <SDL2/SDL.h>
 
 #include "Event.h"
@@ -12,29 +11,13 @@ public:
     /// @brief associate a keycode to the event it must generate when pressed
     static std::map<SDL_KeyCode, Event::ID> Key;
 
-    static void Reload();
-    
-    /// @brief import a keymap
-    /// @param rkmap 
-    static void Import(const std::map<std::string, SDL_KeyCode>& rkmap);
-
-    /// @brief export the keymap
-    /// @return
-    static std::map<std::string, SDL_KeyCode> Export();
-
     /// @brief set a new keycode to an event id
     /// @param eid id of the evet to update
     /// @param kcode new keycode
-    static bool Set(Event::ID eid, SDL_KeyCode kcode);
+    static bool Set(const Event::ID eid, const SDL_KeyCode kcode);
 
     /// @brief find the keycode associated to an event id
     /// @param eid id to search
     /// @return the approriate keycode
-    static SDL_KeyCode GetKeyCode(Event::ID eid);
-
-private:
-    /// @brief parse the name of an event based on its id
-    /// @param eid id of the event
-    /// @return  string containing the name
-    static std::string EventName(Event::ID eid);
+    static SDL_KeyCode GetKeyCode(const Event::ID eid);
 };

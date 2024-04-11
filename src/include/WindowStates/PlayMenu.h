@@ -2,8 +2,6 @@
 
 #include "WindowState.h"
 
-#include "../GifTexture.h"
-
 #include "../UI/UIElements.h"
 
 class PlayMenu : public WindowState {
@@ -16,13 +14,9 @@ public:
     void render() override;
     void clean() override;
 
-    /// @brief check if the state of the current selection
-    /// @return true if activate else false
     static bool IsSelectionActived();
 
-    /// @brief remove the informations about a world (useful when erasing a save)
-    /// @param wid id of the world to remove info to
-    static void RemoveInfos(int wid);
+    static void RemoveInfos(const int saveID);
 
     /// @brief id of the selected world (1-4)
     static int Selection;
@@ -34,17 +28,16 @@ public:
     static void ValidWorldName();
     
 private:
-    GifTexture *background;
+    UIGifTexture* gif_background;
 
-    UILabel* title;
+    UILabel* lbl_title;
 
-    static UIGameSaveButton* button[4];
+    static UIGameSaveButton* btn_game[4];
 
-    UIButton* quitButton;
+    UIButton* btn_quit;
 
-    static UIButton* loadButton;
-    static UIButton* eraseButton;
+    static UIButton* btn_load;
+    static UIButton* btn_erase;
 
-    /// @brief input field for the name of the world
-    static UIInputField* worldNameInput;
+    static UIInputField* input_worldName;
 };

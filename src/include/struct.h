@@ -9,6 +9,7 @@
 
 #include "Game/Game.h"
 
+using EventID = Event::ID;
 using ItemID = Item::ID;
 using PlayerState = Player::State;
 using EntityType = Entity::Type;
@@ -21,7 +22,7 @@ namespace Struct {
         bool tutorial;
         Uint8 language;
         Uint32 window_mode;
-        std::map<std::string, SDL_KeyCode> controls;
+        std::map<SDL_KeyCode, EventID> controls;
     };
 
     struct Teleporter {

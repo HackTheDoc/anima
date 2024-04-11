@@ -1,14 +1,10 @@
 #include "include/Game/Components/Collider.h"
 
-#include "include/Manager.h"
-
 #include "include/Game/Game.h"
 
-Collider::Collider() {
-    rect = {0, 0, 0, 0};
-}
+#include "include/Manager.h"
 
-Collider::Collider(int w, int h) {
+Collider::Collider(const int w, const int h) {
     rect = {0, 0, w, h};
 }
 
@@ -23,11 +19,11 @@ void Collider::draw() {
     Manager::DrawRect(&rect, hue::red);
 }
 
-void Collider::place(int x, int y) {
+void Collider::place(const int x, const int y) {
     position.x = x;
     position.y = y;
 }
 
-void Collider::place(Vector2D pos) {
+void Collider::place(const Vector2D& pos) {
     place(pos.x, pos.y);
 }

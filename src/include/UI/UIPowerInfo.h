@@ -8,18 +8,20 @@
 
 class UIPowerInfo : public UIElement {
 public:
-    UIPowerInfo(Power pid, int w, int h, std::string font);
+    UIPowerInfo(const Power pid, const int w, const int h, const std::string& font);
     ~UIPowerInfo();
 
     void draw() override;
     void update() override;
     void destroy() override;
 
-    void place(int x, int y);
+    void place(const int x, const int y);
 
 private:
     std::string font;
+
     UILabel* title;
     UITextBox* description;
+
     Power pid;
 };

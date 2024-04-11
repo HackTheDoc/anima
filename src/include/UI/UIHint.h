@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <SDL2/SDL.h>
 
 class Portal;
@@ -8,21 +7,16 @@ class Door;
 class Entity;
 class Collider;
 
+#include "UILabel.h"
+
 class UIHint {
 private:
-    SDL_Texture* text;
-    SDL_Rect destRect;
+    UILabel* lbl;
 
 public:
-    /// @brief create a new hint
-    /// @param t text of the hint
-    /// @param f font to use (default: default)
-    UIHint(const std::string& t, const std::string f = "default");
+    UIHint(const std::string& text, const std::string& font);
     ~UIHint();
 
-    /// @brief place at a precise position
-    /// @param x x pos in pixels
-    /// @param y y pos in pixels
     void place(const int x, const int y);
 
     /// @brief place at a relative position to a portal

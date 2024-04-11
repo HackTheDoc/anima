@@ -4,14 +4,14 @@
 #include <fstream>
 #include <algorithm>
 
+#include "include/Window.h"
 #include "include/Save.h"
 
 #include "include/Game/Game.h"
 #include "include/Game/Components/Collision.h"
 
-Island::Island(const std::string& name)
-    : name(name)
-{
+Island::Island(const std::string& name) {
+    this->name = name;
     map = new Map();
 }
 
@@ -22,7 +22,7 @@ void Island::init() {
 
     // LOADING MAP
     map->init(data.map);
-    
+
     // LOADING TELEPORTERS
     for (const Struct::Teleporter& teleporter : data.portals) {
         if (teleporter.is_door) {
@@ -105,7 +105,7 @@ void Island::destroy() {
         delete p;
     }
     portals.clear();
-    
+
     for (const auto& d : doors) {
         d->destroy();
         delete d;
@@ -123,8 +123,8 @@ void Island::destroy() {
 }
 
 void Island::getSize(int* w, int* h) {
-    *w = map->getWidth() * Tile::SIZE;
-    *h = map->getHeight() * Tile::SIZE;
+    *w = map->width() * Tile::SIZE;
+    *h = map->height() * Tile::SIZE;
 }
 
 std::string Island::getName() {
@@ -266,7 +266,7 @@ Struct::Island Island::getStructure() {
         i++;
     }
     while (i < portals.size() + doors.size()) {
-        island.portals[i] = doors[i-portals.size()]->getStructure();
+        island.portals[i] = doors[i - portals.size()]->getStructure();
         i++;
     }
 

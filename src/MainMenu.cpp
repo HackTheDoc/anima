@@ -1,4 +1,4 @@
-#include "include/WindowState/MainMenu.h"
+#include "include/WindowStates/MainMenu.h"
 
 #include "include/Window.h"
 
@@ -9,76 +9,77 @@ MainMenu::~MainMenu() {}
 void MainMenu::init() {
     /* ----- BACKGROUND ----- */
 
-    background = new GifTexture("./assets/animations/main menu", 3, 200, Window::screen);
+    gif_background = new UIGifTexture("./assets/animations/main menu", 3, 200, Window::screen);
 
     /* ----- LABELS ----- */
 
-    label[TITLE] = new UILabel(Window::title, "h1", hue::font);
-    label[TITLE]->place(8*(Window::fullscreen+1), 0);
+    lbl_title = new UILabel(Window::TITLE, "h1", hue::font);
+    lbl_title->place(8 * (Window::fullscreen + 1), 0);
 
-    label[VERSION] = new UILabel("v0.1", "default", hue::font);
-    label[VERSION]->place(
-        Window::screen.w - label[VERSION]->width() - 8*(Window::fullscreen+1),
-        8*(Window::fullscreen+1)
+    lbl_version = new UILabel("v0.1", "default", hue::font);
+    lbl_version->place(
+        Window::screen.w - lbl_version->width() - 8 * (Window::fullscreen + 1),
+        8 * (Window::fullscreen + 1)
     );
 
     /* ----- BUTTONS ----- */
-    int offsetY = (Window::screen.h + label[TITLE]->height()) / 2;
 
+    const int offsetY = (Window::screen.h + lbl_title->height()) / 2;
 
-    button[OPTIONS] = new UILeftCursorButton(Text::Get("Options"), UIButton::ID::OPTIONS, "h3", hue::font);
-    button[OPTIONS]->place(
-        16*(Window::fullscreen+1),
-        offsetY - button[OPTIONS]->height() - 8*(Window::fullscreen+1)
+    btn_options = new UIButton(Text::Get("Options"), Event::ID::OPEN_OPTIONS, "h3", hue::font, UIButton::Type::RIGHT_CURSOR);
+    btn_options->place(
+        16 * (Window::fullscreen + 1),
+        offsetY - btn_options->height() - 8 * (Window::fullscreen + 1)
     );
 
-    button[PLAY] = new UILeftCursorButton(Text::Get("Play"), UIButton::ID::PLAY, "h3", hue::font);
-    button[PLAY]->place(
-        16*(Window::fullscreen+1),
-        offsetY - button[OPTIONS]->height() - button[PLAY]->height() - 24*(Window::fullscreen+1)
+    btn_play = new UIButton(Text::Get("Play"), Event::ID::OPEN_PLAY_MENU, "h3", hue::font, UIButton::Type::RIGHT_CURSOR);
+    btn_play->place(
+        16 * (Window::fullscreen + 1),
+        offsetY - btn_options->height() - btn_play->height() - 24 * (Window::fullscreen + 1)
     );
 
-    button[CREDITS] = new UILeftCursorButton(Text::Get("Credits"), UIButton::ID::CREDITS, "h3", hue::font);
-    button[CREDITS]->place(
-        16*(Window::fullscreen+1),
-        offsetY + 8*(Window::fullscreen+1)
+    btn_credits = new UIButton(Text::Get("Credits"), Event::ID::OPEN_CREDITS, "h3", hue::font, UIButton::Type::RIGHT_CURSOR);
+    btn_credits->place(
+        16 * (Window::fullscreen + 1),
+        offsetY + 8 * (Window::fullscreen + 1)
     );
 
-    button[QUIT] = new UILeftCursorButton(Text::Get("Quit"), UIButton::ID::QUIT, "h3", hue::font);
-    button[QUIT]->place(
-        16*(Window::fullscreen+1),
-        offsetY + button[CREDITS]->height() + 24*(Window::fullscreen+1)
+    btn_quit = new UIButton(Text::Get("Quit"), Event::ID::QUIT, "h3", hue::font, UIButton::Type::RIGHT_CURSOR);
+    btn_quit->place(
+        16 * (Window::fullscreen + 1),
+        offsetY + btn_credits->height() + 24 * (Window::fullscreen + 1)
     );
 }
 
 void MainMenu::update() {
-    background->play();
+    gif_background->update();
 
-    for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-        button[i]->update();
-    }
+    btn_play->update();
+    btn_options->update();
+    btn_credits->update();
+    btn_quit->update();
 }
 
 void MainMenu::render() {
-    background->draw();
-    
-    for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-        button[i]->draw();
-    }
+    gif_background->draw();
 
-    for (int i = 0; i < NUMBER_OF_LABELS; i++) {
-        label[i]->draw();
-    }
+    btn_play->draw();
+    btn_options->draw();
+    btn_credits->draw();
+    btn_quit->draw();
+
+    lbl_title->draw();
+    lbl_version->draw();
 }
 
 void MainMenu::clean() {
-    background->destroy();
+    gif_background->destroy();
 
-    for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-        button[i]->destroy();
-    }
+    btn_play->destroy();
+    btn_options->destroy();
+    btn_credits->destroy();
+    btn_quit->destroy();
 
-    for (int i = 0; i < NUMBER_OF_LABELS; i++) {
-        label[i]->destroy();
-    }
+    lbl_title->destroy();
+    lbl_version->destroy();
 }

@@ -4,7 +4,6 @@
 #include "include/Game/Game.h"
 #include "include/KeyMap.h"
 #include "include/Window.h"
-#include "include/Manager.h"
 
 #include <chrono>
 #include <fstream>
@@ -20,21 +19,25 @@ void Save::CreateConfig() {
     .language = 0,
     .window_mode = 0,
     .controls = {
-            {"body resurrection", SDLK_m},
-            {"interact", SDLK_e},
-            {"inventory", SDLK_i},
-            {"move down", SDLK_s},
-            {"move left", SDLK_q},
-            {"move right", SDLK_d},
-            {"move up", SDLK_z},
-            {"next answer", SDLK_UP},
-            {"pause", SDLK_ESCAPE},
-            {"power menu", SDLK_o},
-            {"previous answer", SDLK_DOWN},
-            {"quest menu", SDLK_l},
-            {"identity menu", SDLK_k},
-            {"take control", SDLK_p},
-            {"valid dialog", SDLK_RETURN}
+            {SDLK_m         , Event::ID::BODY_RESURRECTION  },
+            {SDLK_p         , Event::ID::BODY_CONTROL       },
+
+            {SDLK_z         , Event::ID::MOVE_UP            },
+            {SDLK_s         , Event::ID::MOVE_DOWN          },
+            {SDLK_q         , Event::ID::MOVE_LEFT          },
+            {SDLK_d         , Event::ID::MOVE_RIGHT         },
+
+            {SDLK_e         , Event::ID::INTERACT           },
+            {SDLK_i         , Event::ID::OPEN_INVENTORY     },
+
+            {SDLK_ESCAPE    , Event::ID::PAUSE              },
+            {SDLK_o         , Event::ID::OPEN_POWER_MENU    },
+            {SDLK_l         , Event::ID::OPEN_QUEST_MENU    },
+            {SDLK_k         , Event::ID::OPEN_IDENTITY_MENU },
+
+            {SDLK_RETURN    , Event::ID::VALID_DIALOG       },
+            {SDLK_UP        , Event::ID::NEXT_ANSWER        },
+            {SDLK_DOWN      , Event::ID::PREVIOUS_ANSWER    },
         }
     };
 
@@ -54,7 +57,7 @@ void Save::SaveConfig() {
     if (Window::fullscreen)
         config.window_mode = SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-    config.controls = KeyMap::Export();
+    config.controls = KeyMap::Key;
 
     serialize::config(config);
 }
@@ -65,16 +68,6 @@ Struct::Config Save::LoadConfig() {
     Struct::Config config = deserialize::config();
 
     return config;
-}
-
-/* ----- KEYMAP ----- */
-
-void Save::Key(const std::string& ename, const SDL_KeyCode kcode) {
-    Struct::Config config = LoadConfig();
-
-    config.controls[ename] = kcode;
-
-    serialize::config(config);
 }
 
 /* ----- GAME ----- */
@@ -298,7 +291,7 @@ Struct::Entity Save::CreateNPC(const int x, const int y, const EntitySpecies spe
         .hasdialog = hasdialog,
         .inventory = inv
     };
-    
+
     return Struct::Entity{ npc };
 }
 
@@ -533,7 +526,7 @@ Struct::Island Save::CreateIsland_CianVillage1() {
             {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
         }),
         .portals = {
-            CreatePortal(2432, 1792, "lost temple", 2560, 2560, 0),     
+            CreatePortal(2432, 1792, "lost temple", 2560, 2560, 0),
             CreatePortal(1024, 896, "cian 2 house 1", 640, 512, 0),
         },
         .items = {},

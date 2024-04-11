@@ -12,12 +12,8 @@ public:
     void update() override;
     void destroy() override;
 
-    /// @brief place at a precise position
-    /// @param x x pos in pixels
-    /// @param y y pos in pixels
-    void place(int x, int y);
+    void place(const int x, const int y);
 
-    /// @brief reload the textures
     void reload();
 
 private:

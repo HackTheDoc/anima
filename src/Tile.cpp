@@ -1,9 +1,9 @@
 #include "include/Game/Map/Tile.h"
 
 #include "include/Game/Game.h"
-#include "include/Manager.h"
+#include "include/Window.h"
 
-Tile::Tile(Type t) {
+Tile::Tile(const Type t) {
     type = t;
 
     switch (t) {
@@ -125,7 +125,7 @@ Tile::Tile(Type t) {
 
 Tile::~Tile() {}
 
-void Tile::init(int x, int y) {
+void Tile::init(const int x, const int y) {
     texture = Window::manager->getTexture("ground");;
 
     place(x, y);
@@ -151,7 +151,7 @@ void Tile::destroy() {
     texture = nullptr;
 }
 
-void Tile::place(int x, int y) {
+void Tile::place(const int x, const int y) {
     position.x = x * Tile::SIZE;
     position.y = y * Tile::SIZE;
 }

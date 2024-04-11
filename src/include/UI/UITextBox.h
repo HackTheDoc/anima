@@ -6,17 +6,17 @@
 
 class UITextBox : public UIElement {
 public:
-    UITextBox(std::string t, std::string font, const SDL_Color& color);
-    UITextBox(std::string t, std::string font, const SDL_Color& color, int mlength);
+    UITextBox(const std::string& text, const std::string& font, const SDL_Color& color);
+    UITextBox(const std::string& text, const std::string& font, const SDL_Color& color, const int mlength);
     ~UITextBox();
 
     void draw() override;
     void destroy() override;
 
-    void place(int x, int y);
-    void setText(std::string t, std::string font, const SDL_Color& color);
-    void setText(std::string t, std::string font, const SDL_Color& color, int mlength);
+    void place(const int x, const int y);
+    void setText(const std::string& text, const std::string& font, const SDL_Color& color);
+    void setText(const std::string& text, const std::string& font, const SDL_Color& color, const int mlength);
 
 private:
-    UILabel* text;
+    UILabel* lbl;
 };

@@ -1,13 +1,12 @@
 #include "include/UI/UIWindowModeSelector.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 
 UIWindowModeSelector::UIWindowModeSelector() {
-    lbl = new UILabel(Text::Get("Window Mode:"), "default bold", hue::white);
+    lbl_title = new UILabel();
 
-    choice[0] = {SDL_WINDOW_FULLSCREEN_DESKTOP  , new UILabel(Text::Get("Windowed")  , "default", hue::white)};
-    choice[1] = {0                              , new UILabel(Text::Get("Fullscreen"), "default", hue::white)};
+    choice[0] = { Event::ID::SET_WINDOW_TO_FULLSCREEN    , new UILabel() };
+    choice[1] = { Event::ID::SET_WINDOW_TO_DEFAULT      , new UILabel() };
 
     reload();
 }
@@ -19,24 +18,29 @@ void UIWindowModeSelector::place(int x, int y) {
     rect.y = y;
 
     selectorRect.x = x;
-    selectorRect.y = y + lbl->height();
+    selectorRect.y = y + lbl_title->height();
 
-    lbl->place(
-        x + (rect.w - lbl->width()) / 2,
-        y + 4*(Window::fullscreen+1)
+    lbl_title->place(
+        x + (rect.w - lbl_title->width()) / 2,
+        y + 4 * (Window::fullscreen + 1)
     );
 
-    for (auto c : choice) {
-        c.lbl->place(
-            selectorRect.x + (selectorRect.w - c.lbl->width() ) / 2,
-            selectorRect.y + (selectorRect.h - c.lbl->height()) / 2
-        );
-    }
+    UILabel* lbl = choice[0].second;
+    lbl->place(
+        selectorRect.x + (selectorRect.w - lbl->width()) / 2,
+        selectorRect.y + (selectorRect.h - lbl->height()) / 2
+    );
+
+    lbl = choice[1].second;
+    lbl->place(
+        selectorRect.x + (selectorRect.w - lbl->width()) / 2,
+        selectorRect.y + (selectorRect.h - lbl->height()) / 2
+    );
 }
 
 void UIWindowModeSelector::draw() {
-    lbl->draw();
-    choice[Window::fullscreen].lbl->draw();
+    lbl_title->draw();
+    choice[Window::fullscreen].second->draw();
 }
 
 void UIWindowModeSelector::update() {
@@ -48,31 +52,30 @@ void UIWindowModeSelector::update() {
 }
 
 void UIWindowModeSelector::destroy() {
-    lbl->destroy();
-    for (auto c : choice) {
-        c.lbl->destroy();
-    }
+    lbl_title->destroy();
+    choice[0].second->destroy();
+    choice[1].second->destroy();
 }
 
 void UIWindowModeSelector::reload() {
-    lbl->setText(Text::Get("Window Mode:"), "default bold", hue::white);
+    lbl_title->setText(Text::Get("Window Mode:"), "default bold", hue::font);
 
-    rect = {0,0, lbl->width(), lbl->height()};
+    rect = { 0,0, lbl_title->width(), lbl_title->height() };
 
-    choice[0].lbl->setText(Text::Get("Windowed")  , "default", hue::white);
-    rect.w = std::max(rect.w, choice[0].lbl->width());
-    rect.h = std::max(rect.h, lbl->height() + choice[0].lbl->height());
-    
-    choice[1].lbl->setText(Text::Get("Fullscreen"), "default", hue::white);
-    rect.w = std::max(rect.w, choice[1].lbl->width());
-    rect.h = std::max(rect.h, lbl->height() + choice[1].lbl->height());
+    choice[0].second->setText(Text::Get("Windowed"), "default", hue::font);
+    rect.w = std::max(rect.w, choice[0].second->width());
+    rect.h = std::max(rect.h, lbl_title->height() + choice[0].second->height());
 
-    rect.w += 8 *(Window::fullscreen+1); // margin of 4 pixels on left and right
-    rect.h += 12*(Window::fullscreen+1); // margin + space between title and choices
+    choice[1].second->setText(Text::Get("Fullscreen"), "default", hue::font);
+    rect.w = std::max(rect.w, choice[1].second->width());
+    rect.h = std::max(rect.h, lbl_title->height() + choice[1].second->height());
 
-    selectorRect = {0,0, rect.w, rect.h - lbl->height()};
+    rect.w += 8 * (Window::fullscreen + 1); // margin of 4 pixels on left and right
+    rect.h += 12 * (Window::fullscreen + 1); // margin + space between title and choices
+
+    selectorRect = { 0,0, rect.w, rect.h - lbl_title->height() };
 }
 
 void UIWindowModeSelector::next() {
-    Window::SetWindowMode(choice[Window::fullscreen].id);
+    Window::event.raise(choice[Window::fullscreen].first);
 }

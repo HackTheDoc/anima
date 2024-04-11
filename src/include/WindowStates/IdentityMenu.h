@@ -16,8 +16,8 @@ public:
 private:
     SDL_Rect container;
 
-    UILabel* title;
-    UILabel* name;
-    UILabel* powerLevel;
-    UILabel* attribut;
+    UILabel* lbl_title;
+    UILabel* lbl_name;
+    UILabel* lbl_powerLevel;
+    UILabel* lbl_attribut;
 };

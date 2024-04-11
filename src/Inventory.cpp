@@ -21,21 +21,21 @@ Struct::Inventory Inventory::getStructure() {
     Struct::Inventory inv;
     inv.capacity = capacity;
 
-    for (const auto& i : item) 
+    for (const auto& i : item)
         inv.items.push_back(i->getStructure());
-    
+
     return inv;
 }
 
-bool Inventory::is_full() {
+bool Inventory::isFull() {
     return item.size() == capacity;
 }
 
-bool Inventory::is_empty() {
+bool Inventory::isEmpty() {
     return item.size() == 0;
 }
 
-bool Inventory::try_consume(const Item::ID id) {
+bool Inventory::tryConsume(const Item::ID id) {
     bool found = false;
 
     auto it = item.cbegin();
@@ -51,15 +51,15 @@ bool Inventory::try_consume(const Item::ID id) {
     return found;
 }
 
-Item* Inventory::extract_random_item() {
+Item* Inventory::extractRandomItem() {
     int it = rand() % item.size();
     Item* i = item[it];
-    item.erase(item.cbegin()+it);
+    item.erase(item.cbegin() + it);
     return i;
 }
 
-void Inventory::add_item(Item* i) {
-    if (is_full()) return;
+void Inventory::addItem(Item* i) {
+    if (isFull()) return;
 
     item.push_back(i);
 }

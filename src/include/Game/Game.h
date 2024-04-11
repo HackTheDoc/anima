@@ -1,20 +1,18 @@
 #pragma once
 
-#include <SDL2/SDL.h>
 #include <map>
 #include <string>
 #include <chrono>
 
-#include "../WindowState/WindowState.h"
+#include "../WindowStates/WindowState.h"
 
 #include "Entities/Player.h"
 #include "Island.h"
 
-#include "../UI/UI.h"
-
 #include "Tutorial.h"
-
 #include "Statistics.h"
+
+#include "../UI/UI.h"
 
 namespace Struct {
     struct Island;
@@ -24,11 +22,14 @@ class Game : public WindowState {
 public:
     static std::chrono::time_point<std::chrono::system_clock> StartTime;
     static int WorldID;
+
     static Statistics stats;
+
     static UI* ui;
+
     static Island* island;
-    static SDL_Rect camera;
     static Player* player;
+    static SDL_Rect camera;
 
     Game();
     ~Game();

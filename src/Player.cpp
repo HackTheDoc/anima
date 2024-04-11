@@ -1,5 +1,7 @@
 #include "include/Game/Entities/Player.h"
 
+#include "include/Window.h" // useless if not for dev mode
+
 #include "include/Game/Game.h"
 #include "include/Game/Components/Collision.h"
 #include "include/Game/Entities/Entities.h"
@@ -76,6 +78,12 @@ void Player::init() {
                 player->sprite = npc->sprite;
                 player->sprite->linkTo(player);
 
+                player->collider = npc->collider;
+                player->collider->setOwner(player);
+
+                player->detector = npc->detector;
+                player->detector->setOwner(player);
+
                 player->setControlledEntity(npc);
                 npc->controlled = true;
                 player->controlled = true;
@@ -90,6 +98,12 @@ void Player::init() {
 
                 player->sprite = doll->sprite;
                 player->sprite->linkTo(player);
+
+                player->collider = doll->collider;
+                player->collider->setOwner(player);
+
+                player->detector = doll->detector;
+                player->detector->setOwner(player);
 
                 player->setControlledEntity(doll);
                 doll->controlled = true;
@@ -246,14 +260,14 @@ void Player::searchDeadBody(DeadBody* body) {
 
     Inventory* inv = parseInventory();
 
-    if (inv->is_full())
+    if (inv->isFull())
         UI::AddPopUp("INVENTORY FULL");
-    else if (body->inventory.is_empty())
+    else if (body->inventory.isEmpty())
         UI::AddPopUp("NOTHING WAS FOUND");
     else {
         UI::AddPopUp("YOU FOUND SOMETHING");
-        Item* i = body->inventory.extract_random_item();
-        inv->add_item(i);
+        Item* i = body->inventory.extractRandomItem();
+        inv->addItem(i);
     }
 }
 
@@ -343,6 +357,9 @@ void Player::modifyNumenLevelBy(int ammount) {
 }
 
 void Player::unlockPower(Power pid) {
+    /// TODO: remove this when the powers are implemented
+    if (pid == Power::BODY_EXPLOSION || pid == Power::SHIELD) return;
+
     hasUnlockedPower[pid] = true;
     Game::stats.powers[pid] = true;
     modifyNumenLevelBy(-5);
@@ -393,8 +410,8 @@ Struct::Player Player::getStructure() {
     structure.curr_island_on = Game::island->getName();
     structure.pos = position;
 
-    structure.curr_main_quest = quest->main.id;
-    for (Quest q : quest->others)
+    structure.curr_main_quest = quest->mainQuest.id;
+    for (Quest q : quest->sideQuests)
         structure.curr_other_quests.push_back(q.id);
 
     structure.is_controlling_an_entity = false;

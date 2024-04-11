@@ -1,42 +1,46 @@
 #include "include/UI/UILanguageSelector.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 
 UILanguageSelector::UILanguageSelector() {
-    lbl = new UILabel(Text::Get("Language:"), "default bold", hue::white);
+    lbl_title = new UILabel();
 
-    choice[0] = {UIChoice::ID::LG_ENGLISH   , new UILabel("English", "default", hue::white)};
-    choice[1] = {UIChoice::ID::LG_FRENCH    , new UILabel("French" , "default", hue::white)};
+    choice[0] = { Event::ID::SET_LANGUAGE_TO_ENGLISH   , new UILabel()};
+    choice[1] = { Event::ID::SET_LANGUAGE_TO_FRENCH    , new UILabel()};
 
     reload();
 }
 
 UILanguageSelector::~UILanguageSelector() {}
 
-void UILanguageSelector::place(int x, int y) {
+void UILanguageSelector::place(const int x, const int y) {
     rect.x = x;
     rect.y = y;
 
     selectorRect.x = x;
-    selectorRect.y = y + lbl->height();
+    selectorRect.y = y + lbl_title->height();
 
-    lbl->place(
-        x + (rect.w - lbl->width()) / 2,
-        y + 4*(Window::fullscreen+1)
+    lbl_title->place(
+        x + (rect.w - lbl_title->width()) / 2,
+        y + 4 * (Window::fullscreen + 1)
     );
 
-    for (auto c : choice) {
-        c.lbl->place(
-            selectorRect.x + (selectorRect.w - c.lbl->width() ) / 2,
-            selectorRect.y + (selectorRect.h - c.lbl->height()) / 2
-        );
-    }
+    UILabel* lbl = choice[0].second;
+    lbl->place(
+        selectorRect.x + (selectorRect.w - lbl->width()) / 2,
+        selectorRect.y + (selectorRect.h - lbl->height()) / 2
+    );
+
+    lbl = choice[1].second;
+    lbl->place(
+        selectorRect.x + (selectorRect.w - lbl->width()) / 2,
+        selectorRect.y + (selectorRect.h - lbl->height()) / 2
+    );
 }
 
 void UILanguageSelector::draw() {
-    lbl->draw();
-    choice[current].lbl->draw();
+    lbl_title->draw();
+    choice[current].second->draw();
 }
 
 void UILanguageSelector::update() {
@@ -48,38 +52,35 @@ void UILanguageSelector::update() {
 }
 
 void UILanguageSelector::destroy() {
-    lbl->destroy();
-    for (auto c : choice) {
-        c.lbl->destroy();
-    }
+    lbl_title->destroy();
+    choice[0].second->destroy();
+    choice[1].second->destroy();
 }
 
 void UILanguageSelector::reload() {
-    lbl->setText(Text::Get("Language:"), "default bold", hue::white);
+    lbl_title->setText(Text::Get("Language:"), "default bold", hue::font);
 
-    rect = {0,0, lbl->width(), lbl->height()};
+    rect = { 0,0, lbl_title->width(), lbl_title->height() };
 
     // English
-    choice[0].lbl->setText("English" , "default", hue::white);
-    rect.w = std::max(rect.w, choice[0].lbl->width());
-    rect.h = std::max(rect.h, lbl->height() + choice[0].lbl->height());
-    
+    choice[0].second->setText("English", "default", hue::font);
+    rect.w = std::max(rect.w, choice[0].second->width());
+    rect.h = std::max(rect.h, lbl_title->height() + choice[0].second->height());
+
     // French
-    choice[1].lbl->setText("Français", "default", hue::white);
-    rect.w = std::max(rect.w, choice[1].lbl->width());
-    rect.h = std::max(rect.h, lbl->height() + choice[1].lbl->height());
+    choice[1].second->setText("Français", "default", hue::font);
+    rect.w = std::max(rect.w, choice[1].second->width());
+    rect.h = std::max(rect.h, lbl_title->height() + choice[1].second->height());
 
-    rect.w += 8 *(Window::fullscreen+1); // margin of 4 pixels on left and right
-    rect.h += 12*(Window::fullscreen+1); // margin + space between title and choices
+    rect.w += 8 * (Window::fullscreen + 1); // margin of 4 pixels on left and right
+    rect.h += 12 * (Window::fullscreen + 1); // margin + space between title and choices
 
-    selectorRect = {0,0, rect.w, rect.h - lbl->height()};
+    selectorRect = { 0,0, rect.w, rect.h - lbl_title->height() };
 
     current = Window::language;
 }
 
 void UILanguageSelector::next() {
-    current++;
-    if (current >= choice.size())
-        current = 0;
-    Window::event.handleSelection((UIChoice::ID)choice[current].id);
+    current = !current;
+    Window::event.raise(choice[current].first);
 }

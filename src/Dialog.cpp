@@ -3,6 +3,8 @@
 #include "include/Game/Game.h"
 #include "include/Game/Entities/NPC.h"
 
+#include "include/Text.h"
+
 Dialog::Dialog(NPC* master, const std::string& id) {
     this->master = master;
     this->id = id;
@@ -35,8 +37,8 @@ void Dialog::loadData() {
 
     setTextBox(d.text);
 
-    int x,y;
-    box->getPosition(&x, &y);
+    const int x = box->x();
+    const int y = box->y();
     for (AnswerTemplate a : d.answers) {
         addAnswer(
             a.text,
@@ -81,10 +83,12 @@ void Dialog::validateAnswer() {
 
 void Dialog::moveCursorUp() {
     currentAnswer++;
-    if (currentAnswer >= (int)answers.size()) currentAnswer = 0;
+    if (currentAnswer >= (int)answers.size())
+        currentAnswer = 0;
 }
 
 void Dialog::moveCursorDown() {
     currentAnswer--;
-    if (currentAnswer < 0) currentAnswer = (int)answers.size() - 1;
+    if (currentAnswer < 0)
+        currentAnswer = (int)answers.size() - 1;
 }

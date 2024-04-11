@@ -181,11 +181,11 @@ namespace serialize {
         string(outfile, stats.playTime);
 
         var(outfile, stats.attributs);
-        
+
         var(outfile, stats.numenLevel);
         for (const auto& p : stats.powers)
             var(outfile, p);
-        
+
         var(outfile, stats.killedEntityCounter);
         var(outfile, stats.resurrectedEntityCounter);
     }
@@ -218,7 +218,13 @@ namespace serialize {
         var(outfile, config.language);
         var(outfile, config.window_mode);
 
-        map(outfile, config.controls);
+        const size_t mcsize = config.controls.size();
+        outfile.write(reinterpret_cast<const char*>(&mcsize), sizeof(size_t));
+
+        for (const auto& [key, value] : config.controls) {
+            outfile.write(reinterpret_cast<const char*>(&key), sizeof(SDL_KeyCode));
+            outfile.write(reinterpret_cast<const char*>(&value), sizeof(Event::ID));
+        }
 
         outfile.close();
     }
@@ -430,11 +436,11 @@ namespace deserialize {
         string(infile, stats.playTime);
 
         var(infile, stats.attributs);
-        
+
         var(infile, stats.numenLevel);
         for (auto& p : stats.powers)
             var(infile, p);
-        
+
         var(infile, stats.killedEntityCounter);
         var(infile, stats.resurrectedEntityCounter);
     }
@@ -472,7 +478,17 @@ namespace deserialize {
         var(infile, cstruct.language);
         var(infile, cstruct.window_mode);
 
-        map(infile, cstruct.controls);
+        size_t mcsize;
+        infile.read(reinterpret_cast<char*>(&mcsize), sizeof(size_t));
+
+        for (size_t i = 0; i < mcsize; ++i) {
+            SDL_KeyCode key;
+            infile.read(reinterpret_cast<char*>(&key), sizeof(SDL_KeyCode));
+            Event::ID value;
+            infile.read(reinterpret_cast<char*>(&value), sizeof(Event::ID));
+
+            cstruct.controls[key] = value;
+        }
 
         infile.close();
 

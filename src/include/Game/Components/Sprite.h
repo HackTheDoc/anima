@@ -21,20 +21,20 @@ public:
     /// @brief intialize the sprite
     /// @param tag name of the sprite to use
     /// @param numberOfAnimations -1 mean NO animations
-    void init(std::string tag, int numberOfAnimations = -1);
+    void init(const std::string& tag, const int numberOfAnimations = -1);
 
     /// @brief intialize the sprite
     /// @param species id of the sprite's species (for living entities only)
     /// @param numberOfAnimations -1 mean NO animations
-    void init(int species, int numberOfAnimations = -1);
+    void init(const int species, const int numberOfAnimations = -1);
 
     void linkTo(Entity* entity);
     void update();
     void draw();
     void destroy();
-    void setSprite(std::string tag);
-    void play(std::string animationName);
-    void useFrame(int y, int x);
+    void setSprite(const std::string& tag);
+    void play(const std::string& animationName);
+    void useFrame(const int y, const int x);
 
 private:
     SDL_Texture* texture;

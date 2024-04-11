@@ -42,9 +42,4 @@ public:
     /// @brief get height pos in pixels
     /// @return da height
     int height();
-
-    /// @brief get the position of the ui element
-    /// @param x pointer to the x pos storage
-    /// @param y pointer to the y pos storage
-    void getPosition(int* x, int* y);
 };

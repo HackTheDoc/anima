@@ -42,8 +42,3 @@ int UIElement::width() {
 int UIElement::height() {
     return rect.h;
 }
-
-void UIElement::getPosition(int* x, int* y) {
-    *x = rect.x;
-    *y = rect.y;
-}

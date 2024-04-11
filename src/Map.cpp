@@ -10,15 +10,14 @@ Map::Map() {}
 Map::~Map() {}
 
 void Map::init(const Struct::Map& map) {
-    width = map.width;
-    height = map.height;
+    _width = map.width;
+    _height = map.height;
 
-    tiles.resize(height);
-    for (int y = 0; y < height; y++) {
-        tiles[y].resize(width);
-        for (int x = 0; x < width; x++) {
+    tiles.resize(_height);
+    for (int y = 0; y < _height; y++) {
+        tiles[y].resize(_width);
+        for (int x = 0; x < _width; x++)
             setTile(x, y, map.tiles[y][x]);
-        }
     }
 }
 
@@ -39,38 +38,35 @@ void Map::update() {
 }
 
 void Map::render() {
-    for (auto l : tiles) {
-        for (auto t : l) {
+    for (auto l : tiles)
+        for (auto t : l)
             t->draw();
-        }
-    }
 }
 
 void Map::destroy() {
     for (auto l : tiles) {
-        for (auto t : l) {
+        for (auto t : l)
             t->destroy();
-        }
         l.clear();
     }
     tiles.clear();
 
-    width = height = 0;
+    _width = _height = 0;
 }
 
-int Map::getHeight() {
-    return height;
+int Map::height() {
+    return _height;
 }
 
-int Map::getWidth() {
-    return width;
+int Map::width() {
+    return _width;
 }
 
-Tile* Map::getTile(int x, int y) {
+Tile* Map::getTile(const int x, const int y) {
     return tiles[y][x];
 }
 
-Tile* Map::getTileAt(Vector2D p) {
+Tile* Map::getTileAt(const Vector2D& p) {
     return getTile(round(p.x / Tile::SIZE), round(p.y / Tile::SIZE));
 }
 
@@ -84,13 +80,13 @@ void Map::setTile(int x, int y, Tile::Type type) {
 
 Struct::Map Map::getStructure() {
     Struct::Map map;
-    map.width = width;
-    map.height = height;
-    
-    map.tiles.resize(height);
-    for (int y = 0; y < height; y++) {
-        map.tiles[y].resize(width);
-        for (int x = 0; x < width; x++)
+    map.width = _width;
+    map.height = _height;
+
+    map.tiles.resize(_height);
+    for (int y = 0; y < _height; y++) {
+        map.tiles[y].resize(_width);
+        for (int x = 0; x < _width; x++)
             map.tiles[y][x] = tiles[y][x]->type;
     }
 

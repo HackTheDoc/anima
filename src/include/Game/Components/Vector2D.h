@@ -2,15 +2,14 @@
 
 #include <iostream>
 
+/// @brief classic 2D vector class
 class Vector2D {
 public:
-    static const Vector2D ZERO;
-
     int x;
     int y;
 
     Vector2D();
-    Vector2D(int x, int y);
+    Vector2D(const int x, const int y);
 
     Vector2D& Add(const Vector2D& vec);
     Vector2D& Substract(const Vector2D& vec);
@@ -29,6 +28,7 @@ public:
 
     Vector2D operator*(const int i) const;
     Vector2D& Zero();
+    bool isZero();
 
     friend bool operator==(const Vector2D& v1, const Vector2D& v2);
     friend bool operator!=(const Vector2D& v1, const Vector2D& v2);

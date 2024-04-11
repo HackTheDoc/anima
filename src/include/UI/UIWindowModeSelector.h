@@ -2,34 +2,31 @@
 
 #include <map>
 #include <string>
-#include <array>
 
 #include "UIElement.h"
 #include "UILabel.h"
-#include "UIChoice.h"
+
+#include "../Event.h"
 
 class UIWindowModeSelector : public UIElement {
 protected:
-    UILabel *lbl;
+    UILabel* lbl_title;
+
     SDL_Rect selectorRect;
-    std::array<UIChoice, 2> choice;
+    
+    std::pair<Event::ID, UILabel*> choice[2];
 
 public:
     UIWindowModeSelector();
     ~UIWindowModeSelector();
 
-    /// @brief place at a precise position
-    /// @param x x pos in pixels
-    /// @param y y pos in pixels
-    void place(int x, int y);
+    void place(const int x, const int y);
 
     void draw() override;
     void update() override;
     void destroy() override;
 
-    /// @brief reload the textures
     void reload();
 
-    /// @brief next choice
     void next();
 };

@@ -1,6 +1,5 @@
 #include "include/Game/Tutorial.h"
 
-#include "include/Manager.h"
 #include "include/Window.h"
 #include "include/KeyMap.h"
 
@@ -12,7 +11,7 @@ SDL_Rect Tutorial::container{
     Window::screen.w / 5,
     0
 };
-UILabel* Tutorial::content = nullptr;
+UILabel* Tutorial::lbl_content = nullptr;
 
 void Tutorial::Load(const int id) {
     current = (Step)id;
@@ -22,7 +21,7 @@ void Tutorial::Load(const int id) {
 
     switch (id) {
     case Step::OPEN_INVENTORY:
-        content->setText(
+        lbl_content->setText(
             press + to_string(Event::ID::OPEN_INVENTORY) + Text::Get(" to open inventory."),
             "default",
             hue::white,
@@ -30,7 +29,7 @@ void Tutorial::Load(const int id) {
         );
         break;
     case Step::OPEN_QUESTS:
-        content->setText(
+        lbl_content->setText(
             press + to_string(Event::ID::OPEN_QUEST_MENU) + Text::Get(" to open quests."),
             "default",
             hue::white,
@@ -38,7 +37,7 @@ void Tutorial::Load(const int id) {
         );
         break;
     case Step::OPEN_BENEDICTIONS:
-        content->setText(
+        lbl_content->setText(
             press + to_string(Event::ID::OPEN_POWER_MENU) + Text::Get(" to open benedictions."),
             "default",
             hue::white,
@@ -46,7 +45,7 @@ void Tutorial::Load(const int id) {
         );
         break;
     case Step::USE_CONTROL_POWER:
-        content->setText(
+        lbl_content->setText(
             press + to_string(Event::ID::BODY_CONTROL) + Text::Get(" to release or take control of a body."),
             "default",
             hue::white,
@@ -54,7 +53,7 @@ void Tutorial::Load(const int id) {
         );
         break;
     case Step::MOVEMENTS:
-        content->setText(
+        lbl_content->setText(
             press + to_string(Event::ID::MOVE_UP) + "," + to_string(Event::ID::MOVE_DOWN) + "," + to_string(Event::ID::MOVE_LEFT) + "," + to_string(Event::ID::MOVE_RIGHT) + Text::Get(" to move."),
             "default",
             hue::white,
@@ -62,7 +61,7 @@ void Tutorial::Load(const int id) {
         );
         break;
     case Step::FINISHED:
-        content->setText(
+        lbl_content->setText(
             "finished",
             "default",
             hue::white,
@@ -73,14 +72,14 @@ void Tutorial::Load(const int id) {
         break;
     }
 
-    container.h = content->height() + 2 * span;
-    content->place(span, span);
+    container.h = lbl_content->height() + 2 * span;
+    lbl_content->place(span, span);
 };
 
 void Tutorial::Init(const int id) {
-    if (content) Destroy();
+    if (lbl_content) Destroy();
 
-    content = new UILabel();
+    lbl_content = new UILabel();
     Load(id);
 }
 
@@ -90,15 +89,15 @@ void Tutorial::Render() {
     Manager::DrawFilledRect(&container, hue::blur_dark);
     Manager::SetViewport(&container);
 
-    content->draw();
+    lbl_content->draw();
 
     Manager::SetViewport(nullptr);
     Manager::DrawRect(&container, hue::white);
 }
 
 void Tutorial::Destroy() {
-    content->destroy();
-    content = nullptr;
+    lbl_content->destroy();
+    lbl_content = nullptr;
 }
 
 void Tutorial::Complete(const Step id) {

@@ -1,19 +1,18 @@
 #include "include/UI/UINumenLevel.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 #include "include/Game/Game.h"
 
-UINumenLevel::UINumenLevel(int x, int y, int w, int h, std::string font) {
-    rect = {x,y,w,h};
+UINumenLevel::UINumenLevel(const int x, const int y, const int w, const int h, const std::string& font) {
+    rect = { x,y,w,h };
 
     this->font = font;
 
     lbl = new UILabel("0", font, hue::font);
 
     doc = new UILabel(Text::Get("Numen tokens"), font, hue::font);
-    docRect.w = doc->width() + 8*(Window::fullscreen+1);
-    docRect.h = doc->height() + 8*(Window::fullscreen+1);
+    docRect.w = doc->width() + 8 * (Window::fullscreen + 1);
+    docRect.h = doc->height() + 8 * (Window::fullscreen + 1);
 }
 
 UINumenLevel::~UINumenLevel() {}
@@ -25,11 +24,11 @@ void UINumenLevel::draw() {
 
     int x, y;
     SDL_GetMouseState(&x, &y);
-    
-    if (std::abs(x-rect.x) <= lbl->width() && std::abs(y-rect.y) <= lbl->height()) {
+
+    if (std::abs(x - rect.x) <= lbl->width() && std::abs(y - rect.y) <= lbl->height()) {
         doc->place(x, y);
-        docRect.x = x - 4*(Window::fullscreen+1);
-        docRect.y = y - 4*(Window::fullscreen+1);
+        docRect.x = x - 4 * (Window::fullscreen + 1);
+        docRect.y = y - 4 * (Window::fullscreen + 1);
         Manager::DrawFilledRect(&docRect, hue::ui_background);
         doc->draw();
         Manager::DrawRect(&docRect, hue::border);

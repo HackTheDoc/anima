@@ -13,12 +13,13 @@ class Item {
 public:
     enum ID {
         UNKNOWN,
+
         LAPIS_VITAE,
         LAPIS_MEMORIAE,
         LAPIS_MAGICIS,
         IGNOTUM
     };
-    Item::ID id;
+    ID id;
 
     std::string name;
     std::string description;
@@ -32,11 +33,11 @@ public:
     virtual bool use();
     virtual void read();
 
-    void drawIconAt(SDL_Rect rect);
+    void drawIconAt(const SDL_Rect& rect);
 
     std::string to_string();
 
-    static Item *Create(Item::ID it);
+    static Item* Create(const Item::ID itemID);
 
     Struct::Item getStructure();
 

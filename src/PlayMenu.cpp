@@ -1,164 +1,159 @@
-#include "include/WindowState/PlayMenu.h"
+#include "include/WindowStates/PlayMenu.h"
 
 #include "include/Window.h"
 
 #include "include/Game/Game.h"
 
-#include <fstream>
-#include <nlohmann/json.hpp>
 
-UIGameSaveButton *PlayMenu::button[4] = {nullptr, nullptr, nullptr, nullptr};
+UIGameSaveButton* PlayMenu::btn_game[4] = {nullptr, nullptr, nullptr, nullptr};
 int PlayMenu::Selection = 0;
-UIButton *PlayMenu::loadButton = nullptr;
-UIButton *PlayMenu::eraseButton = nullptr;
-UIInputField* PlayMenu::worldNameInput = nullptr;
+UIButton* PlayMenu::btn_load = nullptr;
+UIButton* PlayMenu::btn_erase = nullptr;
+UIInputField* PlayMenu::input_worldName = nullptr;
 
 PlayMenu::PlayMenu() {}
 
 PlayMenu::~PlayMenu() {}
 
-void PlayMenu::init()
-{
+void PlayMenu::init() {
     /* ----- BACKGROUND ----- */
 
-    background = new GifTexture("./assets/animations/main menu", 3, 200, Window::screen);
+    gif_background = new UIGifTexture("./assets/animations/main menu", 3, 200, Window::screen);
 
     /* ----- LABELS ----- */
-    title = new UILabel(Text::Get("Select a world:"), "h2", hue::font, 2 * Window::screen.w / 3);
-    title->place(
+    lbl_title = new UILabel(Text::Get("Select a world:"), "h2", hue::font, 2 * Window::screen.w / 3);
+    lbl_title->place(
         8 * (Window::fullscreen + 1),
-        8 * (Window::fullscreen + 1));
+        8 * (Window::fullscreen + 1)
+    );
 
     /* ----- BUTTONS ----- */
-    int containerWidth = 2 * Window::screen.w / 3;
-    int offsetY = (Window::screen.h + title->y() + title->height()) / 2 - 16 * (Window::fullscreen + 1);
 
-    loadButton = new UIButton(Text::Get("LOAD"), UIButton::ID::LOAD_SAVE, "h4", hue::font);
-    loadButton->place(
-        containerWidth - loadButton->width() - 96 * (Window::fullscreen + 1),
-        offsetY - loadButton->height() - 8 * (Window::fullscreen + 1)
+    const int containerWidth = 2 * Window::screen.w / 3;
+    const int offsetY = (Window::screen.h + lbl_title->y() + lbl_title->height()) / 2 - 16 * (Window::fullscreen + 1);
+
+    btn_load = new UIButton(Text::Get("LOAD"), Event::ID::LOAD_SAVE, "h4", hue::font);
+    btn_load->place(
+        containerWidth - btn_load->width() - 96 * (Window::fullscreen + 1),
+        offsetY - btn_load->height() - 8 * (Window::fullscreen + 1)
     );
 
-    eraseButton = new UIButton(Text::Get("ERASE"), UIButton::ID::ERASE_SAVE, "h4", hue::font);
-    eraseButton->place(
-        containerWidth - eraseButton->width() - 96 * (Window::fullscreen + 1),
+    btn_erase = new UIButton(Text::Get("ERASE"), Event::ID::ERASE_SAVE, "h4", hue::font);
+    btn_erase->place(
+        containerWidth - btn_erase->width() - 96 * (Window::fullscreen + 1),
         offsetY + 8 * (Window::fullscreen + 1)
     );
 
-    button[1] = new UIGameSaveButton(Text::Get("World 2"), 2, UIButton::ID::SELECT_SAVE_2, "h4", hue::font);
-    button[1]->place(
+    btn_game[1] = new UIGameSaveButton(Text::Get("World 2"), 2, Event::ID::SELECT_SAVE_2, "h4", hue::font);
+    btn_game[1]->place(
         8 * (Window::fullscreen + 1),
-        offsetY - button[1]->height() - 8 * (Window::fullscreen + 1)
+        offsetY - btn_game[1]->height() - 8 * (Window::fullscreen + 1)
     );
 
-    button[0] = new UIGameSaveButton(Text::Get("World 1"), 1, UIButton::ID::SELECT_SAVE_1, "h4", hue::font);
-    button[0]->place(
+    btn_game[0] = new UIGameSaveButton(Text::Get("World 1"), 1, Event::ID::SELECT_SAVE_1, "h4", hue::font);
+    btn_game[0]->place(
         8 * (Window::fullscreen + 1),
-        offsetY - button[1]->height() - button[0]->height() - 24 * (Window::fullscreen + 1));
+        offsetY - btn_game[1]->height() - btn_game[0]->height() - 24 * (Window::fullscreen + 1));
 
-    button[2] = new UIGameSaveButton(Text::Get("World 3"), 3, UIButton::ID::SELECT_SAVE_3, "h4", hue::font);
-    button[2]->place(
+    btn_game[2] = new UIGameSaveButton(Text::Get("World 3"), 3, Event::ID::SELECT_SAVE_3, "h4", hue::font);
+    btn_game[2]->place(
         8 * (Window::fullscreen + 1),
         offsetY + 8 * (Window::fullscreen + 1)
     );
 
-    button[3] = new UIGameSaveButton(Text::Get("World 4"), 4, UIButton::ID::SELECT_SAVE_4, "h4", hue::font);
-    button[3]->place(
+    btn_game[3] = new UIGameSaveButton(Text::Get("World 4"), 4, Event::ID::SELECT_SAVE_4, "h4", hue::font);
+    btn_game[3]->place(
         8 * (Window::fullscreen + 1),
-        offsetY + button[3]->height() + 24 * (Window::fullscreen + 1));
+        offsetY + btn_game[3]->height() + 24 * (Window::fullscreen + 1));
 
-    quitButton = new UIButton("X", UIButton::ID::QUIT_PLAY_MENU, "h3", hue::font);
-    quitButton->place(
-        Window::screen.w - quitButton->width() - 8 * (Window::fullscreen + 1),
+    btn_quit = new UIButton("X", Event::ID::OPEN_MAIN_MENU, "h3", hue::font);
+    btn_quit->place(
+        Window::screen.w - btn_quit->width() - 8 * (Window::fullscreen + 1),
         8 * (Window::fullscreen + 1));
 
     /* ----- world name input ----- */
-    worldNameInput = new UIInputField(Text::Get("Name the world:"), "Adocia", UIButton::ID::VALID_WORLD_NAME_INPUT, 16);
-    worldNameInput->place(
-        (Window::screen.w - worldNameInput->width()) / 2,
-        (Window::screen.h - worldNameInput->height()) / 2
+    input_worldName = new UIInputField(Text::Get("Name the world:"), "Adocia", Event::ID::VALID_WORLD_NAME_INPUT, 16);
+    input_worldName->place(
+        (Window::screen.w - input_worldName->width()) / 2,
+        (Window::screen.h - input_worldName->height()) / 2
     );
 }
 
-void PlayMenu::update()
-{
-    background->play();
+void PlayMenu::update() {
+    gif_background->update();
 
-    if (worldNameInput->actived) {
-        worldNameInput->update();
+    if (input_worldName->actived) {
+        input_worldName->update();
         return;
     }
 
-    loadButton->update();
-    eraseButton->update();
+    btn_load->update();
+    btn_erase->update();
 
-    button[0]->update();
-    button[1]->update();
-    button[2]->update();
-    button[3]->update();
+    btn_game[0]->update();
+    btn_game[1]->update();
+    btn_game[2]->update();
+    btn_game[3]->update();
 
-    quitButton->update();
+    btn_quit->update();
 }
 
-void PlayMenu::render()
-{
-    background->draw();
+void PlayMenu::render() {
+    gif_background->draw();
 
-    title->draw();
+    lbl_title->draw();
 
-    button[0]->draw();
-    button[1]->draw();
-    button[2]->draw();
-    button[3]->draw();
+    btn_game[0]->draw();
+    btn_game[1]->draw();
+    btn_game[2]->draw();
+    btn_game[3]->draw();
 
-    quitButton->draw();
+    btn_quit->draw();
 
-    loadButton->draw();
-    eraseButton->draw();
+    btn_load->draw();
+    btn_erase->draw();
 
-    if (worldNameInput->actived) {
-        worldNameInput->draw();
-    }
+    if (input_worldName->actived)
+        input_worldName->draw();
 }
 
-void PlayMenu::clean()
-{
-    background->destroy();
+void PlayMenu::clean() {
+    gif_background->destroy();
 
-    title->destroy();
+    lbl_title->destroy();
 
-    button[0]->destroy();
-    button[1]->destroy();
-    button[2]->destroy();
-    button[3]->destroy();
+    btn_game[0]->destroy();
+    btn_game[1]->destroy();
+    btn_game[2]->destroy();
+    btn_game[3]->destroy();
 
-    quitButton->destroy();
+    btn_quit->destroy();
 
-    loadButton->destroy();
-    eraseButton->destroy();
+    btn_load->destroy();
+    btn_erase->destroy();
 
-    worldNameInput->destroy();
+    input_worldName->destroy();
 }
 
 bool PlayMenu::IsSelectionActived() {
-    return button[PlayMenu::Selection - 1]->isActive();
+    return btn_game[PlayMenu::Selection - 1]->isActive();
 }
 
-void PlayMenu::RemoveInfos(int wid) {
-    button[wid-1]->removeInfos();
+void PlayMenu::RemoveInfos(const int saveID) {
+    btn_game[saveID-1]->removeInfos();
 }
 
 void PlayMenu::OpenWorldNameInput() {
-    worldNameInput->actived = true;
+    input_worldName->actived = true;
 }
 
 void PlayMenu::CloseWorldNameInput() {
-    worldNameInput->actived = false;
+    input_worldName->actived = false;
 }
 
 void PlayMenu::ValidWorldName() {
-    if (worldNameInput->input.empty())
+    if (input_worldName->input.empty())
         Game::stats.worldName = "Adocia";
     else
-        Game::stats.worldName = worldNameInput->input;
+        Game::stats.worldName = input_worldName->input;
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
+#include <SDL2/SDL.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -27,23 +27,27 @@ struct QuestTemplate {
     std::string content;
 };
 
+enum Language : Uint8 {
+    ENGLISH,
+    FRENCH
+};
+
 class Text {
 public:
-    enum Language : Uint8 {
-        ENGLISH,
-        FRENCH
-    };
 
-    /// @brief parse a text
+    /// @brief parse a text in the current language of the window
     /// @param tag text to translate
-    /// @return translated text
-    static std::string Get(std::string tag);
+    /// @return
+    static std::string Get(const std::string& tag);
 
     /// @brief parse a dialog based on it's tag
     /// @param tag 
     /// @return structure containing the dialog's data
-    static DialogTemplate GetDialog(std::string tag);
+    static DialogTemplate GetDialog(const std::string& tag);
 
+    /// @brief parse a quest details based on the quest's id
+    /// @param qid 
+    /// @return structure containing the quest details
     static QuestTemplate GetQuest(const int qid);
 
     static std::vector<std::string> GetCinematic(const std::string& tag);

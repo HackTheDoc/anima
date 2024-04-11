@@ -1,19 +1,18 @@
-#include "include/WindowState/InventoryMenu.h"
+#include "include/WindowStates/InventoryMenu.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 #include "include/Game/Game.h"
 
 InventoryMenu::InventoryMenu(Inventory* inv) {
-    title = nullptr;
+    lbl_title = nullptr;
     inventory = inv;
 }
 
 InventoryMenu::~InventoryMenu() {}
 
 void InventoryMenu::init() {
-    title = new UILabel(Text::Get("Inventory"), "h3", hue::font);
-    usage = new UILabel(Text::Get("LEFT click to use\nRIGHT click to drop"), "small", hue::font);
+    lbl_title = new UILabel(Text::Get("Inventory"), "h3", hue::font);
+    lbl_usage = new UILabel(Text::Get("LEFT click to use\nRIGHT click to drop"), "small", hue::font);
     itemDescription = new UITextBox("item", "default", hue::font);
 
     container.w = 3 * Window::screen.w / 5;
@@ -21,11 +20,12 @@ void InventoryMenu::init() {
     container.x = (Window::screen.w - container.w) / 2;
     container.y = (Window::screen.h - container.h) / 2;
 
-    title->place(
-        container.x + (container.w - title->width()) / 2,
-        container.y + 4 * (Window::fullscreen + 1));
+    lbl_title->place(
+        container.x + (container.w - lbl_title->width()) / 2,
+        container.y + 4 * (Window::fullscreen + 1)
+    );
 
-    usage->place(4 * (Window::fullscreen + 1), 4 * (Window::fullscreen + 1));
+    lbl_usage->place(4 * (Window::fullscreen + 1), 4 * (Window::fullscreen + 1));
 
     switch (inventory->capacity) {
     case 0:
@@ -75,7 +75,7 @@ void InventoryMenu::render() {
     Manager::DrawFilledRect(&Window::screen, hue::blur);
     Manager::DrawFilledRect(&container, hue::ui_background);
 
-    title->draw();
+    lbl_title->draw();
 
     unsigned int s = inventory->item.size();
     for (unsigned int i = 0; i < inventory->capacity; i++) {
@@ -87,51 +87,51 @@ void InventoryMenu::render() {
 
     Manager::DrawRect(&container, hue::border);
 
-    usage->draw();
+    lbl_usage->draw();
 
     itemDescription->draw();
 }
 
 void InventoryMenu::clean() {
     inventory = nullptr;
-    title->destroy();
-    usage->destroy();
+    lbl_title->destroy();
+    lbl_usage->destroy();
     itemDescription->destroy();
 }
 
 void InventoryMenu::prepareSize1() {
-    int h = container.y + container.h - title->y() - title->height();
+    int h = container.y + container.h - lbl_title->y() - lbl_title->height();
     int i = 256 + 128 * (Window::fullscreen);
 
     itemRect.push_back({
         container.x + (container.w - i) / 2,
-        title->y() + title->height() + (h - i) / 2,
+        lbl_title->y() + lbl_title->height() + (h - i) / 2,
         i,
         i
-    });
+        });
 }
 
 void InventoryMenu::prepareSize2() {
-    int h = container.y + container.h - title->y() - title->height();
+    int h = container.y + container.h - lbl_title->y() - lbl_title->height();
     int i = 192 + 96 * (Window::fullscreen);
 
     itemRect.push_back({
         container.x + (container.w / 2 - i) / 2,
-        title->y() + title->height() + (h - i) / 2,
+        lbl_title->y() + lbl_title->height() + (h - i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
-        title->y() + title->height() + (h - i) / 2,
+        lbl_title->y() + lbl_title->height() + (h - i) / 2,
         i,
         i
-    });
+        });
 }
 
 void InventoryMenu::prepareSize4() {
-    int h = container.y + container.h - title->y() - title->height();
+    int h = container.y + container.h - lbl_title->y() - lbl_title->height();
     int i = 144 + 72 * (Window::fullscreen);
 
     itemRect.push_back({
@@ -139,32 +139,32 @@ void InventoryMenu::prepareSize4() {
         container.y + (h - i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + (h - i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-    });
+        });
 }
 
 void InventoryMenu::prepareSize6() {
-    int h = container.y + container.h - title->y() - title->height();
+    int h = container.y + container.h - lbl_title->y() - lbl_title->height();
     int i = 128 + 64 * (Window::fullscreen);
 
     itemRect.push_back({
@@ -172,40 +172,40 @@ void InventoryMenu::prepareSize6() {
         container.y + (h - i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + (h - i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (container.w - i) / 2,
         container.y + (h - i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (container.w - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-    });
+        });
 
     itemRect.push_back({
         container.x + (3 * container.w / 2 - i) / 2,
         container.y + container.h - (h / 2 + i) / 2,
         i,
         i
-    });
+        });
 }

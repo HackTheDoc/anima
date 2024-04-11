@@ -1,53 +1,52 @@
 #include "include/UI/UITextBox.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 
-UITextBox::UITextBox(std::string t, std::string font, const SDL_Color& color) {
-    text = new UILabel(t, font, color);
-    rect.w = text->width() + 2*UIElement::MARGIN*(Window::fullscreen+1);
-    rect.h = text->height() + 2*UIElement::MARGIN*(Window::fullscreen+1);
+UITextBox::UITextBox(const std::string& text, const std::string& font, const SDL_Color& color) {
+    lbl = new UILabel(text, font, color);
+    rect.w = lbl->width() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
+    rect.h = lbl->height() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
 
-    place(0,0);
+    place(0, 0);
 }
 
-UITextBox::UITextBox(std::string t, std::string font, const SDL_Color& color, int mlength) {
-    text = new UILabel(t, font, color, mlength);
-    rect.w = text->width() + 2*UIElement::MARGIN*(Window::fullscreen+1);
-    rect.h = text->height() + 2*UIElement::MARGIN*(Window::fullscreen+1);
+UITextBox::UITextBox(const std::string& text, const std::string& font, const SDL_Color& color, const int mlength) {
+    lbl = new UILabel(text, font, color, mlength);
+    rect.w = lbl->width() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
+    rect.h = lbl->height() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
 
-    place(0,0);
+    place(0, 0);
 }
 
 UITextBox::~UITextBox() {}
 
 void UITextBox::draw() {
     Manager::DrawFilledRect(&rect, hue::ui_background);
-    text->draw();
+    lbl->draw();
     Manager::DrawRect(&rect, hue::white);
 }
 
 void UITextBox::destroy() {
-    text->destroy();
+    lbl->destroy();
 }
 
-void UITextBox::place(int x, int y) {
+void UITextBox::place(const int x, const int y) {
     rect.x = x;
     rect.y = y;
 
-    text->place(x+UIElement::MARGIN*(Window::fullscreen+1), y+UIElement::MARGIN*(Window::fullscreen+1));
+    lbl->place(x + UIElement::MARGIN * (Window::fullscreen + 1), y + UIElement::MARGIN * (Window::fullscreen + 1));
 }
 
-void UITextBox::setText(std::string t, std::string font, const SDL_Color& color) {
-    text->setText(t, font, color);
+void UITextBox::setText(const std::string& text, const std::string& font, const SDL_Color& color) {
+    lbl->setText(text, font, color);
 
-    rect.w = text->width() + 2*UIElement::MARGIN*(Window::fullscreen+1);
-    rect.h = text->height() + 2*UIElement::MARGIN*(Window::fullscreen+1);
+    rect.w = lbl->width() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
+    rect.h = lbl->height() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
 }
 
-void UITextBox::setText(std::string t, std::string font, const SDL_Color& color, int mlength) {
-    text->setText(t, font, color, mlength);
+void UITextBox::setText(const std::string& text, const std::string& font, const SDL_Color& color, const int mlength) {
+    lbl->setText(text, font, color, mlength);
 
-    rect.w = text->width() + 2*UIElement::MARGIN*(Window::fullscreen+1);
-    rect.h = text->height() + 2*UIElement::MARGIN*(Window::fullscreen+1);
+    rect.w = lbl->width() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
+    rect.h = lbl->height() + 2 * UIElement::MARGIN * (Window::fullscreen + 1);
 }

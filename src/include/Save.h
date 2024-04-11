@@ -8,19 +8,17 @@ namespace fs = std::filesystem;
 
 class Player;
 class Island;
+class Vector2D;
+
+struct Inventory;
 struct EntityStructure;
 struct PlayerStructure;
-struct Inventory;
-class Vector2D;
 
 class Save {
 public:
     /* ----- CONFIG ----- */
     static void SaveConfig();
     static Struct::Config LoadConfig();
-
-    /* ----- KEYMAP ----- */
-    static void Key(const std::string& ename, const SDL_KeyCode kcode);
 
     /* ----- GAME ----- */
 

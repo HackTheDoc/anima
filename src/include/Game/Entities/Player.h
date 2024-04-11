@@ -17,8 +17,7 @@ enum Power {
     BODY_CONTROL,
     BODY_RESURRECTION,
     BODY_EXPLOSION,
-    SHIELD,
-    NUMBER // just to count
+    SHIELD
 };
 
 namespace Struct {
@@ -31,7 +30,7 @@ private:
     static EntityCollider* DEFAULT_COLLIDER;
     static EntityDetector* DEFAULT_DETECTOR;
 
-    bool hasUnlockedPower[Power::NUMBER];
+    bool hasUnlockedPower[4];
 
     Entity* controlledEntity;
     int timeLeftBeforeHealthDecreasalOfControlledEntity;
@@ -70,12 +69,12 @@ public:
     void takeControlOf(Entity* e);
     void releaseControledEntity();
 
-    void modifyNumenLevelBy(int ammount);
+    void modifyNumenLevelBy(const int ammount);
 
-    void unlockPower(Power pid);
-    bool haveUnlockedPower(Power pid);
+    void unlockPower(const Power pid);
+    bool haveUnlockedPower(const Power pid);
 
-    Inventory* parseInventory(const bool display_err_msg = false);
+    Inventory* parseInventory(const bool displayErrorMessage = false);
     void setControlledEntity(Entity* e);
     Entity* parseControlledEntity();
 

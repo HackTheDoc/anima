@@ -1,26 +1,23 @@
 #include "include/Window.h"
 
-#include "include/Manager.h"
 #include "include/Save.h"
 #include "include/KeyMap.h"
 
-#include "include/WindowState/WindowStates.h"
+#include "include/WindowStates/WindowStates.h"
 
 #include <chrono>
 #include <sstream>
-#include <nlohmann/json.hpp>
-#include <fstream>
 #include <iostream>
 
 using json = nlohmann::json;
 
 SDL_Window* Window::window = nullptr;
 
-const std::string Window::title = "Anima";
+const std::string Window::TITLE = "Anima";
 bool Window::isRunning = false;
 
 bool Window::fullscreen = false;
-Text::Language Window::language = Text::Language::ENGLISH;
+Language Window::language = Language::ENGLISH;
 
 SDL_Renderer* Window::renderer = nullptr;
 SDL_Rect Window::screen = { 0, 0, 1280, 720 };
@@ -45,7 +42,7 @@ int Window::init() {
 
     // init window
     window = SDL_CreateWindow(
-        title.c_str(),
+        TITLE.c_str(),
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         screen.w,
@@ -66,7 +63,7 @@ int Window::init() {
     // load config
     const Struct::Config config = Save::LoadConfig();
 
-    Window::language = (Text::Language)config.language;
+    Window::language = (Language)config.language;
 
     SetWindowMode(config.window_mode);
 
@@ -74,11 +71,10 @@ int Window::init() {
 
     Tutorial::activated = config.tutorial;
 
-    KeyMap::Import(config.controls);
+    KeyMap::Key = config.controls;
 
     // init components
     manager = new Manager();
-    manager->loadFonts();
 
     openMainMenu();
 
@@ -113,7 +109,6 @@ void Window::handleEvents() {
 }
 
 void Window::kill() {
-    manager->clear();
     delete manager;
     manager = nullptr;
 
@@ -190,7 +185,9 @@ void Window::quitGame() {
         Save::Update(Game::WorldID);
 
     Save::PlayTime(Game::WorldID);
-    
+
+    Window::manager->clearTextures();
+
     openMainMenu();
 }
 
@@ -248,61 +245,14 @@ void Window::openCredits() {
 
 /* ----- OTHER ----- */
 
-void Window::execute(std::string cmd) {
-    if (cmd == "next window mode") {
-        WindowState* ws = manager->getCurrentState();
-        OptionsMenu* om = static_cast<OptionsMenu*>(ws);
-
-        om->next("window mode");
-
-        return;
-    }
-
-    if (cmd == "next language") {
-        WindowState* ws = manager->getCurrentState();
-        OptionsMenu* om = static_cast<OptionsMenu*>(ws);
-
-        om->next("language");
-
-        return;
-    }
-
-    if (cmd == "open url discord") {
-        WindowState* ws = manager->getCurrentState();
-        Credits* cr = static_cast<Credits*>(ws);
-
-        cr->useHyperlink("discord");
-
-        return;
-    }
-
-    if (cmd == "open url twitter") {
-        WindowState* ws = manager->getCurrentState();
-        Credits* cr = static_cast<Credits*>(ws);
-
-        cr->useHyperlink("twitter");
-
-        return;
-    }
-
-    if (cmd == "open url github") {
-        WindowState* ws = manager->getCurrentState();
-        Credits* cr = static_cast<Credits*>(ws);
-
-        cr->useHyperlink("github");
-
-        return;
-    }
-}
-
-void Window::SetWindowMode(Uint32 mode) {
+void Window::SetWindowMode(const Uint32 mode) {
     SDL_SetWindowFullscreen(window, mode);
     SDL_GetWindowSize(window, &screen.w, &screen.h);
 
     fullscreen = (mode == SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     if (!fullscreen)
-        screen = { 0,0,1280,720 };
+        screen = { 0, 0, 1280, 720 };
 
     if (!Window::isRunning)
         return;
@@ -316,7 +266,7 @@ void Window::SetWindowMode(Uint32 mode) {
     Save::SaveConfig();
 }
 
-void Window::SetLanguage(Text::Language lg) {
+void Window::SetLanguage(const Language lg) {
     Window::language = lg;
 
     WindowState* ws = manager->getCurrentState();

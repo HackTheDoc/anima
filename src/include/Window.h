@@ -3,27 +3,25 @@
 #define DEV_MOD
 
 #include <string>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 
-class Manager;
+#include "Manager.h"
 #include "Event.h"
 #include "Text.h"
 
-class Inventory;
+struct Inventory;
 
 class Window {
 public:
-    static const std::string title;
+    static const std::string TITLE;
     static bool isRunning;
 
     static bool fullscreen;
-    static Text::Language language;
+    static Language language;
 
-    static SDL_Renderer *renderer;
+    static SDL_Renderer* renderer;
     static SDL_Rect screen;
 
-    static Manager *manager;
+    static Manager* manager;
     static Event event;
 
     Window();
@@ -71,17 +69,13 @@ public:
 
     /* ----- OTHER ----- */
 
-    /// @brief execute a specific command - non implemented command will be throw
-    /// @param cmd 
-    void execute(std::string cmd);
-
     /// @brief update the window mode
     /// @param mode new mode (use 0 for windowed mode)
-    static void SetWindowMode(Uint32 mode);
+    static void SetWindowMode(const Uint32 mode);
 
     /// @brief update the language of the window
     /// @param lg new language id
-    static void SetLanguage(Text::Language lg);
+    static void SetLanguage(const Language lg);
 
 private:
     /// @brief the actual window

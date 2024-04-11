@@ -18,10 +18,10 @@
 
 #include "PowerMenu.h"
 
-#include "InventoryMenu.h"
-
 #include "QuestMenu.h"
 
-#include "DeathMenu.h"
-
 #include "IdentityMenu.h"
+
+#include "InventoryMenu.h"
+
+#include "DeathMenu.h"

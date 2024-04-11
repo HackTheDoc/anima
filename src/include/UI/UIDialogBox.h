@@ -3,26 +3,24 @@
 #include <string>
 
 #include "UIElement.h"
+#include "UILabel.h"
 
 class UIDialogBox : public UIElement {
 public:
-    UIDialogBox(std::string ownerName = "", std::string text = "");
+    UIDialogBox(const std::string& text, const std::string& ownerName = "");
     ~UIDialogBox();
 
     void draw() override;
     void destroy() override;
 
-    void setText(std::string text);
+    void setText(const std::string& text);
     void place();
 
 private:
     SDL_Rect box;
 
-    SDL_Texture* owner;
-    SDL_Rect ownerRect;
-
-    SDL_Texture* content;
-    SDL_Rect contentRect;
+    UILabel* lbl_owner;
+    UILabel* lbl_content;
 
     bool haveContent;
 };

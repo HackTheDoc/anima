@@ -5,6 +5,7 @@
 #include "include/UI/UIPopUp.h"
 
 #include "include/KeyMap.h"
+#include "include/Window.h"
 
 std::priority_queue<UIPopUp*> UI::popups_queue{};
 
@@ -75,7 +76,7 @@ void UI::display() {
         popups_queue.pop();
         if (p->timeLeft > 0) {
             p->draw(offset);
-            offset += p->height() + UIElement::MARGIN*(1+Window::fullscreen);
+            offset += p->height() + UIElement::MARGIN * (1 + Window::fullscreen);
         }
         else p->destroy();
         temp.push(p);
@@ -106,7 +107,7 @@ void UI::destroy() {
 
 void UI::useHint(const std::string& hint) {
     if (currentHint == hint) return;
-    
+
     currentHint = hint;
 }
 
@@ -120,7 +121,7 @@ void UI::useHint(const std::string& hint, Portal* p) {
 
 void UI::useHint(const std::string& hint, Door* d) {
     if (currentHint == hint) return;
-    
+
     currentHint = hint;
     if (currentHint != "NONE")
         hints[currentHint]->place(d);
@@ -128,7 +129,7 @@ void UI::useHint(const std::string& hint, Door* d) {
 
 void UI::useHint(const std::string& hint, Entity* e) {
     if (currentHint == hint) return;
-    
+
     currentHint = hint;
     if (currentHint != "NONE")
         hints[currentHint]->place(e);
@@ -136,7 +137,7 @@ void UI::useHint(const std::string& hint, Entity* e) {
 
 void UI::useHint(const std::string& hint, Collider* c) {
     if (currentHint == hint) return;
-    
+
     currentHint = hint;
     if (currentHint != "NONE")
         hints[currentHint]->place(c);
@@ -151,8 +152,7 @@ void UI::hideHint(const std::string& hint) {
 void UI::AddPopUp(const std::string& text, const bool translate) {
     UIPopUp* p = new UIPopUp();
 
-    if (translate) p->addLabel(text);
-    else p->addDirectLabel(text);
-    
+    p->addLabel(text, translate);
+
     popups_queue.push(p);
 }

@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-std::string Text::Get(std::string tag) {
+std::string Text::Get(const std::string& tag) {
     const json data = OpenTranslation();
 
     const std::string t = data[tag];
@@ -12,7 +12,7 @@ std::string Text::Get(std::string tag) {
     return t;
 }
 
-DialogTemplate Text::GetDialog(std::string tag) {
+DialogTemplate Text::GetDialog(const std::string& tag) {
     const json raw = OpenTranslation();
 
     const auto& data = raw["dialog"][tag];
@@ -24,7 +24,7 @@ DialogTemplate Text::GetDialog(std::string tag) {
     int n = data["numberOfAnswers"];
     for (int i = 0; i < n; i++) {
         const auto& a = data[std::to_string(i)];
-        d.answers.push_back({a[0], a[1], a[2], (32+16*Window::fullscreen)*(i+1)});
+        d.answers.push_back({ a[0], a[1], a[2], (32 + 16 * Window::fullscreen) * (i + 1) });
     }
 
     return d;
@@ -38,7 +38,7 @@ QuestTemplate Text::GetQuest(const int qid) {
 
     q.title = data["title"];
     q.content = data["content"];
-    
+
     return q;
 }
 
@@ -53,10 +53,10 @@ json Text::OpenTranslation() {
     std::string path = "./data/translations/";
 
     switch (Window::language) {
-    case Text::Language::ENGLISH:
+    case Language::ENGLISH:
         path += "english.json";
         break;
-    case Text::Language::FRENCH:
+    case Language::FRENCH:
         path += "french.json";
         break;
     default:

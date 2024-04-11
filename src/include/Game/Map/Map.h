@@ -12,7 +12,7 @@ namespace Struct {
 class Map {
 private:
     std::vector<std::vector<Tile*>> tiles;
-    int height, width;
+    int _height, _width;
 
 public:
     Map();
@@ -23,12 +23,12 @@ public:
     void render();
     void destroy();
     
-    int getHeight();
-    int getWidth();
+    int height();
+    int width();
 
-    Tile* getTile(int x, int y);
-    Tile* getTileAt(Vector2D p);
-    void setTile(int x, int y, Tile::Type type);
+    Tile* getTile(const int x, const int y);
+    Tile* getTileAt(const Vector2D& pos);
+    void setTile(const int x, const int y, const Tile::Type type);
 
     Struct::Map getStructure();
 };

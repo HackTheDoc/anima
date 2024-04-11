@@ -1,4 +1,4 @@
-#include "include/WindowState/Credits.h"
+#include "include/WindowStates/Credits.h"
 
 #include "include/Window.h"
 
@@ -8,115 +8,100 @@ Credits::~Credits() {}
 
 void Credits::init() {
     // background
-    background = new GifTexture("./assets/animations/main menu", 3, 200, Window::screen);
+    gif_background = new UIGifTexture("./assets/animations/main menu", 3, 200, Window::screen);
 
     // title + author
-
-    label[TITLE] = new UILabel(Text::Get("Developped By"), "h4", hue::white);
-    label[TITLE]->place(
+    lbl_title = new UILabel(Text::Get("Developped By"), "h4", hue::white);
+    lbl_title->place(
         16 * (Window::fullscreen + 1),
         8*(Window::fullscreen+1)
     );
 
-    label[AUTHOR] = new UILabel("HackTheDoc", "h3 bold", hue::red);
-    label[AUTHOR]->place(
-        1 * label[TITLE]->width() / 3 + 16 * (Window::fullscreen + 1),
-        label[TITLE]->height() + 16*(Window::fullscreen+1)
+    lbl_author = new UILabel("HackTheDoc", "h3 bold", hue::red);
+    lbl_author->place(
+        1 * lbl_title->width() / 3 + 16 * (Window::fullscreen + 1),
+        lbl_title->height() + 16*(Window::fullscreen+1)
     );
 
     int containerWidth = 2 * Window::screen.w /3;
-    int offsetY = (Window::screen.h + label[AUTHOR]->y() + label[AUTHOR]->height()) / 2;
+    int offsetY = (Window::screen.h + lbl_author->y() + lbl_author->height()) / 2;
 
     // links
-    link[DISCORD] = new UIHyperlink("Discord", "https://discord.gg/Ya8NWJMcqx", "big", hue::white);
-    link[DISCORD]->place(
-        (containerWidth - link[DISCORD]->width()) / 2,
-        offsetY - link[DISCORD]->height() - 8*(Window::fullscreen+1)
+    lk_discord = new UIHyperlink("Discord", "https://discord.gg/Ya8NWJMcqx", "big", hue::white);
+    lk_discord->place(
+        (containerWidth - lk_discord->width()) / 2,
+        offsetY - lk_discord->height() - 8*(Window::fullscreen+1)
     );
 
-    link[GITHUB] = new UIHyperlink("Github", "https://github.com/HackTheDoc", "big", hue::white);
-    link[GITHUB]->place(
-        (containerWidth - link[GITHUB]->width()) / 2,
-        offsetY - link[DISCORD]->height() - link[GITHUB]->height() - 24*(Window::fullscreen+1)
+    lk_github = new UIHyperlink("Github", "https://github.com/HackTheDoc", "big", hue::white);
+    lk_github->place(
+        (containerWidth - lk_github->width()) / 2,
+        offsetY - lk_discord->height() - lk_github->height() - 24*(Window::fullscreen+1)
     );
 
-    link[TWITTER] = new UIHyperlink("Twitter", "https://twitter.com/HackTheDoc", "big", hue::white);
-    link[TWITTER]->place(
-        (containerWidth - link[TWITTER]->width()) / 2,
+    lk_twitter = new UIHyperlink("Twitter", "https://twitter.com/HackTheDoc", "big", hue::white);
+    lk_twitter->place(
+        (containerWidth - lk_twitter->width()) / 2,
         offsetY + 8*(Window::fullscreen+1)
     );
 
     // labels
-    label[EMAIL] = new UILabel("hackthedoc@gmail.com", "big", hue::white);
-    label[EMAIL]->place(
-        (containerWidth - label[EMAIL]->width()) / 2,
-        offsetY + label[EMAIL]->height() + 24*(Window::fullscreen+1)
+    lbl_email = new UILabel("hackthedoctor@gmail.com", "big", hue::white);
+    lbl_email->place(
+        (containerWidth - lbl_email->width()) / 2,
+        offsetY + lbl_email->height() + 24*(Window::fullscreen+1)
     );
 
-    label[SOCIALS] = new UILabel(Text::Get("Socials:"), "big bold", hue::white);
-    label[SOCIALS]->place(
-        (containerWidth - label[SOCIALS]->width()) / 2,
-        offsetY - link[DISCORD]->height() - link[GITHUB]->height() - label[SOCIALS]->height() - 40*(Window::fullscreen+1)
+    lbl_socials = new UILabel(Text::Get("Socials:"), "big bold", hue::white);
+    lbl_socials->place(
+        (containerWidth - lbl_socials->width()) / 2,
+        offsetY - lk_discord->height() - lk_github->height() - lbl_socials->height() - 40*(Window::fullscreen+1)
     );
 
     // quit button
-    quitButton = new UIButton("X", UIButton::ID::QUIT_CREDITS, "h3", hue::white);
-    quitButton->place(
-        Window::screen.w - quitButton->width() - 8*(Window::fullscreen+1),
+    btn_quit = new UIButton("X", Event::ID::OPEN_MAIN_MENU, "h3", hue::white);
+    btn_quit->place(
+        Window::screen.w - btn_quit->width() - 8*(Window::fullscreen+1),
         8*(Window::fullscreen+1)
     );
 }
 
 void Credits::update() {
-    background->play();
+    gif_background->update();
 
-    for (int i = 0; i < NUMBER_OF_LINKS; i++)
-    {
-        link[i]->update();
-    }
+    lk_discord->update();
+    lk_github->update();
+    lk_twitter->update();
 
-    quitButton->update();
+    btn_quit->update();
 }
 
 void Credits::render() {
-    background->draw();
+    gif_background->draw();
 
-    for (int i = 0; i < NUMBER_OF_LINKS; i++)
-    {
-        link[i]->draw();
-    }
+    lk_discord->draw();
+    lk_github->draw();
+    lk_twitter->draw();
 
-    for (int i = 0; i < NUMBER_OF_LABELS; i++)
-    {
-        label[i]->draw();
-    }
+    lbl_title->draw();
+    lbl_author->draw();
+    lbl_socials->draw();
+    lbl_email->draw();
 
-    quitButton->draw();
+    btn_quit->draw();
 }
 
-void Credits::clean()
-{
-    background->destroy();
+void Credits::clean() {
+    gif_background->destroy();
 
-    for (int i = 0; i < NUMBER_OF_LINKS; i++)
-    {
-        link[i]->destroy();
-    }
+    lk_discord->destroy();
+    lk_github->destroy();
+    lk_twitter->destroy();
 
-    for (int i = 0; i < NUMBER_OF_LABELS; i++)
-    {
-        label[i]->destroy();
-    }
+    lbl_title->destroy();
+    lbl_author->destroy();
+    lbl_socials->destroy();
+    lbl_email->destroy();
 
-    quitButton->destroy();
-}
-
-void Credits::useHyperlink(std::string l)
-{
-    if (l == "discord")
-        link[DISCORD]->openURL();
-    else if (l == "twitter")
-        link[TWITTER]->openURL();
-    else if (l == "github")
-        link[GITHUB]->openURL();
+    btn_quit->destroy();
 }

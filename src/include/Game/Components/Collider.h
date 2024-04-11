@@ -9,13 +9,13 @@ public:
     Vector2D position;
     SDL_Rect rect;
 
-    Collider();
-    Collider(int w, int h);
+    Collider(const int w = 0, const int h = 0);
     ~Collider();
 
     void update();
-    void draw(); // TODO remove collider rendering
+    /// TODO: remove collider rendering
+    void draw();
 
-    void place(int x, int y);
-    void place(Vector2D pos);
+    void place(const int x, const int y);
+    void place(const Vector2D& pos);
 };

@@ -8,38 +8,20 @@
 #include <iostream>
 
 Manager::Manager() {
-    // Tiles
-    textures["ground"] = LoadTexture("./assets/tiles/ground.png");
-    textures["path"] = LoadTexture("./assets/tiles/path.png");
+    // Fonts
+    loadFonts();
 
-    // Entities 
-    textures["spirit"] = LoadTexture("./assets/sprites/Spirit.png");
-    textures["human"] = LoadTexture("./assets/sprites/Human.png");
-    textures["goblin"] = LoadTexture("./assets/sprites/Goblin.png");
-    textures["fairy"] = LoadTexture("./assets/sprites/Fairy.png");
-
-    textures["doll"] = LoadTexture("./assets/sprites/Doll.png");
-
-    textures["dead body"] = LoadTexture("./assets/sprites/Dead Body.png");
-
-    // UI
-
-    // Items
-    textures["items"] = LoadTexture("./assets/items.png");
-
-    // WIndow States
+    // Window States
     currentWindowState = WindowState::Type::UNKNOWN;
 }
 
-Manager::~Manager() {}
-
-void Manager::clear() {
+Manager::~Manager() {
     clearFonts();
     clearTextures();
     clearWindowStates();
 }
 
-SDL_Color Manager::SetRenderDrawColor(SDL_Color c) {
+SDL_Color Manager::SetRenderDrawColor(const SDL_Color& c) {
     SDL_Color temp;
     SDL_GetRenderDrawColor(Window::renderer, &temp.r, &temp.g, &temp.b, &temp.a);
 
@@ -53,7 +35,7 @@ void Manager::SetViewport(const SDL_Rect* v) {
 }
 
 /* ---------- FONT MANAGER ---------- */
-TTF_Font* Manager::getFont(std::string id) {
+TTF_Font* Manager::getFont(const std::string& id) {
     if (fonts.count(id) == 0)
         return nullptr;
     return fonts[id];
@@ -107,10 +89,31 @@ void Manager::reloadFonts() {
 
 /* ---------- TEXTURE MANAGER ---------- */
 
-SDL_Texture* Manager::getTexture(std::string id) {
+SDL_Texture* Manager::getTexture(const std::string& id) {
     if (textures.count(id) == 0)
         return nullptr;
     return textures[id];
+}
+
+void Manager::loadGameTextures() {
+    // Tiles
+    textures["ground"] = LoadTexture("./assets/tiles/ground.png");
+    textures["path"] = LoadTexture("./assets/tiles/path.png");
+
+    // Entities 
+    textures["spirit"] = LoadTexture("./assets/sprites/Spirit.png");
+    textures["human"] = LoadTexture("./assets/sprites/Human.png");
+    textures["goblin"] = LoadTexture("./assets/sprites/Goblin.png");
+    textures["fairy"] = LoadTexture("./assets/sprites/Fairy.png");
+
+    textures["doll"] = LoadTexture("./assets/sprites/Doll.png");
+
+    textures["dead body"] = LoadTexture("./assets/sprites/Dead Body.png");
+
+    // UI
+
+    // Items
+    textures["items"] = LoadTexture("./assets/items.png");
 }
 
 void Manager::clearTextures() {
@@ -129,24 +132,29 @@ SDL_Texture* Manager::LoadTexture(const char* filepath) {
     return texture;
 }
 
-SDL_Texture* Manager::GenerateText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length, const bool centered) {
-    if (font == nullptr || text.empty())
-        return nullptr;
-
+SDL_Texture* Manager::GenerateText(const std::string& text, const std::string& font, const SDL_Color& color, const int length, const bool centered) {
     if (centered)
         return GenerateCenterAnchoredText(text, font, color, length);
 
     return GenerateLeftAnchoredText(text, font, color, length);
 }
 
-SDL_Texture* Manager::GenerateLeftAnchoredText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length) {
-    SDL_Surface* tmpSurface = TTF_RenderUTF8_Blended_Wrapped(font, text.c_str(), color, length);
+SDL_Texture* Manager::GenerateLeftAnchoredText(const std::string& text, const std::string& font, const SDL_Color& color, const int length) {
+    TTF_Font* f = Window::manager->getFont(font);
+
+    if (f == nullptr) return nullptr;
+
+    SDL_Surface* tmpSurface = TTF_RenderUTF8_Blended_Wrapped(f, text.c_str(), color, length);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
     return texture;
 }
 
-SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, TTF_Font* font, const SDL_Color& color, const int length) {
+SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, const std::string& f, const SDL_Color& color, const int length) {
+    TTF_Font* font = Window::manager->getFont(f);
+
+    if (font == nullptr) return nullptr;
+
     // add new line where needed
     const int fontHeight = TTF_FontHeight(font);
     int spaceWidth;
@@ -209,12 +217,12 @@ SDL_Texture* Manager::GenerateCenterAnchoredText(const std::string& text, TTF_Fo
     return texture;
 }
 
-void Manager::Draw(SDL_Texture* text, SDL_Rect* src, SDL_Rect* dest, SDL_RendererFlip flip) {
+void Manager::Draw(SDL_Texture* text, const SDL_Rect* src, const SDL_Rect* dest, SDL_RendererFlip flip) {
     if (text == nullptr) return;
     SDL_RenderCopyEx(Window::renderer, text, src, dest, 0, NULL, flip);
 }
 
-void Manager::DrawRect(SDL_Rect* rect, const SDL_Color& color) {
+void Manager::DrawRect(const SDL_Rect* rect, const SDL_Color& color) {
     SDL_Color temp = SetRenderDrawColor(color);
 
     SDL_RenderDrawRect(Window::renderer, rect);
@@ -222,7 +230,7 @@ void Manager::DrawRect(SDL_Rect* rect, const SDL_Color& color) {
     SetRenderDrawColor(temp);
 }
 
-void Manager::DrawFilledRect(SDL_Rect* rect, const SDL_Color& color) {
+void Manager::DrawFilledRect(const SDL_Rect* rect, const SDL_Color& color) {
     SDL_Color temp = SetRenderDrawColor(color);
 
     SDL_RenderFillRect(Window::renderer, rect);
@@ -230,7 +238,7 @@ void Manager::DrawFilledRect(SDL_Rect* rect, const SDL_Color& color) {
     SetRenderDrawColor(temp);
 }
 
-void Manager::DrawLine(int x1, int y1, int x2, int y2, const SDL_Color& color) {
+void Manager::DrawLine(const int x1, const int y1, const int x2, const int y2, const SDL_Color& color) {
     SDL_Color temp = SetRenderDrawColor(color);
 
     SDL_RenderDrawLine(Window::renderer, x1, y1, x2, y2);
@@ -238,7 +246,7 @@ void Manager::DrawLine(int x1, int y1, int x2, int y2, const SDL_Color& color) {
     SetRenderDrawColor(temp);
 }
 
-void Manager::DrawLosange(int x, int y, int hr, int vr, const SDL_Color& color) {
+void Manager::DrawLosange(const int x, const int y, const int hr, const int vr, const SDL_Color& color) {
     SDL_Color t = SetRenderDrawColor(color);
 
     SDL_RenderDrawLine(Window::renderer, x - vr, y, x, y - hr);

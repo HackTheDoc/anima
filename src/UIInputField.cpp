@@ -3,7 +3,7 @@
 #include "include/Window.h"
 #include "include/Manager.h"
 
-UIInputField::UIInputField(std::string title_text, std::string placeholder_text, UIButton::ID id, int max) {
+UIInputField::UIInputField(const std::string& title_text, const std::string& placeholder_text, const Event::ID id, const int max) {
     input = "";
     inputLengthMax = max;
     actived = false;
@@ -34,13 +34,12 @@ void UIInputField::update() {
     SDL_Point m;
     SDL_GetMouseState(&m.x, &m.y);
     if (!SDL_PointInRect(&m, &rect) && Window::event.mouseClickLeft()) {
-        Window::event.handleButtonClick(UIButton::ID::QUIT_WORLD_NAME_INPUT);
+        Window::event.raise(Event::ID::QUIT_INPUT_FIELD);
         return;
     }
 
-    if ((int)input.size() < inputLengthMax && Window::event.e.type == SDL_TEXTINPUT) {
+    if ((int)input.size() < inputLengthMax && Window::event.e.type == SDL_TEXTINPUT)
         input += Window::event.e.text.text;
-    }
     else if (!input.empty()) {
         if (Window::event.e.type == SDL_KEYDOWN && Window::event.e.key.keysym.sym == SDLK_BACKSPACE) {
             input.pop_back();
@@ -54,7 +53,7 @@ void UIInputField::update() {
     }
 
     if (Window::event.e.type == SDL_KEYUP && Window::event.e.key.keysym.sym == SDLK_RETURN) {
-        Window::event.handleButtonClick(btn->getID());
+        Window::event.raise(btn->getID());
     }
 
     btn->update();
@@ -87,7 +86,7 @@ void UIInputField::destroy() {
     btn->destroy();
 }
 
-void UIInputField::place(int x, int y) {
+void UIInputField::place(const int x, const int y) {
     rect.x = x;
     rect.y = y;
 

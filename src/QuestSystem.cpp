@@ -2,15 +2,17 @@
 
 #include "include/Game/Game.h"
 
+#include "include/Text.h"
+
 Quest::Quest() : id(ID::UNKNOWN) {}
 
 Quest::Quest(const ID id) : id(id) {}
 
-void Quest::try_finish() {
-    if (!is_finished()) return;
+void Quest::tryFinish() {
+    if (!isFinished()) return;
 
     const QuestTemplate q = Text::GetQuest(id);
-    UI::AddPopUp(Text::Get("QUEST ") +q.title+ Text::Get(" FINISHED"), false);
+    UI::AddPopUp(Text::Get("QUEST ") + q.title + Text::Get(" FINISHED"), false);
 
     /// TODO: handle rewards
 
@@ -19,7 +21,7 @@ void Quest::try_finish() {
 }
 
 /// TODO: keep it updated !!
-bool Quest::is_finished() {
+bool Quest::isFinished() {
     switch (id) {
     case ID::AN_INMATE:
         return Game::island->getName() != "lost temple";
@@ -43,24 +45,24 @@ std::optional<Quest::ID> Quest::next() {
 }
 
 QuestSystem::QuestSystem(const Quest::ID curr_main) {
-    others = {};
-    curr_other = -1;
-    main.id = curr_main;
+    sideQuests = {};
+    currentSideQuest = -1;
+    mainQuest.id = curr_main;
 }
 
 QuestSystem::~QuestSystem() {
-    others.clear();
+    sideQuests.clear();
 }
 
 void QuestSystem::addQuest(const Quest::ID t) {
-    Quest q{t};
-    others.push_back(q);
-    curr_other++;
+    Quest q{ t };
+    sideQuests.push_back(q);
+    currentSideQuest++;
 }
 
 void QuestSystem::update() {
-    main.try_finish();
+    mainQuest.tryFinish();
 
-    for (size_t i = 0; i < others.size(); i++)
-        others[i].try_finish();
+    for (size_t i = 0; i < sideQuests.size(); i++)
+        sideQuests[i].tryFinish();
 }

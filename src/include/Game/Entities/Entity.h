@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Components/Vector2D.h"
 #include "../Components/Sprite.h"
+#include "../Components/Vector2D.h"
+#include "../Components/Inventory.h"
 #include "../Components/EntityCollider.h"
 #include "../Components/EntityDetector.h"
-#include "../Components/Inventory.h"
 
 namespace Struct {
     struct Entity;
@@ -66,10 +66,10 @@ public:
     virtual void draw();
     virtual void kill();
 
-    void setPosition(int x, int y);
-    void setPosition(Vector2D pos);
-    void playAnimation(std::string animationName);
-    void setFlip(SDL_RendererFlip flipMod);
+    void setPosition(const int x, const int y);
+    void setPosition(const Vector2D& pos);
+    void playAnimation(const std::string& animationName);
+    void setFlip(const SDL_RendererFlip flipMod);
 
     void resetMovement();
     void reverseMovement();
@@ -77,12 +77,12 @@ public:
     void startInteraction();
     void closeIntereaction();
 
-    void addItemToInventory(Item::ID id);
+    void addItemToInventory(const Item::ID id);
     bool addItemToInventory(Item* item);
 
     bool has_died();
 
-    static int GetMentalPower(Entity::Species species);
+    static int GetMentalPower(const Species species);
 
 protected:
     void randomMovement();

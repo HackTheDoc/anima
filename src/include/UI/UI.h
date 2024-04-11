@@ -6,8 +6,7 @@
 
 #include "UIElement.h"
 #include "UIPopUp.h"
-
-class UIHint;
+#include "UIHint.h"
 
 class Portal;
 class Door;

@@ -13,6 +13,6 @@ public:
 
     void setOwner(Entity* o);
 
-protected:
+private:
     Entity* owner;
 };

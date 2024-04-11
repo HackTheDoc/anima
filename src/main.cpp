@@ -9,9 +9,9 @@ int main() {
     Uint32 frameStart;
     int frameTime;
 
-    if (window.init() == 0) 
-        return -1;
-    
+    if (window.init() < 0)
+        exit(EXIT_FAILURE);
+
     while (Window::isRunning) {
         frameStart = SDL_GetTicks();
 
@@ -20,12 +20,11 @@ int main() {
         window.render();
 
         frameTime = SDL_GetTicks() - frameStart;
-        if (frameTime < FRAME_DELAY) {
+        if (frameTime < FRAME_DELAY)
             SDL_Delay(FRAME_DELAY - frameTime);
-        }
     }
 
     window.kill();
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }

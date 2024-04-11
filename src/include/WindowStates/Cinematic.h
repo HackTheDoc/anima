@@ -20,8 +20,10 @@ public:
 
 private:
     const std::string tag;
+
     std::vector<UILabel*> texts;
     size_t curr;
     Uint8 opacity;
+
     TimePoint startTime;
 };

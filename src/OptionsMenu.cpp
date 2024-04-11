@@ -1,7 +1,6 @@
-#include "include/WindowState/OptionsMenu.h"
+#include "include/WindowStates/OptionsMenu.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 #include "include/Save.h"
 #include "include/Game/Tutorial.h"
 
@@ -15,70 +14,70 @@ void OptionsMenu::createGeneralPage() {
     UIWindowModeSelector* wms = new UIWindowModeSelector();
     wms->place(
         (Window::screen.w - wms->width()) / 2,
-        border.y + 32*(Window::fullscreen+1)
+        border.y + 32 * (Window::fullscreen + 1)
     );
 
     UILanguageSelector* lgs = new UILanguageSelector();
     lgs->place(
         (Window::screen.w - lgs->width()) / 2,
-        wms->y() + wms->height() + 32*(Window::fullscreen+1)
+        wms->y() + wms->height() + 32 * (Window::fullscreen + 1)
     );
 
-    UIActivator* sms = new UIActivator("Save Mode:", &Save::Auto);
-    sms->place(
-        (Window::screen.w - sms->width()) / 2,
-        lgs->y() + lgs->height() + 32*(Window::fullscreen+1)
+    UIActivator* sma = new UIActivator("Save Mode:", &Save::Auto);
+    sma->place(
+        (Window::screen.w - sma->width()) / 2,
+        lgs->y() + lgs->height() + 32 * (Window::fullscreen + 1)
     );
 
-    UIActivator* tms = new UIActivator("Tutorial:", &Tutorial::activated);
-    tms->place(
-        (Window::screen.w - tms->width()) / 2,
-        sms->y() + sms->height() + 32*(Window::fullscreen+1)
+    UIActivator* tma = new UIActivator("Tutorial:", &Tutorial::activated);
+    tma->place(
+        (Window::screen.w - tma->width()) / 2,
+        sma->y() + sma->height() + 32 * (Window::fullscreen + 1)
     );
-    
+
     page["general"] = {
-        wms,
-        lgs,
-        sms,
-        tms
+        {"wms", wms},
+        {"lgs", lgs},
+        {"sma", sma},
+        {"tma", tma}
     };
 }
 
 void OptionsMenu::reloadGeneralPage() {
-    UIWindowModeSelector* wms = static_cast<UIWindowModeSelector*>(page["general"][0]);
+    UIWindowModeSelector* wms = static_cast<UIWindowModeSelector*>(page["general"]["wms"]);
     wms->reload();
     wms->place(
         (Window::screen.w - wms->width()) / 2,
-        border.y + 32*(Window::fullscreen+1)
+        border.y + 32 * (Window::fullscreen + 1)
     );
 
-    UILanguageSelector* lgs = static_cast<UILanguageSelector*>(page["general"][1]);
+    UILanguageSelector* lgs = static_cast<UILanguageSelector*>(page["general"]["lgs"]);
     lgs->reload();
     lgs->place(
         (Window::screen.w - lgs->width()) / 2,
-        wms->y() + wms->height() + 32*(Window::fullscreen+1)
+        wms->y() + wms->height() + 32 * (Window::fullscreen + 1)
     );
 
-    UIActivator* sms = static_cast<UIActivator*>(page["general"][2]);
-    sms->reload();
-    sms->place(
-        (Window::screen.w - sms->width()) / 2,
-        lgs->y() + lgs->height() + 32*(Window::fullscreen+1)
+    UIActivator* sma = static_cast<UIActivator*>(page["general"]["sma"]);
+    sma->reload();
+    sma->place(
+        (Window::screen.w - sma->width()) / 2,
+        lgs->y() + lgs->height() + 32 * (Window::fullscreen + 1)
     );
 
-    UIActivator* tms = static_cast<UIActivator*>(page["general"][3]);
-    tms->reload();
-    tms->place(
-        (Window::screen.w - tms->width()) / 2,
-        sms->y() + sms->height() + 32*(Window::fullscreen+1)
+    UIActivator* tma = static_cast<UIActivator*>(page["general"]["tma"]);
+    tma->reload();
+    tma->place(
+        (Window::screen.w - tma->width()) / 2,
+        sma->y() + sma->height() + 32 * (Window::fullscreen + 1)
     );
 }
 
 void OptionsMenu::createControlsPage() {
-    UIKeyInput::Height = (Window::screen.h - border.y - border.h) / 10; 
+    UIKeyInput::Height = (Window::screen.h - border.y - border.h) / 10;
 
-    int w = Window::screen.w / 3;
-    int y = border.y + border.h;
+    const int w = Window::screen.w / 3;
+    const int y = border.y + border.h;
 
     /*  ----- IDK ----- */
 
@@ -159,79 +158,79 @@ void OptionsMenu::createControlsPage() {
 
     UIKeyInput* kvd = new UIKeyInput(Event::ID::VALID_DIALOG);
     kvd->place(
-        2*w + (w - kp->width()) / 2,
+        2 * w + (w - kp->width()) / 2,
         y + UIKeyInput::Height / 2
     );
     UIKeyInput* kna = new UIKeyInput(Event::ID::NEXT_ANSWER);
     kna->place(
-        2*w + (w - kp->width()) / 2,
+        2 * w + (w - kp->width()) / 2,
         y + 3 * UIKeyInput::Height / 2
     );
     UIKeyInput* kpa = new UIKeyInput(Event::ID::PREVIOUS_ANSWER);
     kpa->place(
-        2*w + (w - kp->width()) / 2,
+        2 * w + (w - kp->width()) / 2,
         y + 5 * UIKeyInput::Height / 2
     );
 
     page["controls"] = {
-        kp,
-        kpm,
-        kim,
-        kqm,
-        kidm,
+        {"kp" , kp },
+        {"kpm", kpm},
+        {"kim", kim},
+        {"kqm", kqm},
+        {"kidm", kidm},
 
-        ki,
-        kbc,
-        kbr,
+        {"ki", ki},
+        {"kbc", kbc},
+        {"kbr", kbr},
 
-        kmu,
-        kmd,
-        kml,
-        kmr,
+        {"kmu", kmu},
+        {"kmd", kmd},
+        {"kml", kml},
+        {"kmr", kmr},
 
-        kvd,
-        kna,
-        kpa
+        {"kvd", kvd},
+        {"kna", kna},
+        {"kpa", kpa}
     };
 }
 
 void OptionsMenu::reloadControlsPage() {
     UIKeyInput::Height = (Window::screen.h - border.y - border.h) / 10;
-    
-    int w = Window::screen.w / 3;
-    int y = border.y + border.h;
+
+    const int w = Window::screen.w / 3;
+    const int y = border.y + border.h;
 
     /* ----- IDK ----- */
 
-    UIKeyInput* kp = static_cast<UIKeyInput*>(page["controls"][0]);
+    UIKeyInput* kp = static_cast<UIKeyInput*>(page["controls"]["kp"]);
     kp->reload();
     kp->place(
         (w - kp->width()) / 2,
         y + UIKeyInput::Height / 2
     );
 
-    UIKeyInput* kpm = static_cast<UIKeyInput*>(page["controls"][1]);
+    UIKeyInput* kpm = static_cast<UIKeyInput*>(page["controls"]["kpm"]);
     kpm->reload();
     kpm->place(
         (w - kp->width()) / 2,
         y + 3 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* kim = static_cast<UIKeyInput*>(page["controls"][2]);
-    kpm->reload();
+    UIKeyInput* kim = static_cast<UIKeyInput*>(page["controls"]["kim"]);
+    kim->reload();
     kim->place(
         (w - kp->width()) / 2,
         y + 5 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* kqm = static_cast<UIKeyInput*>(page["controls"][3]);
+    UIKeyInput* kqm = static_cast<UIKeyInput*>(page["controls"]["kqm"]);
     kqm->reload();
     kqm->place(
         (w - kp->width()) / 2,
         y + 7 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* kidm = static_cast<UIKeyInput*>(page["controls"][4]);
+    UIKeyInput* kidm = static_cast<UIKeyInput*>(page["controls"]["kidm"]);
     kidm->reload();
     kidm->place(
         (w - kp->width()) / 2,
@@ -240,21 +239,22 @@ void OptionsMenu::reloadControlsPage() {
 
     /* ----- POWERS ----- */
 
-    UIKeyInput* ki = static_cast<UIKeyInput*>(page["controls"][5]);
+    UIKeyInput* ki = static_cast<UIKeyInput*>(page["controls"]["ki"]);
     ki->reload();
     ki->place(
         (w - kp->width()) / 2,
         y + 13 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* kbr = static_cast<UIKeyInput*>(page["controls"][6]);
+    UIKeyInput* kbr = static_cast<UIKeyInput*>(page["controls"]["kbr"]);
     kbr->reload();
     kbr->place(
         (w - kp->width()) / 2,
         y + 15 * UIKeyInput::Height / 2
     );
 
-    UIKeyInput* kbc = static_cast<UIKeyInput*>(page["controls"][7]);
+    UIKeyInput* kbc = static_cast<UIKeyInput*>(page["controls"]["kbc"]);
+    kbc->reload();
     kbc->place(
         (w - kp->width()) / 2,
         y + 17 * UIKeyInput::Height / 2
@@ -262,25 +262,25 @@ void OptionsMenu::reloadControlsPage() {
 
     /* ----- MOVEMENTS ----- */
 
-    UIKeyInput* kmu = static_cast<UIKeyInput*>(page["controls"][8]);
+    UIKeyInput* kmu = static_cast<UIKeyInput*>(page["controls"]["kmu"]);
     kmu->reload();
     kmu->place(
         w + (w - kp->width()) / 2,
         y + UIKeyInput::Height / 2
     );
-    UIKeyInput* kmd = static_cast<UIKeyInput*>(page["controls"][9]);
+    UIKeyInput* kmd = static_cast<UIKeyInput*>(page["controls"]["kmd"]);
     kmd->reload();
     kmd->place(
         w + (w - kp->width()) / 2,
         y + 3 * UIKeyInput::Height / 2
     );
-    UIKeyInput* kml = static_cast<UIKeyInput*>(page["controls"][10]);
+    UIKeyInput* kml = static_cast<UIKeyInput*>(page["controls"]["kml"]);
     kml->reload();
     kml->place(
         w + (w - kp->width()) / 2,
         y + 5 * UIKeyInput::Height / 2
     );
-    UIKeyInput* kmr = static_cast<UIKeyInput*>(page["controls"][11]);
+    UIKeyInput* kmr = static_cast<UIKeyInput*>(page["controls"]["kmr"]);
     kmr->reload();
     kmr->place(
         w + (w - kp->width()) / 2,
@@ -288,51 +288,51 @@ void OptionsMenu::reloadControlsPage() {
     );
 
     /* ----- DIALOGS ----- */
-    
-    UIKeyInput* kvd = static_cast<UIKeyInput*>(page["controls"][12]);
+
+    UIKeyInput* kvd = static_cast<UIKeyInput*>(page["controls"]["kvd"]);
     kvd->reload();
     kvd->place(
-        2*w + (w - kp->width()) / 2,
+        2 * w + (w - kp->width()) / 2,
         y + UIKeyInput::Height / 2
     );
-    UIKeyInput* kna = static_cast<UIKeyInput*>(page["controls"][13]);
+    UIKeyInput* kna = static_cast<UIKeyInput*>(page["controls"]["kna"]);
     kna->reload();
     kna->place(
-        2*w + (w - kp->width()) / 2,
+        2 * w + (w - kp->width()) / 2,
         y + 3 * UIKeyInput::Height / 2
     );
-    UIKeyInput* kpa = static_cast<UIKeyInput*>(page["controls"][14]);
+    UIKeyInput* kpa = static_cast<UIKeyInput*>(page["controls"]["kpa"]);
     kpa->reload();
     kpa->place(
-        2*w + (w - kp->width()) / 2,
+        2 * w + (w - kp->width()) / 2,
         y + 5 * UIKeyInput::Height / 2
     );
 }
 
 void OptionsMenu::init() {
-    button[GENERAL] = new UIButton(Text::Get("GENERAL"), UIButton::ID::GENERAL_SETTINGS, "h3", hue::white);
-    button[GENERAL]->place(
-        (Window::screen.w / 2 - button[GENERAL]->width()) / 2,
-        8*(Window::fullscreen+1)
+    btn_generalSection = new UIButton(Text::Get("GENERAL"), Event::ID::OPEN_GENERAL_SETTINGS, "h3", hue::font);
+    btn_generalSection->place(
+        (Window::screen.w / 2 - btn_generalSection->width()) / 2,
+        8 * (Window::fullscreen + 1)
     );
 
-    button[CONTROLS] = new UIButton(Text::Get("CONTROLS"), UIButton::ID::CONTROLS_SETTINGS, "h3", hue::white);
-    button[CONTROLS]->place(
-        (3 * Window::screen.w / 2 - button[CONTROLS]->width()) / 2,
-        8*(Window::fullscreen+1)
+    btn_controlsSection = new UIButton(Text::Get("CONTROLS"), Event::ID::OPEN_CONTROLS_SETTINGS, "h3", hue::font);
+    btn_controlsSection->place(
+        (3 * Window::screen.w / 2 - btn_controlsSection->width()) / 2,
+        8 * (Window::fullscreen + 1)
     );
 
-    button[QUIT] = new UIButton("X", UIButton::ID::QUIT_SETTINGS, "h3", hue::white);
-    button[QUIT]->place(
-        Window::screen.w - button[QUIT]->width() - 8*(Window::fullscreen+1),
-        8*(Window::fullscreen+1)
+    btn_quit = new UIButton("X", Event::ID::OPEN_MAIN_MENU, "h3", hue::font);
+    btn_quit->place(
+        Window::screen.w - btn_quit->width() - 8 * (Window::fullscreen + 1),
+        8 * (Window::fullscreen + 1)
     );
 
     border = {
         0,
-        8*(Window::fullscreen+1) + std::max(button[GENERAL]->height(), button[CONTROLS]->height()),
+        8 * (Window::fullscreen + 1) + std::max(btn_generalSection->height(), btn_controlsSection->height()),
         Window::screen.w,
-        3*(Window::fullscreen+1)
+        3 * (Window::fullscreen + 1)
     };
 
     createGeneralPage();
@@ -342,83 +342,84 @@ void OptionsMenu::init() {
 }
 
 void OptionsMenu::update() {
-    for (int i = 0; i < NUMBER_OF_BUTTONS; i++)
-        button[i]->update();
+    btn_generalSection->update();
+    btn_controlsSection->update();
+    btn_quit->update();
 
-    for (auto elt : page[currentPage])
-        elt->update();
+    for (const auto& elt : page[currentPage])
+        elt.second->update();
 }
 
 void OptionsMenu::render() {
     Manager::DrawFilledRect(&Window::screen, hue::ui_background);
 
-    for (int i = 0; i < NUMBER_OF_BUTTONS; i++)
-        button[i]->draw();
+    btn_generalSection->draw();
+    btn_controlsSection->draw();
+    btn_quit->draw();
 
-    /// TODO: change color
-    Manager::DrawFilledRect(&border, hue::white);
+    Manager::DrawFilledRect(&border, hue::border);
 
-    for (auto elt : page[currentPage])
-        elt->draw();
+    for (const auto& elt : page[currentPage])
+        elt.second->draw();
 }
 
 void OptionsMenu::clean() {
-    for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-        button[i]->destroy();
-    }
+    btn_generalSection->destroy();
+    btn_controlsSection->destroy();
+    btn_quit->destroy();
 
     for (auto p : page) {
         for (auto elt : p.second)
-            elt->destroy();
+            elt.second->destroy();
         p.second.clear();
     }
     page.clear();
 }
 
 void OptionsMenu::reload() {
-    button[GENERAL]->setText(Text::Get("GENERAL"), "h3", hue::white);
-    button[GENERAL]->place(
-        (Window::screen.w / 2 - button[GENERAL]->width()) / 2,
-        8*(Window::fullscreen+1)
+    btn_generalSection->setText(Text::Get("GENERAL"), "h3", hue::white);
+    btn_generalSection->place(
+        (Window::screen.w / 2 - btn_generalSection->width()) / 2,
+        8 * (Window::fullscreen + 1)
     );
 
-    button[CONTROLS]->setText(Text::Get("CONTROLS"), "h3", hue::white);
-    button[CONTROLS]->place(
-        (3 * Window::screen.w / 2 - button[CONTROLS]->width()) / 2,
-        8*(Window::fullscreen+1)
+    btn_controlsSection->setText(Text::Get("CONTROLS"), "h3", hue::white);
+    btn_controlsSection->place(
+        (3 * Window::screen.w / 2 - btn_controlsSection->width()) / 2,
+        8 * (Window::fullscreen + 1)
     );
 
-    button[QUIT]->setText("X", "h3", hue::white);
-    button[QUIT]->place(
-        Window::screen.w - button[QUIT]->width() - 8*(Window::fullscreen+1),
-        8*(Window::fullscreen+1)
+    btn_quit->setText("X", "h3", hue::white);
+    btn_quit->place(
+        Window::screen.w - btn_quit->width() - 8 * (Window::fullscreen + 1),
+        8 * (Window::fullscreen + 1)
     );
 
     border = {
         0,
-        8*(Window::fullscreen+1) + std::max(button[GENERAL]->height(), button[CONTROLS]->height()),
+        8 * (Window::fullscreen + 1) + std::max(btn_generalSection->height(), btn_controlsSection->height()),
         Window::screen.w,
-        3*(Window::fullscreen+1)
+        3 * (Window::fullscreen + 1)
     };
 
     reloadGeneralPage();
     reloadControlsPage();
 }
 
-void OptionsMenu::usePage(std::string p) {
+void OptionsMenu::usePage(const std::string& p) {
     currentPage = p;
 }
 
-void OptionsMenu::next(std::string cmd) {
+void OptionsMenu::next(const std::string& cmd) {
     if (cmd == "window mode") {
-        UIWindowModeSelector* wms = static_cast<UIWindowModeSelector*>(page["general"][0]);
+        UIWindowModeSelector* wms = static_cast<UIWindowModeSelector*>(page["general"]["wms"]);
         wms->next();
         return;
     }
 
     if (cmd == "language") {
-        UILanguageSelector* ls = static_cast<UILanguageSelector*>(page["general"][1]);
-        ls->next();
+        UILanguageSelector* lgs = static_cast<UILanguageSelector*>(page["general"]["lgs"]);
+        lgs->next();
         return;
     }
 }

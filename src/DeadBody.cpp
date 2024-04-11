@@ -26,12 +26,12 @@ void DeadBody::init() {
 Struct::Entity DeadBody::getStructure() {
     const Struct::DeadBody body{
         .species = species,
-        .pos=position,
-        .inventory=inventory.getStructure(),
-        .o_type=ownerType,
-        .o_behavior=behavior,
-        .o_name=name,
-        .o_hasdialog=ownerHasDialog
+        .pos = position,
+        .inventory = inventory.getStructure(),
+        .o_type = ownerType,
+        .o_behavior = behavior,
+        .o_name = name,
+        .o_hasdialog = ownerHasDialog
     };
-    return Struct::Entity{body};
+    return Struct::Entity{ body };
 }

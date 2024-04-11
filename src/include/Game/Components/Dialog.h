@@ -7,7 +7,7 @@
 class NPC;
 
 struct Answer {
-    enum State {
+    enum State : bool {
         UNSELECTED,
         SELECTED
     };
@@ -23,7 +23,7 @@ struct Answer {
 
     Answer() {}
 
-    Answer(std::string text, Answer::Type result, std::string id) {
+    Answer(const std::string& text, const Type result, const std::string& id) {
         label[State::UNSELECTED] = new UILabel(text, "default", hue::white);
         label[State::SELECTED] = new UILabel(text, "default bold", hue::yellow);
         this->result = result;
@@ -50,8 +50,9 @@ private:
     std::string id;
 
     UIDialogBox* box;
+    
     std::vector<Answer*> answers;
+    int currentAnswer;
 
     NPC* master;
-    int currentAnswer;
 };

@@ -1,10 +1,9 @@
 #include "include/UI/UIPowerInfo.h"
 
 #include "include/Window.h"
-#include "include/Manager.h"
 #include "include/Game/Game.h"
 
-UIPowerInfo::UIPowerInfo(Power pid, int w, int h, std::string font) {
+UIPowerInfo::UIPowerInfo(const Power pid, const int w, const int h, const std::string& font) {
     this->font = font;
 
     rect.w = w;
@@ -35,6 +34,7 @@ UIPowerInfo::UIPowerInfo(Power pid, int w, int h, std::string font) {
         }
         break;
     case Power::BODY_EXPLOSION:
+        /*
         if (Game::player->haveUnlockedPower(pid)) {
             t = "CREPITUS";
             d = Text::Get("Make the body you are controlling go KABOOM for 2 Numen tokens only!");
@@ -43,8 +43,12 @@ UIPowerInfo::UIPowerInfo(Power pid, int w, int h, std::string font) {
             t = Text::Get("UNKNOWN");
             d = Text::Get("Pay 5 Numen tokens to unlock.");
         }
+        */
+        t = "UNDEFINED";
+        d = "not yet implemented";
         break;
     case Power::SHIELD: // BOTTOM LEFT
+        /*
         if (Game::player->haveUnlockedPower(pid)) {
             t = "SCUTUM";
             d = Text::Get("Create a shield arround yourself by consuming 5 Numen tokens.");
@@ -53,13 +57,16 @@ UIPowerInfo::UIPowerInfo(Power pid, int w, int h, std::string font) {
             t = Text::Get("UNKNOWN");
             d = Text::Get("Pay 5 Numen tokens to unlock.");
         }
+        */
+        t = "UNDEFINED";
+        d = "not yet implemented";
         break;
     default:
         t = d = "";
         break;
     }
 
-    title = new UILabel(t.c_str(), font, hue::font, rect.w);
+    title = new UILabel(t, font, hue::font, rect.w);
 
     description = new UITextBox(d, "default", hue::font, rect.w * 2);
 
@@ -95,6 +102,12 @@ void UIPowerInfo::update() {
         return;
     }
 
+    /// TODO: remove when implemented
+    if (pid == Power::BODY_EXPLOSION || pid == Power::SHIELD) {
+        UI::AddPopUp("NOT YET IMPLEMENTED", false);
+        return;
+    }
+
     Game::player->unlockPower(pid);
 
     switch (pid) {
@@ -126,7 +139,7 @@ void UIPowerInfo::destroy() {
     description->destroy();
 }
 
-void UIPowerInfo::place(int x, int y) {
+void UIPowerInfo::place(const int x, const int y) {
     rect.x = x;
     rect.y = y;
 

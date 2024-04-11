@@ -16,11 +16,11 @@ struct Inventory {
     Inventory(const Struct::Inventory& inv);
     Struct::Inventory getStructure();
 
-    bool is_full();
-    bool is_empty();
-    bool try_consume(const Item::ID id);
+    bool isFull();
+    bool isEmpty();
+    bool tryConsume(const Item::ID id);
 
-    Item* extract_random_item();
+    Item* extractRandomItem();
     /// @brief add an item if there is space in the inventory
-    void add_item(Item* i);
+    void addItem(Item* i);
 };

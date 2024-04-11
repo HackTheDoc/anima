@@ -5,11 +5,11 @@
 
 const int UIPopUp::DELAY = 90;
 
-UIPopUp::UIPopUp()
-    : timeLeft(DELAY)
-    , haveBlur(false)
-    , lbl(nullptr)
-    {}
+UIPopUp::UIPopUp() {
+    timeLeft = DELAY;
+    haveBlur = false;
+    lbl = new UILabel();
+}
 
 UIPopUp::~UIPopUp() {}
 
@@ -17,16 +17,16 @@ void UIPopUp::addBlur() {
     haveBlur = true;
 }
 
-void UIPopUp::addLabel(const std::string& t) {
-    addDirectLabel(Text::Get(t));
-}
+void UIPopUp::addLabel(const std::string& text, const bool translate) {
+    std::string t = text;
 
-void UIPopUp::addDirectLabel(const std::string& t) {
-    lbl = new UILabel(t, "big", hue::black);
-    
+    if (translate) t = Text::Get(text);
+
+    lbl->setText(t, "big", hue::black);
+
     rect = {
         (Window::screen.w - lbl->width()) / 2,
-        Window::screen.h - lbl->height() - 16*(Window::fullscreen+1),
+        Window::screen.h - lbl->height() - 16 * (Window::fullscreen + 1),
         lbl->width(),
         lbl->height()
     };
@@ -37,7 +37,7 @@ void UIPopUp::draw(int offset) {
 
     if (haveBlur)
         Manager::DrawFilledRect(&Window::screen, hue::blur_white);
-    
+
     if (lbl) {
         rect.y -= offset;
         Manager::SetViewport(&rect);

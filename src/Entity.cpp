@@ -1,5 +1,7 @@
 #include "include/Game/Entities/Entity.h"
 
+#include "include/Window.h" //uselesss if not in dev mode
+
 #include "include/Game/Game.h"
 #include "include/Game/Map/Tile.h"
 #include "include/Game/Components/Collision.h"
@@ -92,20 +94,20 @@ void Entity::kill() {
     }
 }
 
-void Entity::playAnimation(std::string animationName) {
+void Entity::playAnimation(const std::string& animationName) {
     sprite->play(animationName);
 }
 
-void Entity::setPosition(int x, int y) {
+void Entity::setPosition(const int x, const int y) {
     position.x = x;
     position.y = y;
 }
 
-void Entity::setPosition(Vector2D pos) {
+void Entity::setPosition(const Vector2D& pos) {
     setPosition(pos.x, pos.y);
 }
 
-void Entity::setFlip(SDL_RendererFlip flipMod) {
+void Entity::setFlip(const SDL_RendererFlip flipMod) {
     sprite->spriteFlip = flipMod;
 }
 
@@ -179,14 +181,14 @@ void Entity::randomMovement() {
         return;
     }
 
-    if (velocity != Vector2D::ZERO && rand() % 20 != 0) return;
+    if (!velocity.isZero() && rand() % 20 != 0) return;
 
     const Vector2D dir[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
     int i = rand() % 4;
     velocity = dir[i];
 
-    if (velocity == Vector2D::ZERO) return;
+    if (velocity.isZero()) return;
 
     playAnimation("Walk");
 

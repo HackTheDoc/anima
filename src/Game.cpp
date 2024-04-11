@@ -1,6 +1,7 @@
 #include "include/Game/Game.h"
 
 #include "include/Save.h"
+#include "include/Window.h"
 
 std::chrono::time_point<std::chrono::system_clock> Game::StartTime;
 
@@ -12,7 +13,7 @@ UI* Game::ui = nullptr;
 Island* Game::island = nullptr;
 std::map<std::string, Island*> Game::exploredIslands = {};
 
-SDL_Rect Game::camera = {0, 0, 0, 0};
+SDL_Rect Game::camera = { 0, 0, 0, 0 };
 Player* Game::player = nullptr;
 
 Game::Game() {}
@@ -20,6 +21,8 @@ Game::Game() {}
 Game::~Game() {}
 
 void Game::init() {
+    Window::manager->loadGameTextures();
+
     ui = new UI();
     player = new Player();
     island = nullptr;
@@ -28,9 +31,9 @@ void Game::init() {
     camera = Window::screen;
 
     stats = Save::LoadStats();
-    
+
     player->init();
-    
+
     ui->init();
 
     Game::StartTime = std::chrono::system_clock::now();
@@ -45,7 +48,7 @@ void Game::update() {
     ui->useHint("NONE");
 
     player->update();
-    
+
     island->update();
 
     ui->update();
@@ -57,8 +60,8 @@ void Game::update() {
     const int maxCameraX = mapWidth - camera.w;
     const int maxCameraY = mapHeight - camera.h;
 
-    camera.x = player->position.x - Window::screen.w*.5;
-    camera.y = player->position.y - Window::screen.h*.5;
+    camera.x = player->position.x - Window::screen.w * .5;
+    camera.y = player->position.y - Window::screen.h * .5;
 
     if (camera.x < 0) camera.x = 0;
     if (camera.y < 0) camera.y = 0;
@@ -85,7 +88,7 @@ void Game::render() {
 
 void Game::clean() {
     player->kill();
-    
+
     for (auto i : exploredIslands) {
         i.second->destroy();
     }
@@ -116,8 +119,8 @@ void Game::LoadIsland(const std::string& name) {
 std::map<std::string, Struct::Island> Game::GetExploredIslandStructures() {
     std::map<std::string, Struct::Island> islands;
 
-    for(const auto& elt : exploredIslands)
+    for (const auto& elt : exploredIslands)
         islands[elt.first] = elt.second->getStructure();
-    
+
     return islands;
 }

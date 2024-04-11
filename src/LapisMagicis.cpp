@@ -10,7 +10,7 @@ LapisMagicis::LapisMagicis() {
     name = "Lapis Magicis";
     description = Text::Get("A cristal containing magical power.\nIt can be use to to many great things !");
     price = 20;
-    
+
     icon.x = icon.w * 1;
     icon.y = 0;
 }

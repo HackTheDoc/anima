@@ -15,7 +15,8 @@ public:
     void clean() override;
 
 private:
-    UILabel* title;
-    UIDoubleCursorButton* btn_quit;
-    UIDoubleCursorButton* btn_load;
+    UILabel* lbl_title;
+
+    UIButton* btn_quit;
+    UIButton* btn_load;
 };

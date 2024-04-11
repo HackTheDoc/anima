@@ -9,25 +9,6 @@
 #include "../UI/UIElements.h"
 
 class OptionsMenu : public WindowState {
-private:
-    enum buttons {
-        QUIT,
-        GENERAL,
-        CONTROLS,
-        NUMBER_OF_BUTTONS
-    };
-    UIButton* button[NUMBER_OF_BUTTONS];
-    SDL_Rect border;
-
-    std::map<std::string, std::vector<UIElement*>> page;
-    std::string currentPage;
-
-    void createGeneralPage();
-    void createControlsPage();
-
-    void reloadGeneralPage();
-    void reloadControlsPage();
-
 public:
     OptionsMenu();
     ~OptionsMenu();
@@ -40,9 +21,25 @@ public:
 
     /// @brief change current page of selections
     /// @param p format : ["general", "controls"]
-    void usePage(std::string p);
+    void usePage(const std::string& p);
 
     /// @brief change a selector's current choice to the next one
     /// @param cmd name of the selector to update
-    void next(std::string cmd);
+    void next(const std::string& cmd);
+
+private:
+    UIButton* btn_quit;
+    UIButton* btn_generalSection;
+    UIButton* btn_controlsSection;
+
+    SDL_Rect border;
+
+    std::map<std::string, std::map<std::string, UIElement*>> page;
+    std::string currentPage;
+
+    void createGeneralPage();
+    void createControlsPage();
+
+    void reloadGeneralPage();
+    void reloadControlsPage();
 };

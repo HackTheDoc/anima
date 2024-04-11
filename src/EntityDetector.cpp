@@ -6,7 +6,7 @@
 #include "include/Manager.h"
 
 EntityDetector::EntityDetector(Entity* o) {
-    rect = {0,0,0,0};
+    rect = { 0,0,0,0 };
     setOwner(o);
     rect.w = owner->width;
     rect.h = owner->height;

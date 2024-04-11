@@ -1,29 +1,62 @@
 #pragma once
 
+#include <string>
 #include <SDL2/SDL.h>
-
-#include "UI/UIButtons.h"
-#include "UI/UIChoice.h"
 
 class Window;
 
 class Event {
 private:
     /// @brief owner window
-    Window *window;
+    Window* window;
 
 public:
     enum ID {
         UNKNOWN,
 
-        PAUSE,
-        OPEN_POWER_MENU,
-        OPEN_INVENTORY,
-        OPEN_QUEST_MENU,
-        OPEN_PLAYER_DEATH_MENU,
-        OPEN_IDENTITY_MENU,
+        SET_LANGUAGE_TO_ENGLISH,
+        SET_LANGUAGE_TO_FRENCH,
+        SET_WINDOW_TO_FULLSCREEN,
+        SET_WINDOW_TO_DEFAULT,
 
-        // FREE
+        // BUTTONS 
+
+        QUIT,
+        OPEN_MAIN_MENU,
+
+        OPEN_OPTIONS,
+        OPEN_GENERAL_SETTINGS,
+        OPEN_CONTROLS_SETTINGS,
+
+        OPEN_CREDITS,
+
+        OPEN_PLAY_MENU,
+        LOAD_SAVE,
+        ERASE_SAVE,
+        SELECT_SAVE_1,
+        SELECT_SAVE_2,
+        SELECT_SAVE_3,
+        SELECT_SAVE_4,
+        VALID_WORLD_NAME_INPUT,
+        QUIT_INPUT_FIELD,
+
+        QUIT_GAME,
+
+        SAVE_GAME,
+        LOAD_LAST_SAVE,
+
+        RESUME_GAME,
+        PAUSE,
+        OPEN_INVENTORY,
+        OPEN_POWER_MENU,
+        OPEN_QUEST_MENU,
+        OPEN_IDENTITY_MENU,
+        OPEN_PLAYER_DEATH_MENU,
+
+        // GAME RELATED
+
+        //      FREE
+
         MOVE_UP,
         MOVE_DOWN,
         MOVE_LEFT,
@@ -33,7 +66,8 @@ public:
         BODY_CONTROL,
         BODY_RESURRECTION,
 
-        // DIALOG
+        //      DIALOG
+
         VALID_DIALOG,
         NEXT_ANSWER,
         PREVIOUS_ANSWER
@@ -46,26 +80,18 @@ public:
     ~Event();
 
     /// @brief set the owner window pointer
-    /// @param w pointer to the new owner
-    void linkTo(Window *w);
-
-    /// @brief handle a button click
-    /// @param id id of the button
-    void handleButtonClick(const UIButton::ID id);
-
-    /// @brief handle a selection choice
-    /// @param id id of the choice
-    void handleSelection(const UIChoice::ID id);
+    /// @param w
+    void linkTo(Window* w);
 
     /// @brief handle user's keyboard inputs
     void handleKeyboardInputs();
 
     /// @brief check for a mouse left click
-    /// @return true when mouse click left else false
+    /// @return
     bool mouseClickLeft();
 
     /// @brief check for a mouse right click
-    /// @return true when mouse click right else false
+    /// @return
     bool mouseClickRight();
 
     /// @brief check wether a specific event been raised or not
@@ -73,6 +99,8 @@ public:
     /// @return
     bool raised(const Event::ID id);
 
+    /// @brief raise a specific event
+    /// @param id 
     void raise(const Event::ID id);
 
 private:

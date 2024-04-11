@@ -1,13 +1,11 @@
 #include "include/Game/Components/Vector2D.h"
 
-const Vector2D Vector2D::ZERO = {0,0};
-
 Vector2D::Vector2D() {
     x = 0;
     y = 0;
 }
 
-Vector2D::Vector2D(int x, int y) {
+Vector2D::Vector2D(const int x, const int y) {
     this->x = x;
     this->y = y;
 }
@@ -80,6 +78,10 @@ Vector2D& Vector2D::Zero() {
     this->x = 0;
     this->y = 0;
     return *this;
+}
+
+bool Vector2D::isZero() {
+    return x == 0 && y == 0;
 }
 
 bool operator==(const Vector2D& v1, const Vector2D& v2) {

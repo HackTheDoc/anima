@@ -28,7 +28,7 @@ public:
 
 private:
     static SDL_Rect container;
-    static UILabel* content;
+    static UILabel* lbl_content;
 
     static void Load(const int id);
 };

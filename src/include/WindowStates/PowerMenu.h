@@ -1,23 +1,26 @@
 #pragma once
 
 #include "WindowState.h"
+
 #include "../UI/UIElements.h"
 
-class QuestMenu : public WindowState {
+class PowerMenu : public WindowState {
 public:
-    QuestMenu();
-    ~QuestMenu();
+    PowerMenu();
+    ~PowerMenu();
 
     void init() override;
-    void update() override;
     void render() override;
+    void update() override;
     void clean() override;
 
 private:
     SDL_Rect container;
+    
+    UILabel* lbl_title;
 
-    UILabel* title;
+    UINumenLevel* numenCounter;
 
-    UILabel* mainqt;
-    UILabel* mainqc;
+    UIPowerInfo* power[4];
 };
+ 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SDL2/SDL.h>
 #include <vector>
 
 #include "WindowState.h"
@@ -8,11 +7,11 @@
 #include "../UI/UIElements.h"
 
 class Entity;
+struct Inventory;
 
-class InventoryMenu : public WindowState
-{
+class InventoryMenu : public WindowState {
 public:
-    InventoryMenu(Inventory *inv);
+    InventoryMenu(Inventory* inv);
     ~InventoryMenu();
 
     void init() override;
@@ -23,10 +22,10 @@ public:
 private:
     SDL_Rect container;
 
-    UILabel *title;
-    UILabel* usage;
+    UILabel* lbl_title;
+    UILabel* lbl_usage;
 
-    Inventory *inventory;
+    Inventory* inventory;
     std::vector<SDL_Rect> itemRect;
 
     UITextBox* itemDescription;

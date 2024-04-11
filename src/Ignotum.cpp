@@ -10,7 +10,7 @@ Ignotum::Ignotum() {
     name = "Ignotum";
     description = Text::Get("An unknown object who's usage been lost.");
     price = 20;
-    
+
     icon.x = icon.w * 1;
     icon.y = 0;
 }

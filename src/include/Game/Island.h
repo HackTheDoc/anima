@@ -39,6 +39,7 @@ public:
 
 private:
     std::string name;
+    
     std::vector<Portal*> portals;
     std::vector<Door*> doors;
     std::vector<Entity*> entities;

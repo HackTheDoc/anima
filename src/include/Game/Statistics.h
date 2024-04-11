@@ -3,7 +3,7 @@
 #include <string>
 #include <array>
 
-// Store the statistic of the world
+/// @brief Store the statistic of the world
 struct Statistics {
     std::string worldName{ "Adocia" };
     std::string playTime{ "00:00:00" };
