@@ -76,6 +76,8 @@ UIPowerInfo::UIPowerInfo(const Power pid, const int w, const int h, const std::s
 UIPowerInfo::~UIPowerInfo() {}
 
 void UIPowerInfo::draw() {
+    Manager::DrawFilledRect(&rect, hue::text_box);
+
     title->draw();
 
     Manager::DrawRect(&rect, hue::border);

@@ -1,6 +1,8 @@
 #pragma once
 
+#ifndef DEV_MOD
 #define DEV_MOD
+#endif
 
 #include <string>
 

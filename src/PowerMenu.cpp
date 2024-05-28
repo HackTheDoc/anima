@@ -65,8 +65,8 @@ void PowerMenu::render() {
 
     numenCounter->draw();
 
-    power[Power::BODY_CONTROL]->draw();
     power[Power::BODY_RESURRECTION]->draw();
+    power[Power::BODY_CONTROL]->draw();
     power[Power::BODY_EXPLOSION]->draw();
     power[Power::SHIELD]->draw();
 

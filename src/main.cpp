@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <iostream>
 
 #include "include/Window.h"
 
@@ -13,6 +14,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     if (window.init() < 0)
         exit(EXIT_FAILURE);
+
+#ifdef DEV_MOD
+    std::cout << "GAME IN DEBUG MOD" << std::endl;
+#endif
 
     while (Window::isRunning) {
         frameStart = SDL_GetTicks();
