@@ -64,7 +64,8 @@ void UIHyperlink::destroy() {
 
 void UIHyperlink::openURL() {
 #ifdef _WIN32
-    ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+    const std::string op = "start " + url;
+    system(op.c_str());
 #elif __APPLE__
     std::string cmd = "open \"" + url + "\"";
     system(cmd.c_str());

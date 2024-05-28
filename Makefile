@@ -5,7 +5,7 @@
 # Compiler settings - Can be customized.
 CC = g++
 CXXFLAGS = -std=c++23 -Wall
-LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+LDFLAGS = -lmingw32 -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 # Makefile settings - Can be customized.
 APPNAME = build/app

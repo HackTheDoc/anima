@@ -67,7 +67,7 @@ Tile* Map::getTile(const int x, const int y) {
 }
 
 Tile* Map::getTileAt(const Vector2D& p) {
-    return getTile(round(p.x / Tile::SIZE), round(p.y / Tile::SIZE));
+    return getTile(SDL_round(p.x / Tile::SIZE), SDL_round(p.y / Tile::SIZE));
 }
 
 void Map::setTile(int x, int y, Tile::Type type) {

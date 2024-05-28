@@ -1,8 +1,10 @@
+#include <windows.h>
+
 #include "include/Window.h"
 
 Window window;
 
-int main() {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     const int FPS = 60;
     const int FRAME_DELAY = 1000 / FPS;
 

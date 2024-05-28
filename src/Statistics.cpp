@@ -7,7 +7,11 @@ void Statistics::update() {
 }
 
 void Statistics::print() {
+#ifdef _WIN32
+    std::system("cls");
+#else
     std::system("clear");
+#endif
 
     std::cout << worldName << " Stats:" << std::endl;
     std::cout << "- playtime         : " << playTime << std::endl;
